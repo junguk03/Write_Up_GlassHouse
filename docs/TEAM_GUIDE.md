@@ -318,7 +318,16 @@ static/css/style.css            공통 스타일
 
 ### 브랜치
 
-`main` 에 직접 올리는 것은 막혀 있습니다. 브랜치를 만들어 작업하고 PR로 올려야 합니다.
+브랜치는 세 종류를 씁니다.
+
+| 브랜치 | 역할 |
+|---|---|
+| `main` | 안정판입니다. 발표나 멘토링 때 보여 주는 상태이며 직접 올릴 수 없습니다. |
+| `develop` | 작업을 모으는 곳입니다. **여러분의 PR은 전부 여기로 보냅니다.** |
+| `feat/...` | 개인 작업용입니다. 완료되면 `develop` 에 병합하고 삭제합니다. |
+
+`main` 과 `develop` 에 직접 올리는 것은 막혀 있습니다.
+반드시 `feat/...` 브랜치를 만들어 작업하고 PR로 올려야 합니다.
 
 | 담당 | 브랜치 이름 |
 |---|---|
@@ -328,8 +337,8 @@ static/css/style.css            공통 스타일
 | 종성 | `feat/admin` |
 
 ```bash
-git checkout main
-git pull origin main          # 작업 전에 항상 최신 상태로 맞춥니다
+git checkout develop
+git pull origin develop       # 작업 전에 항상 최신 상태로 맞춥니다
 git checkout -b feat/auth     # 브랜치 생성 (최초 한 번)
 
 # ... 작업 ...
@@ -342,6 +351,9 @@ git push -u origin feat/auth
 
 올리면 깃허브에 `Compare & pull request` 버튼이 나타납니다.
 눌러서 PR을 만들면 정욱이 확인한 뒤 병합합니다. 병합된 브랜치는 삭제합니다.
+
+> **PR을 보낼 대상(base)이 `develop` 인지 확인해 주십시오.**
+> 기본값이 `develop` 으로 설정되어 있지만, `main` 으로 되어 있다면 바꿔야 합니다.
 
 ### 커밋하면 안 되는 것
 

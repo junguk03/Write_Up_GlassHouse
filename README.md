@@ -51,7 +51,8 @@ python app.py                 # http://localhost:5000
 
 ## 규칙
 
-- `main` 직접 푸시 금지. 브랜치 → Pull Request → 승인 → 병합.
+- 브랜치 구성: `main`(안정판) ← `develop`(작업 통합) ← `feat/...`(개인 작업).
+- `main` 과 `develop` 직접 푸시 금지. `feat/...` → Pull Request → 승인 → `develop` 병합.
 - `.env`, `instance/`, `uploads/`, `venv/` 는 커밋하지 않는다. 플래그가 공개된다.
 - 커밋 전에 `git status` 로 위 항목이 안 뜨는지 확인한다.
 - 공통 파일(`base.html`, `style.css`, `app.py`)은 담당자를 통해 수정한다.
