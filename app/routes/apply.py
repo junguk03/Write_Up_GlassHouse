@@ -11,8 +11,8 @@
     request.files["document"]     첨부파일 꺼내기 (지금은 보류)
     data.APPLICATIONS[번호] = {...}   새 원서 저장
 """
-from flask import (Blueprint, redirect, render_template, request, session,
-                   url_for)
+from flask import (Blueprint, flash, redirect, render_template, request,
+                   session, url_for)
 
 import data
 
@@ -21,12 +21,39 @@ bp = Blueprint("apply", __name__)
 
 @bp.route("/apply", methods=["GET", "POST"])
 def create():
-    # TODO 1. 로그인하지 않았으면 url_for("auth.login") 으로 보낸다
-    # TODO 2. POST 라면 request.form 에서 school, major, intro 를 꺼낸다
-    # TODO 3. data.next_application_id() 로 새 번호를 받는다
-    # TODO 4. data.APPLICATIONS 에 새 원서를 넣는다
-    #         user_id 는 지금 로그인한 사람, status 는 "submitted"
-    # TODO 5. url_for("mypage.list_applications") 로 보낸다
+    # 1. 로그인하지 않았으면 로그인 화면으로 보낸다
+    user = data.find_user_by_id(session.get("user_id"))
+    if user is None:
+        return redirect(url_for("auth.login"))
+
+    if request.method == "POST":
+        # 2. 폼에서 school, major, intro 를 꺼낸다
+        school = request.form.get("school", "").strip()
+        major = request.form.get("major", "").strip()
+        intro = request.form.get("intro", "").strip()
+
+        if not school or not major or not intro:
+            flash("출신 학교, 지원 학과, 자기소개를 모두 입력해 주십시오.", "error")
+            return render_template("apply/form.html", application=None)
+
+        # 3. 새 원서 번호를 받는다
+        app_id = data.next_application_id()
+
+        # 4. 새 원서를 저장한다 (명세서 6-5 의 일곱 개 항목)
+        data.APPLICATIONS[app_id] = {
+            "id": app_id,
+            "user_id": user["id"],
+            "applicant_name": user["name"],
+            "school": school,
+            "major": major,
+            "intro": intro,
+            "status": "submitted",
+        }
+
+        # 5. 내 원서 목록으로 보낸다
+        flash("원서가 제출되었습니다.", "success")
+        return redirect(url_for("mypage.list_applications"))
+
     return render_template("apply/form.html", application=None)
 
 
@@ -44,7 +71,16 @@ def download():
 
 @bp.get("/result")
 def index():
-    # TODO 1. 로그인하지 않았으면 로그인 화면으로 보낸다
-    # TODO 2. 내 원서 중 status 가 accepted 또는 rejected 인 것을 모은다
-    # TODO 3. applications 라는 이름으로 템플릿에 넘긴다
-    return render_template("result/index.html", applications=[])
+    # 1. 로그인하지 않았으면 로그인 화면으로 보낸다
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect(url_for("auth.login"))
+
+    # 2. 내 원서 중 결과가 나온 것(합격 · 불합격)만 모은다
+    applications = [
+        a for a in data.APPLICATIONS.values()
+        if a["user_id"] == user_id and a["status"] in ("accepted", "rejected")
+    ]
+
+    # 3. applications 라는 이름으로 템플릿에 넘긴다
+    return render_template("result/index.html", applications=applications)

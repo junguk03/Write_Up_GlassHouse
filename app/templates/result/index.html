@@ -1,0 +1,50 @@
+{#
+  result/index.html - 합격 조회 화면  (담당: 수하)
+
+  applications : 내 원서 중 결과가 나온 것(accepted / rejected)만 넘어옵니다.
+#}
+{% extends "base.html" %}
+{% from "components/ui.html" import button, badge, page_header, empty %}
+
+{% block title %}합격 조회{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  {{ page_header("합격 조회", site.recruit_title ~ " 전형 결과입니다.") }}
+
+  {% if applications %}
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>원서 번호</th>
+            <th>지원자</th>
+            <th>출신 학교</th>
+            <th>지원 학과</th>
+            <th>결과</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in applications %}
+          <tr>
+            <th class="mono">{{ a.id }}</th>
+            <td>{{ a.applicant_name }}</td>
+            <td>{{ a.school }}</td>
+            <td>{{ a.major }}</td>
+            <td>{{ badge(a.status) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    {{ empty("아직 발표된 결과가 없습니다.") }}
+  {% endif %}
+
+  <div class="form-actions">
+    {{ button("내 원서 목록", "secondary", href="/mypage") }}
+  </div>
+
+</div>
+{% endblock %}
