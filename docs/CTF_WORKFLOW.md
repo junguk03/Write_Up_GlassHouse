@@ -165,7 +165,7 @@ db.commit()
 | 난이도 | Easy |
 | 분류 | Web |
 | 출제 | A조 (정욱, 성원) |
-| 접속 | http://192.168.0.17:5000 |
+| 접속 | http://192.168.0.17:8000 |
 | 플래그 형식 | `GlassHouse{...}` |
 
 ## 설명
@@ -231,7 +231,7 @@ git fetch origin
 git checkout chal/easy-01-idor
 ```
 
-소스는 로컬에서 읽고, 공격은 출제 조의 주소(`http://192.168.0.17:5000`)로 보냅니다.
+소스는 로컬에서 읽고, 공격은 출제 조의 주소(`http://192.168.0.17:8000`)로 보냅니다.
 
 ### 조건
 
@@ -293,7 +293,7 @@ git checkout chal/easy-01-idor
 ```python
 import re, sys, requests
 
-BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:5000"
+BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8000"
 s = requests.Session()
 s.post(f"{BASE}/login", data={"username": "applicant01", "password": "test1234"})
 

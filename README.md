@@ -26,11 +26,11 @@ cd app
 python3 -m venv venv
 source venv/bin/activate      # Windows: venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-python app.py                 # http://localhost:5000
+python app.py                 # http://localhost:8000
 ```
 
 현재는 화면 확인용 더미 서버입니다. 데이터베이스와 로그인은 아직 붙지 않았습니다.
-`http://localhost:5000/dev/` 에서 지금까지 만들어진 화면 목록을 볼 수 있습니다.
+`http://localhost:8000/dev/` 에서 지금까지 만들어진 화면 목록을 볼 수 있습니다.
 
 자세한 설명과 운영체제별 차이는 [팀 개발 가이드](docs/TEAM_GUIDE.md)를 본다.
 
