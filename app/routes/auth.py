@@ -23,13 +23,24 @@ bp = Blueprint("auth", __name__)
 def login():
     if request.method == "POST":
         # TODO 1. request.form 에서 username 과 password 를 꺼낸다
+        username = request.form.get("username","")
+        password = request.form.get("password","")
+
         # TODO 2. data.USERS 에서 그 아이디를 찾는다
+        user = data.USERS.get(username)
+
         # TODO 3. 없거나 비밀번호가 다르면
         #         flash("아이디 또는 비밀번호가 올바르지 않습니다.", "error") 후
         #         다시 로그인 화면을 보여준다
+        if user is None or user["password"] != password:
+            flash("아이디 또는 비밀번호가 올바르지 않습니다.","error")
+            return render_template("auth/login.html")
+
         # TODO 4. 맞으면 session["user_id"] 와 session["role"] 에 값을 넣고
         #         url_for("mypage.list_applications") 로 보낸다
-        pass
+        session["user_id"] = user["id"]
+        session["role"] = user["role"]
+        return redirect(url_for("mypage.list_applications"))
 
     return render_template("auth/login.html")
 
@@ -37,6 +48,7 @@ def login():
 @bp.get("/logout")
 def logout():
     # TODO. session 을 비우고 메인으로 보낸다
+    session.clear()
     return redirect(url_for("main.index"))
 
 
