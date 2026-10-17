@@ -19,7 +19,6 @@
         <thead>
           <tr>
             <th>원서 번호</th>
-            <th>지원자</th>
             <th>출신 학교</th>
             <th>지원 학과</th>
             <th>결과</th>
@@ -29,7 +28,6 @@
           {% for a in applications %}
           <tr>
             <th class="mono">{{ a.id }}</th>
-            <td>{{ a.applicant_name }}</td>
             <td>{{ a.school }}</td>
             <td>{{ a.major }}</td>
             <td>{{ badge(a.status) }}</td>

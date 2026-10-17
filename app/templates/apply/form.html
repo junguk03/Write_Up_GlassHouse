@@ -20,7 +20,7 @@
     {{ page_header("원서 작성", site.recruit_title) }}
   {% endif %}
 
-  <form class="form" method="post" action="/apply" enctype="multipart/form-data">
+    <form class="form" method="post" action="{{ "" if is_edit else "/apply" }}" enctype="multipart/form-data">
 
     <div class="form-row">
       {{ field("출신 학교", "school",
