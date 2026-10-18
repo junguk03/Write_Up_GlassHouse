@@ -34,26 +34,33 @@ challenges/easy-02-upload/routes/mypage.py    B조
 
 ## 2. 문제 폴더 구조
 
-문제 하나는 아래 세 부분으로 나뉩니다.
+문제 하나는 아래처럼 생겼습니다. 소스가 폴더 바로 아래 놓이고,
+풀이만 `solution/` 으로 따로 둡니다.
 
 ```
 challenges/easy-01-idor/
-├── README.md          문제 설명 · 난이도 · 출제자. 공개해도 되는 내용입니다.
-├── challenge/         출제용입니다. 푸는 조에게 전달하는 소스입니다.
-│   ├── app.py  routes/  templates/  static/
-│   ├── config_flags.py  .env 에서 플래그를 읽어 오는 도우미
-│   ├── .env.example     플래그 변수 이름만 들어 있습니다 (실제 값 없음)
-│   ├── requirements.txt
-│   ├── Dockerfile
-│   └── docker-compose.yml
-└── solution/          풀이입니다. 상대 조가 다 푼 뒤에 추가합니다.
-    ├── solver.py      자동화된 익스플로잇 코드
-    └── writeup.md     글로 쓴 풀이
+├── README.md            문제 설명 · 난이도 · 출제자. 공개해도 되는 내용입니다
+├── app.py               이하는 app/ 을 복사해 취약하게 만든 소스입니다
+├── data.py
+├── config_flags.py      .env 에서 플래그를 읽어 옵니다
+├── routes/
+├── templates/
+├── static/
+├── uploads/
+├── requirements.txt
+├── .env.example         플래그 변수 이름만 들어 있습니다 (실제 값 없음)
+├── .env                 실제 플래그. 깃에 올라가지 않습니다
+├── Dockerfile
+├── docker-compose.yml
+├── .dockerignore
+└── solution/            상대 조가 다 푼 뒤에 추가합니다
+    ├── solver.py        자동화된 익스플로잇 코드
+    └── writeup.md       글로 쓴 풀이
 ```
 
-`challenge/` 와 `solution/` 을 나누는 것이 핵심입니다.
-풀이를 브랜치에 숨길 필요 없이, **폴더를 나중에 추가하기만 하면** 되기 때문에
-문제는 처음부터 `main` 에 올려 두어도 답이 새지 않습니다.
+**`solution/` 을 나중에 추가하는 것이 핵심입니다.**
+풀이를 브랜치에 숨길 필요 없이 **폴더를 나중에 더하기만** 하면 되므로,
+문제는 만들자마자 `develop` 에 병합해도 답이 새지 않습니다.
 
 폴더 이름은 `<난이도>-<번호>-<취약점>` 으로 통일합니다.
 예: `easy-01-idor`, `easy-02-upload`, `medium-01-xss-to-bac`
@@ -72,9 +79,9 @@ git checkout develop
 git pull origin develop
 git checkout -b chal/easy-01-idor
 
-mkdir -p challenges/easy-01-idor/challenge
+mkdir -p challenges/easy-01-idor
 rsync -a --exclude venv --exclude __pycache__ --exclude .env --exclude '*.pyc' \
-      app/ challenges/easy-01-idor/challenge/
+      app/ challenges/easy-01-idor/
 ```
 
 `cp -r` 대신 `rsync` 를 쓰는 이유는 세 가지를 빼고 복사해 주기 때문입니다.
@@ -106,7 +113,7 @@ if row["user_id"] != session["user_id"]:
     abort(403)
 return render_template("mypage/detail.html", application=row)
 
-# 취약 (challenges/easy-01-idor/challenge/routes/mypage.py)
+# 취약 (challenges/easy-01-idor/routes/mypage.py)
 row = db.execute("SELECT * FROM applications WHERE id=?", (app_id,)).fetchone()
 return render_template("mypage/detail.html", application=row)
 ```
@@ -255,7 +262,7 @@ FLAG_ACCEPTED=GlassHouse{...}
 ```
 
 > **취약점 이름을 설명에 쓰지 마십시오.** 제목에도 쓰지 않습니다.
-> 폴더 이름에는 들어가지만, 푸는 조에게는 `challenge/` 폴더와 README만 전달합니다.
+> 폴더 이름에는 들어가지만, 설명에는 쓰지 않습니다.
 
 ### 올리기
 
@@ -285,9 +292,9 @@ PR 을 올려 `develop` 에 병합합니다. 병합한 브랜치는 삭제합니
 공개 대회에서도 같은 방식을 씁니다.
 
 ```
-출제 조  →  challenge/ 를 PR 로 올려 develop 에 병합합니다 (.env 는 올라가지 않음)
+출제 조  →  문제 폴더를 PR 로 올려 develop 에 병합합니다 (.env 는 올라가지 않음)
            자기 노트북에서 진짜 플래그로 서버를 띄웁니다
-푸는 조  →  git pull 로 challenge/ 를 받아 코드를 읽습니다
+푸는 조  →  git pull 로 문제 폴더를 받아 코드를 읽습니다
            익스플로잇을 작성해 출제 조 서버로 보냅니다
            서버 응답에서 진짜 플래그가 나옵니다
 ```
@@ -296,7 +303,7 @@ PR 을 올려 `develop` 에 병합합니다. 병합한 브랜치는 삭제합니
 
 | 하는 일 | 대상 |
 |---|---|
-| 소스 읽기 | 내 노트북의 `challenges/.../challenge/` 파일 |
+| 소스 읽기 | 내 노트북의 `challenges/easy-01-idor/` 파일 |
 | 공격하기 | 출제 조 주소 `http://<출제조IP>:8000` |
 
 코드를 읽을 수 있어도 플래그는 출제 조 서버의 `.env` 에만 있으므로,
@@ -307,7 +314,7 @@ PR 을 올려 `develop` 에 병합합니다. 병합한 브랜치는 삭제합니
 ### 출제 조
 
 ```bash
-cd challenges/easy-01-idor/challenge
+cd challenges/easy-01-idor
 source venv/bin/activate
 cp .env.example .env         # 실제 플래그를 적습니다
 python app.py                # host="0.0.0.0" 으로 실행됩니다
@@ -342,7 +349,7 @@ git checkout develop
 git pull origin develop
 ```
 
-`challenges/easy-01-idor/challenge/` 가 생깁니다. 이 폴더의 파일을 열어 읽습니다.
+`challenges/easy-01-idor/` 가 생깁니다. 이 폴더의 파일을 열어 읽습니다.
 브랜치를 따로 받을 필요가 없습니다.
 
 공격은 출제 조 주소로 보냅니다.
