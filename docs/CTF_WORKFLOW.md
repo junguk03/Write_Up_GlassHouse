@@ -41,9 +41,8 @@ challenges/easy-01-idor/
 ├── README.md          문제 설명 · 난이도 · 출제자. 공개해도 되는 내용입니다.
 ├── challenge/         출제용입니다. 푸는 조에게 전달하는 소스입니다.
 │   ├── app.py  routes/  templates/  static/
-│   ├── .env.example   플래그 변수 이름만 들어 있습니다 (실제 값 없음)
-│   ├── schema.sql
-│   ├── seed.py
+│   ├── config_flags.py  .env 에서 플래그를 읽어 오는 도우미
+│   ├── .env.example     플래그 변수 이름만 들어 있습니다 (실제 값 없음)
 │   ├── requirements.txt
 │   ├── Dockerfile
 │   └── docker-compose.yml
@@ -65,16 +64,35 @@ challenges/easy-01-idor/
 
 ### 폴더 준비
 
+**복사 전에 반드시 `develop` 을 최신화합니다.**
+뒤처진 상태에서 복사하면 의도하지 않은 구멍이 섞여 들어갑니다.
+
 ```bash
-git checkout main
-git pull origin main
+git checkout develop
+git pull origin develop
 git checkout -b chal/easy-01-idor
 
-mkdir -p challenges/easy-01-idor
-cp -r app challenges/easy-01-idor/challenge
+mkdir -p challenges/easy-01-idor/challenge
+rsync -a --exclude venv --exclude __pycache__ --exclude .env --exclude '*.pyc' \
+      app/ challenges/easy-01-idor/challenge/
 ```
 
-Windows에서는 `xcopy /E /I app challenges\easy-01-idor\challenge` 를 사용합니다.
+`cp -r` 대신 `rsync` 를 쓰는 이유는 세 가지를 빼고 복사해 주기 때문입니다.
+
+| 제외 | 왜 |
+|---|---|
+| `venv/` | 사람마다 다시 만드는 폴더입니다. 수십 MB 라 복사하면 무거워집니다 |
+| `__pycache__/` | 파이썬이 만든 캐시입니다 |
+| **`.env`** | **원본의 플래그가 따라가는 사고를 막습니다** |
+
+Windows 에서 `rsync` 가 없으면 Git Bash 를 쓰거나, 탐색기로 복사한 뒤
+`venv`, `__pycache__`, `.env` 를 직접 지웁니다.
+
+복사한 뒤 할 일은 셋입니다.
+
+1. 취약하게 만들기 (검사하는 줄 삭제 또는 변형)
+2. 플래그 심기 (`config_flags.py` 추가 후 `data.py` 등에서 사용)
+3. `cp .env.example .env` 후 실제 플래그 적기
 
 ### 취약하게 만들기
 
@@ -104,54 +122,114 @@ return render_template("mypage/detail.html", application=row)
 
 ### 플래그 심기
 
-플래그 문자열을 코드에 직접 쓰지 않습니다. `.env` 에 두고 `seed.py` 가 읽어서 넣습니다.
+플래그 문자열을 코드에 직접 쓰지 않습니다. `.env` 에 두고 코드가 읽어 씁니다.
+데이터베이스를 쓰지 않으므로 별도의 초기화 스크립트는 필요 없습니다.
+
+**`config_flags.py`** — 깃에 올립니다. 플래그를 읽어 오는 도우미입니다.
+
+```python
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+def flag(name, default="GlassHouse{dummy_flag_not_set}"):
+    """.env 가 없어도 앱이 죽지 않도록 더미 값을 돌려줍니다."""
+    return os.environ.get(name, default)
+```
 
 **`.env.example`** — 깃에 올립니다. 변수 이름만 알려 주는 견본입니다.
 
 ```
-FLAG_IDOR=GlassHouse{여기에_실제_플래그}
+SECRET_KEY=change-me-per-challenge
+FLAG_IDOR=GlassHouse{여기에_실제_플래그를_넣습니다}
 ```
 
-**`.env`** — 깃에 올라가지 않습니다. 실제 플래그를 여기에 적습니다.
+**`.env`** — 깃에 올라가지 않습니다. 출제 조만 실제 값을 가집니다.
 
 ```
+SECRET_KEY=a3f9c21b7e
 FLAG_IDOR=GlassHouse{0wn3rsh1p_ch3ck_m1ss1ng}
 ```
 
-**`seed.py`** — 깃에 올립니다. 데이터베이스에 초기 데이터를 넣는 프로그램입니다.
+### 플래그를 어디에 두는가
+
+**공격에 성공해야만 닿는 자리**에 둡니다. 취약점 종류마다 자리가 다릅니다.
+
+**데이터 안에 — IDOR 용**
 
 ```python
-import os, sqlite3
-from dotenv import load_dotenv
+# data.py
+from config_flags import flag
 
-load_dotenv()
-db = sqlite3.connect("instance/app.db")
-db.executescript(open("schema.sql").read())
-
-db.execute("INSERT INTO users (id, username, password, role) VALUES (?,?,?,?)",
-           (1,  "applicant01", "test1234", "applicant"))
-db.execute("INSERT INTO users (id, username, password, role) VALUES (?,?,?,?)",
-           (7,  "victim",      "s3cr3t",   "applicant"))
-db.execute("INSERT INTO users (id, username, password, role) VALUES (?,?,?,?)",
-           (99, "reviewer",    "adminpw",  "admin"))
-
-# IDOR 목표가 되는 7번 지원자의 원서에 플래그를 심습니다
-db.execute(
-    "INSERT INTO applications (id, user_id, school, major, intro, status) "
-    "VALUES (?,?,?,?,?,?)",
-    (42, 7, "하우스고등학교", "정보보호학과",
-     f"제 포부는 {os.environ['FLAG_IDOR']} 입니다", "submitted")
-)
-db.commit()
+APPLICATIONS = {
+    43: {
+        "id": 43, "user_id": 7, "applicant_name": "정민호",
+        "school": "미러고등학교", "major": "정보보호학과",
+        "intro": f"제 포부는 {flag('FLAG_IDOR')} 입니다.",
+        "status": "submitted",
+    },
+}
 ```
 
-이렇게 나누면 세 가지 이점이 있습니다.
+43번은 남의 원서라 정상 버전에서는 403 으로 막힙니다.
+소유권 검사를 지운 취약 버전에서만 보입니다.
 
-- 깃허브에 올라간 코드를 아무리 읽어도 플래그가 보이지 않습니다.
-- 두 조가 **같은 코드로 서로 다른 플래그**를 쓸 수 있습니다.
-- 데이터가 꼬이면 `rm instance/app.db && python seed.py` 로 몇 초 만에 초기화됩니다.
+**관리자 화면에만 — Broken Access Control 용**
 
-플래그는 자동으로 바뀌지 않습니다. `.env` 를 직접 고치고 `seed.py` 를 다시 실행해야 합니다.
+```python
+# app.py
+app.config["FLAG_ADMIN"] = flag("FLAG_ADMIN")
+```
+
+```html
+{# templates/admin/list.html #}
+<div class="alert alert-info">심사위원 전용 · 내부 코드 {{ config.FLAG_ADMIN }}</div>
+```
+
+`config` 는 Jinja 가 기본으로 넘겨주므로 따로 전달하지 않아도 됩니다.
+
+**조건을 달성해야 — 상태 조작 용**
+
+```html
+{# templates/result/index.html #}
+{% if applications | selectattr("status", "equalto", "accepted") | list %}
+  <div class="alert alert-success">합격 인증 코드 {{ config.FLAG_ACCEPTED }}</div>
+{% endif %}
+```
+
+**파일로 — 경로 조작 용**
+
+`flag.txt` 를 앱 폴더 **바깥**에 두고 `.gitignore` 에 넣습니다.
+`/download?file=../../flag.txt` 로 읽어 내야 합니다.
+
+**전용 주소로 — XSS · SSRF 용**
+
+```python
+@bp.get("/admin/notice")
+def notice():
+    require_admin()
+    return current_app.config["FLAG_XSS"]
+```
+
+지원자 계정으로는 들어갈 수 없습니다.
+저장형 XSS 로 심사위원 브라우저에서 호출해야 얻습니다.
+
+### 한 문제에 플래그를 여러 개 두기
+
+`.env` 에 변수를 여러 개 적고 코드에서 골라 쓰면 됩니다.
+문제마다 변수 이름을 다르게 두면 같은 코드로 서로 다른 플래그를 쓸 수 있습니다.
+
+```
+FLAG_IDOR=GlassHouse{...}
+FLAG_ADMIN=GlassHouse{...}
+FLAG_ACCEPTED=GlassHouse{...}
+```
+
+**플래그를 바꿀 때는 `.env` 만 고치고 서버를 다시 띄우면 됩니다.**
+`.env` 는 깃에 올라가지 않으므로 커밋도 PR 도 필요 없습니다.
 
 ### 문제 설명 작성
 
@@ -181,14 +259,23 @@ db.commit()
 
 ### 올리기
 
+평소 작업과 똑같습니다. 전용 브랜치를 따로 운영할 필요가 없습니다.
+`solution/` 을 아직 만들지 않으므로, `develop` 에 병합해도 답이 새지 않습니다.
+
 ```bash
+git checkout develop
+git pull origin develop
+git checkout -b chal/easy-01-idor
+
 git add challenges/easy-01-idor
 git status                   # .env 가 보이면 멈춥니다
-git commit -m "chal: easy-01 문제 추가"
+git commit -m "chal: add easy-01 idor challenge"
 git push -u origin chal/easy-01-idor
 ```
 
-`solution/` 폴더는 아직 만들지 않습니다.
+PR 을 올려 `develop` 에 병합합니다. 병합한 브랜치는 삭제합니다.
+
+> `solution/` 폴더는 아직 만들지 않습니다. 상대 조가 다 푼 뒤에 따로 추가합니다.
 
 ---
 
@@ -198,14 +285,24 @@ git push -u origin chal/easy-01-idor
 공개 대회에서도 같은 방식을 씁니다.
 
 ```
-출제 조  →  challenge/ 폴더를 브랜치에 올립니다 (.env 없음)
+출제 조  →  challenge/ 를 PR 로 올려 develop 에 병합합니다 (.env 는 올라가지 않음)
            자기 노트북에서 진짜 플래그로 서버를 띄웁니다
-푸는 조  →  코드를 읽으며 취약점을 찾습니다
+푸는 조  →  git pull 로 challenge/ 를 받아 코드를 읽습니다
            익스플로잇을 작성해 출제 조 서버로 보냅니다
            서버 응답에서 진짜 플래그가 나옵니다
 ```
 
-코드를 읽을 수 있어도 플래그는 서버에만 있으므로, 실제로 공격에 성공해야 얻을 수 있습니다.
+소스를 읽는 것과 공격하는 것은 별개입니다.
+
+| 하는 일 | 대상 |
+|---|---|
+| 소스 읽기 | 내 노트북의 `challenges/.../challenge/` 파일 |
+| 공격하기 | 출제 조 주소 `http://<출제조IP>:8000` |
+
+코드를 읽을 수 있어도 플래그는 출제 조 서버의 `.env` 에만 있으므로,
+실제로 공격에 성공해야 얻을 수 있습니다.
+로컬에서 띄우면 플래그가 `FLAG_NOT_SET` 으로 나옵니다.
+
 
 ### 출제 조
 
@@ -213,25 +310,52 @@ git push -u origin chal/easy-01-idor
 cd challenges/easy-01-idor/challenge
 source venv/bin/activate
 cp .env.example .env         # 실제 플래그를 적습니다
-python seed.py
 python app.py                # host="0.0.0.0" 으로 실행됩니다
+
+# 또는 도커로
+docker compose up --build
 ```
 
-자기 IP를 확인해 알려 줍니다.
+자기 IP를 확인해 푸는 조에게 알려 줍니다.
 
 ```bash
 ipconfig getifaddr en0       # macOS
 ipconfig                     # Windows (IPv4 주소 항목)
 ```
 
+> **IP 를 알려 주지 않으면 푸는 조가 접속할 수 없습니다.**
+> `localhost` 는 "지금 이 컴퓨터" 라는 뜻이라, 노트북마다 자기 자신을 가리킵니다.
+> 푸는 조가 `localhost:8000` 을 열면 **자기 노트북의 서버** 가 뜹니다.
+>
+> | 누가 | 주소 |
+> |---|---|
+> | 서버를 띄운 사람 본인 | `http://localhost:8000` |
+> | 같은 와이파이의 다른 사람 | `http://192.168.0.17:8000` |
+>
+> `app.py` 의 `host="0.0.0.0"` 은 "모든 네트워크 통로로 요청을 받겠다" 는 뜻입니다.
+> 이것이 없으면 자기 컴퓨터에서만 열립니다.
+
 ### 푸는 조
 
 ```bash
-git fetch origin
-git checkout chal/easy-01-idor
+git checkout develop
+git pull origin develop
 ```
 
-소스는 로컬에서 읽고, 공격은 출제 조의 주소(`http://192.168.0.17:8000`)로 보냅니다.
+`challenges/easy-01-idor/challenge/` 가 생깁니다. 이 폴더의 파일을 열어 읽습니다.
+브랜치를 따로 받을 필요가 없습니다.
+
+공격은 출제 조 주소로 보냅니다.
+
+```bash
+curl -c cookie.txt -X POST http://192.168.0.17:8000/login \
+     -d "username=applicant01&password=test1234"
+
+curl -b cookie.txt http://192.168.0.17:8000/applications/43
+```
+
+브라우저 개발자 도구(F12)의 Application 탭에서 쿠키를 직접 고치거나,
+Network 탭에서 주고받은 요청을 확인하는 방법도 많이 씁니다.
 
 ### 조건
 
@@ -316,10 +440,13 @@ for app_id in range(1, 100):
 
 ## 6. 요약
 
-| 시점 | 위치 | `solution/` 유무 |
+| 시점 | 어디에 있나 | `solution/` 유무 |
 |---|---|---|
 | 만드는 중 | `chal/...` 브랜치 | 없음 |
-| 교환해서 푸는 중 | `chal/...` 브랜치 | 없음 |
-| 모두 끝난 뒤 | `main` 의 `challenges/` 폴더 | 있음 |
+| 교환해서 푸는 중 | `develop` (병합 완료) | 없음 |
+| 모두 끝난 뒤 | `develop` → `main` | 있음 |
+
+`solution/` 을 나중에 추가하는 구조라서, 문제 자체는 만들자마자 `develop` 에 병합해도
+답이 새지 않습니다. 푸는 조는 `git pull` 만 하면 됩니다.
 
 브랜치는 작업하는 동안만 쓰는 임시 작업대이고, 완성된 문제는 전부 `main` 에 모입니다.
