@@ -1,12 +1,22 @@
 # ===== 절대 올리면 안 되는 것 =====
-.env                  # 플래그 원본
+# 주석은 반드시 줄 맨 앞에 둡니다.
+# 패턴 뒤에 주석을 붙이면 그 글자까지 패턴의 일부가 되어 아무것도 막지 못합니다.
+
+# 플래그 원본
+.env
+.env.local
 *.flag
 flag.txt
 
 # ===== 실행 중에 생기는 데이터 =====
-instance/             # SQLite DB 파일
-uploads/*             # 업로드된 파일 (웹쉘 포함 위험)
-!uploads/.gitkeep
+
+# 데이터베이스 파일
+instance/
+
+# 업로드된 파일 (웹쉘이 올라갈 수 있음)
+# ** 를 붙여야 app/uploads 와 challenges/*/challenge/uploads 에도 적용됩니다.
+**/uploads/*
+!**/uploads/.gitkeep
 
 # ===== 파이썬 =====
 venv/
