@@ -21,7 +21,7 @@
 ## 푸는 쪽 준비
 
 ```bash
-cd challenges/easy-01-idor/challenge
+cd challenges/easy/01-idor
 python3 -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\Activate.ps1
 pip install -r requirements.txt
@@ -35,7 +35,7 @@ python app.py
 ## 출제 쪽 준비
 
 ```bash
-cd challenges/easy-01-idor/challenge
+cd challenges/easy/01-idor
 cp .env.example .env            # 실제 플래그를 적습니다
 docker compose up --build       # 또는 python app.py
 ```
