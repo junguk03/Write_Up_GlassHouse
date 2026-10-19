@@ -15,7 +15,7 @@
 ```
 .
 ├── app/           서비스 본체 (취약점 없는 정상 버전). 여기는 수정하지 않는다
-├── challenges/    CTF 문제 모음 (app/ 복사 + 취약점 주입)
+├── challenges/    CTF 문제 모음. easy / medium / hard 로 나뉨
 └── docs/          설계 문서 · 팀 가이드
 ```
 
@@ -36,9 +36,11 @@ python app.py                 # http://localhost:8000
 
 ## 문제 목록
 
-| 난이도 | 문제 | 취약점 | 출제 | 라이트업 |
+| 난이도 | 문제 | 취약점 | 출제 | 풀이 |
 |---|---|---|---|---|
-| | *(화요일 회의 후 채움)* | | | |
+| Easy | [01-idor](challenges/easy/01-idor) | IDOR | (예시) | 미작성 |
+
+전체 목록은 [challenges/README.md](challenges/README.md) 에 있습니다.
 
 ## 팀
 

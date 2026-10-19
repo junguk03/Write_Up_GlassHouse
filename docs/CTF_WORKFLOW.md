@@ -11,16 +11,16 @@
 app/                              서비스 본체입니다. 정상 동작하며 취약점이 없습니다.
                                   여기는 아무도 수정하지 않습니다.
 
-challenges/easy-01-idor/          app/ 을 복사한 사본입니다. A조가 여기서 취약하게 만듭니다.
-challenges/easy-02-upload/        또 다른 사본입니다. B조가 여기서 취약하게 만듭니다.
+challenges/easy/01-idor/          app/ 을 복사한 사본입니다. A조가 여기서 취약하게 만듭니다.
+challenges/easy/02-upload/        또 다른 사본입니다. B조가 여기서 취약하게 만듭니다.
 ```
 
 두 조가 똑같이 `routes/mypage.py` 를 수정해도 **충돌하지 않습니다.**
 경로가 다르면 깃에게는 완전히 다른 파일이기 때문입니다.
 
 ```
-challenges/easy-01-idor/routes/mypage.py      A조
-challenges/easy-02-upload/routes/mypage.py    B조
+challenges/easy/01-idor/routes/mypage.py      A조
+challenges/easy/02-upload/routes/mypage.py    B조
                          ↑ 경로가 다르므로 충돌이 발생할 수 없습니다
 ```
 
@@ -38,7 +38,12 @@ challenges/easy-02-upload/routes/mypage.py    B조
 풀이만 `solution/` 으로 따로 둡니다.
 
 ```
-challenges/easy-01-idor/
+challenges/
+├── easy/                난이도별로 나눕니다
+├── medium/
+└── hard/
+
+challenges/easy/01-idor/
 ├── README.md            문제 설명 · 난이도 · 출제자. 공개해도 되는 내용입니다
 ├── app.py               이하는 app/ 을 복사해 취약하게 만든 소스입니다
 ├── data.py
@@ -62,8 +67,8 @@ challenges/easy-01-idor/
 풀이를 브랜치에 숨길 필요 없이 **폴더를 나중에 더하기만** 하면 되므로,
 문제는 만들자마자 `develop` 에 병합해도 답이 새지 않습니다.
 
-폴더 이름은 `<난이도>-<번호>-<취약점>` 으로 통일합니다.
-예: `easy-01-idor`, `easy-02-upload`, `medium-01-xss-to-bac`
+난이도 폴더 아래에 `<번호>-<짧은이름>` 으로 만듭니다.
+예: `easy/01-idor`, `easy/02-upload`, `medium/01-xss-to-bac`
 
 ---
 
@@ -79,9 +84,9 @@ git checkout develop
 git pull origin develop
 git checkout -b chal/easy-01-idor
 
-mkdir -p challenges/easy-01-idor
+mkdir -p challenges/easy/01-idor
 rsync -a --exclude venv --exclude __pycache__ --exclude .env --exclude '*.pyc' \
-      app/ challenges/easy-01-idor/
+      app/ challenges/easy/01-idor/
 ```
 
 `cp -r` 대신 `rsync` 를 쓰는 이유는 세 가지를 빼고 복사해 주기 때문입니다.
@@ -113,7 +118,7 @@ if row["user_id"] != session["user_id"]:
     abort(403)
 return render_template("mypage/detail.html", application=row)
 
-# 취약 (challenges/easy-01-idor/routes/mypage.py)
+# 취약 (challenges/easy/01-idor/routes/mypage.py)
 row = db.execute("SELECT * FROM applications WHERE id=?", (app_id,)).fetchone()
 return render_template("mypage/detail.html", application=row)
 ```
@@ -240,7 +245,7 @@ FLAG_ACCEPTED=GlassHouse{...}
 
 ### 문제 설명 작성
 
-`challenges/easy-01-idor/README.md` 를 만듭니다.
+`challenges/easy/01-idor/README.md` 를 만듭니다.
 
 ```markdown
 # easy-01 — 접수 내역 조회
@@ -274,7 +279,7 @@ git checkout develop
 git pull origin develop
 git checkout -b chal/easy-01-idor
 
-git add challenges/easy-01-idor
+git add challenges/easy/01-idor
 git status                   # .env 가 보이면 멈춥니다
 git commit -m "chal: add easy-01 idor challenge"
 git push -u origin chal/easy-01-idor
@@ -303,7 +308,7 @@ PR 을 올려 `develop` 에 병합합니다. 병합한 브랜치는 삭제합니
 
 | 하는 일 | 대상 |
 |---|---|
-| 소스 읽기 | 내 노트북의 `challenges/easy-01-idor/` 파일 |
+| 소스 읽기 | 내 노트북의 `challenges/easy/01-idor/` 파일 |
 | 공격하기 | 출제 조 주소 `http://<출제조IP>:8000` |
 
 코드를 읽을 수 있어도 플래그는 출제 조 서버의 `.env` 에만 있으므로,
@@ -314,7 +319,7 @@ PR 을 올려 `develop` 에 병합합니다. 병합한 브랜치는 삭제합니
 ### 출제 조
 
 ```bash
-cd challenges/easy-01-idor
+cd challenges/easy/01-idor
 source venv/bin/activate
 cp .env.example .env         # 실제 플래그를 적습니다
 python app.py                # host="0.0.0.0" 으로 실행됩니다
@@ -349,7 +354,7 @@ git checkout develop
 git pull origin develop
 ```
 
-`challenges/easy-01-idor/` 가 생깁니다. 이 폴더의 파일을 열어 읽습니다.
+`challenges/easy/01-idor/` 가 생깁니다. 이 폴더의 파일을 열어 읽습니다.
 브랜치를 따로 받을 필요가 없습니다.
 
 공격은 출제 조 주소로 보냅니다.
