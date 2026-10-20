@@ -1,0 +1,103 @@
+{#
+  base.html - 모든 화면의 공통 틀
+
+  다른 화면은 이 파일을 상속받아 "구멍"만 채웁니다.
+  구멍의 이름은 아래 네 가지입니다.
+
+    title      브라우저 탭에 표시될 제목
+    extra_css  이 화면에서만 쓰는 추가 스타일시트
+    content    본문  (거의 모든 화면이 여기만 채웁니다)
+    extra_js   이 화면에서만 쓰는 추가 스크립트
+
+  이 파일은 공통 파일이므로 담당자(정욱)만 수정합니다.
+#}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}원서 접수{% endblock %} | {{ site.name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  {# ── 상단 유틸리티 바 ───────────────────────────────── #}
+  <div class="utilbar">
+    <div class="container utilbar-inner">
+      <span class="utilbar-note">입학 문의 {{ site.contact_tel }} · {{ site.office_hours }}</span>
+      <nav class="utilbar-links">
+        {% if user %}
+          <span class="utilbar-user"><strong>{{ user.name }}</strong>님</span>
+          {% if user.role == 'admin' %}
+            <a href="/admin">심사위원 포털</a>
+          {% endif %}
+          <a href="/logout">로그아웃</a>
+        {% else %}
+          <a href="/login">로그인</a>
+          <a href="/signup">회원가입</a>
+        {% endif %}
+      </nav>
+    </div>
+  </div>
+
+  {# ── 헤더 · 주 메뉴 ────────────────────────────────── #}
+  <header class="site-header">
+    <div class="container site-header-inner">
+      <a class="logo" href="/">
+        <span class="logo-mark">GH</span>
+        <span class="logo-text">
+          <strong>{{ site.name }}</strong>
+          <small>입학 원서 접수 시스템</small>
+        </span>
+      </a>
+
+      <nav class="gnb">
+        <a href="/">모집 안내</a>
+        <a href="/apply">원서 작성</a>
+        <a href="/mypage">내 원서 조회</a>
+        <a href="/result">합격 조회</a>
+      </nav>
+    </div>
+  </header>
+
+  {# ── 알림 메시지 자리 ──────────────────────────────── #}
+  {# 백엔드가 붙으면 로그인 실패, 제출 완료 같은 메시지가 여기에 표시됩니다. #}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="container">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {# ── 본문 ─────────────────────────────────────────── #}
+  <main class="site-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  {# ── 푸터 ─────────────────────────────────────────── #}
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div>
+          <p class="footer-title">{{ site.name }} 입학관리처</p>
+          <p class="footer-line">서울특별시 유리구 하우스로 123 · 대표전화 {{ site.contact_tel }}</p>
+          <p class="footer-line">이메일 {{ site.contact_email }} · 운영시간 {{ site.office_hours }}</p>
+        </div>
+        <ul class="footer-links">
+          <li><a href="/">모집 요강</a></li>
+          <li><a href="/">공지사항</a></li>
+          <li><a href="/">자주 묻는 질문</a></li>
+          <li><a href="/">개인정보 처리방침</a></li>
+        </ul>
+      </div>
+      <p class="footer-copy">© 2026 Glass House. 본 시스템은 보안 교육용으로 제작된 가상의 서비스입니다.</p>
+    </div>
+  </footer>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
