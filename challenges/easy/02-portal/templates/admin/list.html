@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, badge, empty %}
+
+{% block title %}지원자 목록{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  {{ page_header("지원자 목록", "접수된 원서를 확인하세요.") }}
+
+  <div class="alert alert-info">심사위원 전용 · 내부 인증 코드 {{ config.FLAG_ADMIN }}</div>
+
+  {% if applications %}
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">원서 번호</th>
+            <th scope="col">지원자</th>
+            <th scope="col">출신 학교</th>
+            <th scope="col">지원 학과</th>
+            <th scope="col">상태</th>
+            <th scope="col">관리</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for application in applications %}
+            <tr>
+              <td>{{ application.id }}</td>
+              <td>{{ application.applicant_name }}</td>
+              <td>{{ application.school }}</td>
+              <td>{{ application.major }}</td>
+              <td>{{ badge(application.status) }}</td>
+              <td>
+                <a class="btn btn-secondary btn-sm"
+                   href="/admin/applications/{{ application.id }}">
+                  상세보기
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    {{ empty("등록된 원서가 없습니다.") }}
+  {% endif %}
+
+</div>
+{% endblock %}
