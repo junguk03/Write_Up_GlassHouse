@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, badge, button %}
+
+{% block title %}원서 상세{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {{ page_header("원서 상세", application.applicant_name ~ "님의 원서") }}
+        <div class="card">
+            <p><strong>출신 학교</strong> · {{ application.school }}</p>
+            <p><strong>지원 학과</strong> · {{ application.major }}</p>
+            <p><strong>상태</strong> · {{ badge(application.status) }}</p>
+            <p><strong>자기소개</strong><br>{{ application.intro|safe }}</p>
+        </div>
+        <div class="form-actions">
+            {{ button("목록으로", "secondary", href="/mypage") }}
+        </div>
+    </div>
+{% endblock %}
