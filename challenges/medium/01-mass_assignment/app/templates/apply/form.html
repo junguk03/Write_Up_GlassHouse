@@ -1,0 +1,63 @@
+{#
+  apply/form.html - 원서 작성 · 수정 공용 화면  (담당: 수하)
+
+  application 이 None 이면 새로 작성, 값이 있으면 수정 화면입니다.
+  수정 기능은 보류라서 수정 화면의 저장 버튼은 눌러도 아무 일이 없습니다.
+#}
+{% extends "base.html" %}
+{% from "components/ui.html" import button, field, textarea, select, file_field, page_header %}
+
+{% set is_edit = application is not none %}
+
+{% block title %}{{ "원서 수정" if is_edit else "원서 작성" }}{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  {% if is_edit %}
+    {{ page_header("원서 수정", application.id ~ "번 원서의 내용을 수정합니다.") }}
+  {% else %}
+    {{ page_header("원서 작성", site.recruit_title) }}
+  {% endif %}
+
+    <form class="form" method="post" action="{{ "" if is_edit else "/apply" }}" enctype="multipart/form-data">
+
+    <div class="form-row">
+      {{ field("출신 학교", "school",
+               value=application.school if is_edit else "",
+               placeholder="예: 글래스고등학교", required=true) }}
+
+      {{ select("지원 학과", "major",
+                [("정보보호학과", "정보보호학과"), ("컴퓨터공학과", "컴퓨터공학과")],
+                value=application.major if is_edit else "", required=true) }}
+    </div>
+
+    {{ textarea("자기소개", "intro",
+                value=application.intro if is_edit else "",
+                rows=10, required=true,
+                placeholder="지원 동기와 관련 경험을 자유롭게 작성해 주십시오.") }}
+
+    {{ field("포트폴리오 주소", "portfolio_url", type="url",
+             placeholder="https://", help="선택 사항입니다.") }}
+
+    {{ file_field("증빙서류", "document", accept=".pdf,.png,.jpg",
+                  help="PDF, PNG, JPG 파일만 올릴 수 있습니다.") }}
+
+    <ul class="notes">
+      <li>제출한 원서는 마이페이지에서 확인할 수 있습니다.</li>
+      <li>접수 기간은 {{ site.period_start }} ~ {{ site.period_end }} 입니다.</li>
+    </ul>
+
+    <div class="form-actions">
+      {{ button("취소", "secondary", href="/mypage") }}
+      {% if is_edit %}
+        {{ button("수정 저장", "primary", type="submit") }}
+      {% else %}
+        {{ button("제출하기", "primary", type="submit") }}
+      {% endif %}
+    </div>
+
+  </form>
+
+</div>
+{% endblock %}

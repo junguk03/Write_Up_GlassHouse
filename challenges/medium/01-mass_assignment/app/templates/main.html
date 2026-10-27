@@ -1,0 +1,128 @@
+{#
+  main.html - 메인(모집 안내) 화면
+
+  base.html 을 상속받아 content 구멍만 채웁니다.
+  <html>, <head>, <header>, 네비, 푸터는 base.html 이 담당하므로 여기 쓰지 않습니다.
+#}
+{% extends "base.html" %}
+{% from "components/ui.html" import button, badge %}
+
+{% block title %}모집 안내{% endblock %}
+
+{% block content %}
+
+{# ── 모집 공고 배너 ─────────────────────────────────── #}
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <span class="hero-tag">모집 중</span>
+      <h1 class="hero-title">{{ site.recruit_title }}</h1>
+      <p class="hero-sub">
+        지원서 작성부터 증빙서류 제출, 합격 확인까지 이 시스템에서 처리합니다.
+      </p>
+
+      <dl class="hero-meta">
+        <div>
+          <dt>접수 기간</dt>
+          <dd>{{ site.period_start }} 10:00 ~ {{ site.period_end }} 18:00</dd>
+        </div>
+        <div>
+          <dt>모집 단위</dt>
+          <dd>정보보호학과 · 컴퓨터공학과</dd>
+        </div>
+      </dl>
+
+      <div class="hero-actions">
+        {{ button("원서 접수하기", "primary", href="/apply") }}
+        {{ button("내 원서 조회", "ghost", href="/mypage") }}
+      </div>
+    </div>
+
+    <aside class="hero-dday">
+      <p class="dday-label">접수 마감까지</p>
+      <p class="dday-num">D-{{ site.days_left }}</p>
+      <p class="dday-date">{{ site.period_end }} 18:00</p>
+    </aside>
+  </div>
+</section>
+
+{# ── 접수 절차 ─────────────────────────────────────── #}
+<section class="container section">
+  <h2 class="section-title">접수 절차</h2>
+  <ol class="steps">
+    <li class="step"><span class="step-num">1</span><span class="step-name">회원가입</span></li>
+    <li class="step"><span class="step-num">2</span><span class="step-name">개인정보 입력</span></li>
+    <li class="step"><span class="step-num">3</span><span class="step-name">원서 작성</span></li>
+    <li class="step"><span class="step-num">4</span><span class="step-name">증빙서류 제출</span></li>
+    <li class="step"><span class="step-num">5</span><span class="step-name">접수 완료</span></li>
+  </ol>
+  <p class="help-text">
+    각 단계는 저장 후 이어서 작성할 수 있으며, 최종 제출 전까지 수정이 가능합니다.
+  </p>
+</section>
+
+{# ── 전형 일정 · 공지사항 ───────────────────────────── #}
+<section class="container section cols">
+
+  <div class="col">
+    <div class="section-head">
+      <h2 class="section-title">전형 일정</h2>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr><th scope="col">구분</th><th scope="col">일정</th><th scope="col">상태</th></tr>
+        </thead>
+        <tbody>
+          {% for row in schedule %}
+            <tr>
+              <th scope="row">{{ row.step }}</th>
+              <td class="mono">{{ row.period }}</td>
+              <td><span class="state">{{ row.state }}</span></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="section-head">
+      <h2 class="section-title">공지사항</h2>
+      <a class="more" href="/">전체보기</a>
+    </div>
+    <ul class="notice-list">
+      {% for notice in notices %}
+        <li class="notice">
+          <a href="/">
+            <span class="notice-title">
+              {{ notice.title }}
+              {% if notice.is_new %}<span class="new">NEW</span>{% endif %}
+            </span>
+            <span class="notice-date mono">{{ notice.date }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+</section>
+
+{# ── 유의사항 ──────────────────────────────────────── #}
+<section class="container section">
+  <h2 class="section-title">접수 시 유의사항</h2>
+  <ul class="notes">
+    <li>접수 마감 시각 이후에는 원서 제출 및 수정이 불가능합니다.</li>
+    <li>증빙서류는 PDF 또는 이미지 파일로 제출하며, 한 파일당 10MB 이하여야 합니다.</li>
+    <li>제출한 서류의 내용이 사실과 다를 경우 합격이 취소될 수 있습니다.</li>
+    <li>마감 직전에는 접속이 몰릴 수 있으므로 미리 제출하시기 바랍니다.</li>
+  </ul>
+
+  <div class="contact">
+    <p class="contact-title">입학 문의</p>
+    <p class="contact-line">전화 {{ site.contact_tel }} · 이메일 {{ site.contact_email }}</p>
+    <p class="contact-line muted">{{ site.office_hours }}</p>
+  </div>
+</section>
+
+{% endblock %}
