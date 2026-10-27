@@ -19,26 +19,26 @@ Glass House - 원서 접수 시스템
 
 화면 확인용 주소
     http://localhost:8000/                      메인
-    http://localhost:8000/dev/                  만들어진 화면 목록
-    http://localhost:8000/dev/login-as/reviewer 관리자로 로그인된 척하기
-    http://localhost:8000/dev/logout            로그아웃된 척하기
 
 주의
     HTML 파일을 더블클릭하면 화면이 제대로 나오지 않습니다.
     템플릿 문법은 Flask 가 처리하므로 반드시 이 서버를 띄워서 확인하십시오.
 """
-from pathlib import Path
+import os
 
-from flask import Flask, redirect, render_template, session, url_for
+from flask import Flask, session
 from jinja2 import TemplateNotFound
 
 import data
+from config_flags import secret
 from routes import admin, apply, auth, main, mypage
 
 app = Flask(__name__)
 
 # 세션(로그인 상태)을 쿠키에 서명해 저장할 때 쓰는 열쇠입니다.
-app.config["SECRET_KEY"] = "dev-only-change-me"
+# 소스가 공개되므로 .env 에서 읽습니다. 이 값을 알면 세션을 위조할 수 있습니다.
+# .env 에 없으면 켤 때마다 무작위 값이 쓰여, 서버를 다시 켜면 로그인이 풀립니다.
+app.config["SECRET_KEY"] = secret("SECRET_KEY") or os.urandom(16).hex()
 
 # 담당자별 라우트를 등록합니다.
 app.register_blueprint(main.bp)
@@ -46,9 +46,6 @@ app.register_blueprint(auth.bp)
 app.register_blueprint(mypage.bp)
 app.register_blueprint(apply.bp)
 app.register_blueprint(admin.bp)
-
-TEMPLATES_DIR = Path(app.root_path) / "templates"
-
 
 @app.context_processor
 def inject_globals():
@@ -88,75 +85,8 @@ a{{color:#0b63ce}}</style></head>
 &lt;/div&gt;
 {{% endblock %}}</pre>
 <p>자세한 내용은 <code>docs/TEAM_GUIDE.md</code> 3절과 맨 아래 명세서를 보십시오.</p>
-<p><a href="/dev/">개발용 화면 목록</a> · <a href="/">메인으로</a></p>
+<p><a href="/">메인으로</a></p>
 </body></html>""", 404
-
-
-# ---------------------------------------------------------------------------
-# 아래는 화면 확인용 임시 라우트입니다.
-# 기능이 다 붙으면 통째로 지웁니다.
-# ---------------------------------------------------------------------------
-@app.get("/dev/")
-def dev_index():
-    files = sorted(
-        str(p.relative_to(TEMPLATES_DIR))
-        for p in TEMPLATES_DIR.rglob("*.html")
-        if p.name != "base.html" and "components" not in p.parts
-    )
-    links = "".join(f'<li><a href="/dev/{f}">{f}</a></li>' for f in files)
-    accounts = "".join(
-        f'<li><a href="/dev/login-as/{u}">{u}</a> ({v["name"]} · {v["role"]})</li>'
-        for u, v in data.USERS.items()
-    )
-    now = data.find_user_by_id(session.get("user_id"))
-    return f"""<!DOCTYPE html>
-<html lang="ko"><head><meta charset="UTF-8"><title>개발용 화면 목록</title>
-<style>body{{font-family:system-ui,sans-serif;max-width:680px;margin:48px auto;padding:0 16px;line-height:1.7}}
-h2{{font-size:16px;margin-top:28px}} li{{margin:4px 0}} a{{color:#0b63ce}}
-code{{background:#f1f3f5;padding:1px 5px;border-radius:3px}}</style></head>
-<body>
-<h1>개발용 화면 목록</h1>
-<p>현재 로그인: <code>{now["username"] + " / " + now["role"] if now else "비로그인"}</code>
- · <a href="/dev/logout">로그아웃</a> · <a href="/">메인으로</a></p>
-
-<h2>로그인된 척하기</h2>
-<ul>{accounts}</ul>
-
-<h2>만들어진 화면</h2>
-<ul>{links or "<li>아직 없습니다. templates/ 아래에 파일을 만들면 여기 나타납니다.</li>"}</ul>
-</body></html>"""
-
-
-@app.get("/dev/login-as/<username>")
-def dev_login_as(username):
-    u = data.USERS.get(username)
-    if u:
-        session["user_id"] = u["id"]
-        session["role"] = u["role"]
-    return redirect(url_for("dev_index"))
-
-
-@app.get("/dev/logout")
-def dev_logout():
-    session.clear()
-    return redirect(url_for("dev_index"))
-
-
-@app.get("/dev/<path:name>")
-def dev_page(name):
-    """templates 안의 아무 화면이나 더미 데이터와 함께 열어 봅니다."""
-    apps = list(data.APPLICATIONS.values())
-    try:
-        return render_template(
-            name,
-            applications=apps,
-            application=apps[0],
-            notices=main.NOTICES,
-            schedule=main.SCHEDULE,
-        )
-    except TemplateNotFound:
-        return (f"<h1>404</h1><p>templates/{name} 파일이 없습니다.</p>"
-                f'<p><a href="/dev/">목록으로</a></p>', 404)
 
 
 if __name__ == "__main__":

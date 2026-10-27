@@ -4,8 +4,7 @@
 지원자 목록, 원서 상세(심사), 합격 · 불합격 처리를 담당합니다.
 쓸 수 있는 데이터는 data.py 의 APPLICATIONS 입니다.
 
-관리자 계정은 reviewer / adminpw 입니다.
-화면을 확인할 때는 /dev/login-as/reviewer 로 들어가면 바로 관리자가 됩니다.
+관리자 계정은 reviewer 이고, 비밀번호는 .env 의 ADMIN_PASSWORD 입니다.
 
 참고
     session.get("role")    "applicant" 또는 "admin"

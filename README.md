@@ -8,6 +8,7 @@
 | 문서 | 내용 |
 |---|---|
 | [팀 개발 가이드](docs/TEAM_GUIDE.md) | **작업 시작 전 필독.** 환경 설정, 템플릿 사용법, URL·파일명·입력칸 약속, 깃 규칙 |
+| [CTF 규칙](docs/RULES.md) | 출제 규칙 · 풀이 규칙 (diff 금지, AI 사용 범위 등) |
 | [CTF 문제 제작 · 교환 절차](docs/CTF_WORKFLOW.md) | 문제 만드는 법, 플래그 관리, 두 조 교환 방식, 라이트업 양식 |
 
 ## 구조
@@ -29,8 +30,7 @@ pip install -r requirements.txt
 python app.py                 # http://localhost:8000
 ```
 
-현재는 화면 확인용 더미 서버입니다. 데이터베이스와 로그인은 아직 붙지 않았습니다.
-`http://localhost:8000/dev/` 에서 지금까지 만들어진 화면 목록을 볼 수 있습니다.
+로그인 계정은 [팀 개발 가이드](docs/TEAM_GUIDE.md) 명세서 6-4절에 있습니다.
 
 자세한 설명과 운영체제별 차이는 [팀 개발 가이드](docs/TEAM_GUIDE.md)를 본다.
 
