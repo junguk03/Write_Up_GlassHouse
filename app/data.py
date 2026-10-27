@@ -29,13 +29,17 @@ SITE = {
 #   키   = 아이디
 #   id   = 사용자 번호.  원서의 user_id 와 짝이 맞습니다.
 #   role = applicant 또는 admin
+#   email = 비밀번호 찾기에 씁니다
 #
-# 소스가 공개되므로 관리자 비밀번호는 .env 의 ADMIN_PASSWORD 에서 읽습니다.
+# 소스가 공개되므로 관리자 비밀번호와 이메일은 .env 에서 읽습니다.
 # ---------------------------------------------------------------------------
 USERS = {
-    "applicant01": {"id": 1,  "password": "test1234", "name": "이정욱",   "role": "applicant"},
-    "applicant02": {"id": 7,  "password": "s3cr3t",   "name": "정민호",   "role": "applicant"},
-    "reviewer":    {"id": 99, "password": secret("ADMIN_PASSWORD"), "name": "심사위원", "role": "admin"},
+    "applicant01": {"id": 1,  "password": "test1234", "name": "이정욱",   "role": "applicant",
+                    "email": "applicant01@example.com"},
+    "applicant02": {"id": 7,  "password": "s3cr3t",   "name": "정민호",   "role": "applicant",
+                    "email": "applicant02@example.com"},
+    "reviewer":    {"id": 99, "password": secret("ADMIN_PASSWORD"), "name": "심사위원", "role": "admin",
+                    "email": secret("ADMIN_EMAIL")},
 }
 
 

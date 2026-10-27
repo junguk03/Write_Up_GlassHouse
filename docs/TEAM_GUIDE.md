@@ -506,6 +506,9 @@ venv/          가상환경
 | `/` | GET | 메인 (모집 안내) | 정욱 | 완료 |
 | `/login` | GET, POST | 로그인 | 성원 | 화면 + 기능 |
 | `/logout` | GET | 로그아웃 | 성원 | 화면 + 기능 |
+| `/forgot` | GET, POST | 비밀번호 찾기 (아이디 · 이메일) | 정욱 | 완료 |
+| `/forgot/verify` | GET, POST | 인증코드 확인 | 정욱 | 완료 |
+| `/forgot/reset` | GET, POST | 새 비밀번호 | 정욱 | 완료 |
 | `/mypage` | GET | 내 원서 목록 | 성원 | 화면 + 기능 |
 | `/applications/<id>` | GET | 원서 상세 | 성원 | 화면 + 기능 |
 | `/apply` | GET, POST | 원서 작성 | 수하 | 화면 + 기능 |
@@ -536,7 +539,10 @@ templates/
 ├── main.html                  정욱   메인
 ├── auth/
 │   ├── signup.html            성원   회원가입
-│   └── login.html             성원   로그인
+│   ├── login.html             성원   로그인
+│   ├── forgot.html            정욱   비밀번호 찾기
+│   ├── verify.html            정욱   인증코드 확인
+│   └── reset.html             정욱   새 비밀번호
 ├── mypage/
 │   ├── list.html              성원   내 원서 목록
 │   └── detail.html            성원   원서 상세
@@ -558,6 +564,7 @@ HTML에 `name="user_id"` 로 적혀 있으면 동작하지 않으며,
 | 화면 | `name` 값 | 기능 구현 |
 |---|---|---|
 | 로그인 | `username` `password` | 화요일에 구현 |
+| 비밀번호 찾기 | `username` `email` → `code` → `password` `password_confirm` | 완료 |
 | 원서 작성 | `school` `major` `intro` | 화요일에 구현 |
 | 원서 작성 (추가 칸) | `portfolio_url` `document` | **화면만. 기능 보류** |
 | 회원가입 | `username` `password` `password_confirm` `name` | **화면만. 기능 보류** |
@@ -581,7 +588,11 @@ HTML에 `name="user_id"` 로 적혀 있으면 동작하지 않으며,
 ## 6-4. 로그인 계정
 
 회원가입 기능은 만들지 않습니다. 아래 계정이 `data.py` 에 미리 들어 있습니다.
-`reviewer` 의 비밀번호만 `.env` 의 `ADMIN_PASSWORD` 에서 읽습니다. 아래 값은 `.env.example` 의 기본값입니다.
+`reviewer` 의 비밀번호와 이메일만 `.env` 의 `ADMIN_PASSWORD`, `ADMIN_EMAIL` 에서 읽습니다.
+아래 값은 `.env.example` 의 기본값입니다.
+
+비밀번호 찾기의 인증코드는 메일로 가지 않고 **서버를 띄운 터미널에만** 출력됩니다.
+바꾼 비밀번호는 메모리에만 저장되어, 서버를 다시 켜면 원래대로 돌아갑니다.
 데이터베이스는 쓰지 않으며, 서버를 껐다 켜면 처음 상태로 돌아갑니다.
 
 | 아이디 | 비밀번호 | 이름 | 권한 |

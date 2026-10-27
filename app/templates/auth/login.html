@@ -10,6 +10,7 @@
             {{ field("아이디", "username", required=true) }}
             {{ field("비밀번호", "password", type="password", required=true) }}
             <div class="form-actions">
+                {{ button("비밀번호를 잊으셨나요?", "secondary", href="/forgot") }}
                 {{ button("로그인", "primary", type="submit") }}
             </div>
         </form>
