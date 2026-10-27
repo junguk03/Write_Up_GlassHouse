@@ -7,6 +7,7 @@
 네 명이 모두 이 파일을 읽어 쓰므로 **구조를 바꾸지 마십시오.**
 항목을 추가해야 하면 정욱에게 말해 주십시오.
 """
+from config_flags import secret
 
 # ---------------------------------------------------------------------------
 # 사이트 공통 정보
@@ -28,11 +29,13 @@ SITE = {
 #   키   = 아이디
 #   id   = 사용자 번호.  원서의 user_id 와 짝이 맞습니다.
 #   role = applicant 또는 admin
+#
+# 소스가 공개되므로 관리자 비밀번호는 .env 의 ADMIN_PASSWORD 에서 읽습니다.
 # ---------------------------------------------------------------------------
 USERS = {
     "applicant01": {"id": 1,  "password": "test1234", "name": "이정욱",   "role": "applicant"},
     "applicant02": {"id": 7,  "password": "s3cr3t",   "name": "정민호",   "role": "applicant"},
-    "reviewer":    {"id": 99, "password": "adminpw",  "name": "심사위원", "role": "admin"},
+    "reviewer":    {"id": 99, "password": secret("ADMIN_PASSWORD"), "name": "심사위원", "role": "admin"},
 }
 
 

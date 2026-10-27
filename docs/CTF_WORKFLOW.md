@@ -3,6 +3,8 @@
 두 조로 나누어 각자 취약점을 심은 문제를 만들고, 서로 바꾸어 풀어 봅니다.
 구조는 공개된 대회 저장소(SekaiCTF)의 방식을 참고했습니다.
 
+지켜야 할 약속은 [CTF 규칙](RULES.md)에 따로 모아 두었습니다. 먼저 읽어 주십시오.
+
 ---
 
 ## 1. 원칙 — 원본은 수정하지 않습니다
@@ -47,15 +49,15 @@ challenges/easy/01-idor/
 ├── README.md            문제 설명 · 난이도 · 출제자. 공개해도 되는 내용입니다
 ├── app.py               이하는 app/ 을 복사해 취약하게 만든 소스입니다
 ├── data.py
-├── config_flags.py      .env 에서 플래그를 읽어 옵니다
+├── config_flags.py      .env 에서 플래그와 비밀번호를 읽어 옵니다
 ├── routes/
 ├── templates/
 ├── static/
 ├── uploads/
 ├── requirements.txt
-├── .env.example         플래그 변수 이름만 들어 있습니다 (실제 값 없음)
-├── .env                 실제 플래그. 깃에 올라가지 않습니다
-├── Dockerfile
+├── .env.example         변수 이름만 알려 주는 견본입니다 (실제 값 없음)
+├── .env                 실제 플래그와 비밀번호. 깃에 올라가지 않습니다
+├── Dockerfile           도커 실행용. app/ 에 있던 그대로입니다
 ├── docker-compose.yml
 ├── .dockerignore
 └── solution/            상대 조가 다 푼 뒤에 추가합니다
@@ -85,26 +87,30 @@ git pull origin develop
 git checkout -b chal/easy-01-idor
 
 mkdir -p challenges/easy/01-idor
-rsync -a --exclude venv --exclude __pycache__ --exclude .env --exclude '*.pyc' \
+rsync -a --exclude venv --exclude __pycache__ --exclude '*.pyc' \
       app/ challenges/easy/01-idor/
 ```
 
-`cp -r` 대신 `rsync` 를 쓰는 이유는 세 가지를 빼고 복사해 주기 때문입니다.
+`cp -r` 대신 `rsync` 를 쓰는 이유는 필요 없는 것을 빼고 복사해 주기 때문입니다.
 
 | 제외 | 왜 |
 |---|---|
 | `venv/` | 사람마다 다시 만드는 폴더입니다. 수십 MB 라 복사하면 무거워집니다 |
 | `__pycache__/` | 파이썬이 만든 캐시입니다 |
-| **`.env`** | **원본의 플래그가 따라가는 사고를 막습니다** |
+
+`.env` 는 **같이 복사됩니다.** 원본의 값이 그대로 따라오므로 다음 단계에서 반드시 바꿉니다.
+`app/.env` 가 없으면 먼저 `cp app/.env.example app/.env` 로 만들어 둡니다.
 
 Windows 에서 `rsync` 가 없으면 Git Bash 를 쓰거나, 탐색기로 복사한 뒤
-`venv`, `__pycache__`, `.env` 를 직접 지웁니다.
+`venv`, `__pycache__` 를 직접 지웁니다.
 
 복사한 뒤 할 일은 셋입니다.
 
-1. 취약하게 만들기 (검사하는 줄 삭제 또는 변형)
-2. 플래그 심기 (`config_flags.py` 추가 후 `data.py` 등에서 사용)
-3. `cp .env.example .env` 후 실제 플래그 적기
+1. **`.env` 바꾸기.** 플래그 값, 플래그 변수 이름, `ADMIN_PASSWORD`, `SECRET_KEY` 를
+   다른 문제와 겹치지 않게 바꿉니다([규칙 1-3](RULES.md#1-3-플래그와-변수-이름은-문제마다-다르게-합니다), [1-4](RULES.md#1-4-알면-바로-뚫리는-값도-env-로-뺍니다)).
+   `.env.example` 에도 바꾼 변수 이름을 적어 둡니다. 값은 적지 않습니다.
+2. 취약하게 만들기 (검사하는 줄 삭제 또는 변형)
+3. 플래그 심기 (`config_flags.py` 의 `flag()` 로 `.env` 의 값을 읽어 씁니다)
 
 ### 취약하게 만들기
 
@@ -134,28 +140,21 @@ return render_template("mypage/detail.html", application=row)
 
 ### 플래그 심기
 
-플래그 문자열을 코드에 직접 쓰지 않습니다. `.env` 에 두고 코드가 읽어 씁니다.
+플래그는 `.env` 에 두고 코드가 읽어 씁니다([규칙 1-2](RULES.md#1-2-플래그는-env-에만-둡니다)).
 데이터베이스를 쓰지 않으므로 별도의 초기화 스크립트는 필요 없습니다.
 
-**`config_flags.py`** — 깃에 올립니다. 플래그를 읽어 오는 도우미입니다.
+**`config_flags.py`** — 깃에 올립니다. `app/` 에 들어 있어 복사하면 따라옵니다.
 
-```python
-import os
-
-from dotenv import load_dotenv
-
-load_dotenv()
-
-
-def flag(name, default="GlassHouse{dummy_flag_not_set}"):
-    """.env 가 없어도 앱이 죽지 않도록 더미 값을 돌려줍니다."""
-    return os.environ.get(name, default)
-```
+| 함수 | 쓰는 곳 | `.env` 에 없으면 |
+|---|---|---|
+| `flag("FLAG_...")` | 플래그 | 더미 플래그를 돌려줍니다 |
+| `secret("ADMIN_PASSWORD")` | 비밀번호, `SECRET_KEY` | `None` 을 돌려줘 그 계정은 로그인되지 않습니다 |
 
 **`.env.example`** — 깃에 올립니다. 변수 이름만 알려 주는 견본입니다.
 
 ```
-SECRET_KEY=change-me-per-challenge
+SECRET_KEY=change-me
+ADMIN_PASSWORD=change-me
 FLAG_IDOR=GlassHouse{여기에_실제_플래그를_넣습니다}
 ```
 
@@ -163,6 +162,7 @@ FLAG_IDOR=GlassHouse{여기에_실제_플래그를_넣습니다}
 
 ```
 SECRET_KEY=a3f9c21b7e
+ADMIN_PASSWORD=Rv-7kq2!xm
 FLAG_IDOR=GlassHouse{0wn3rsh1p_ch3ck_m1ss1ng}
 ```
 
@@ -232,7 +232,6 @@ def notice():
 ### 한 문제에 플래그를 여러 개 두기
 
 `.env` 에 변수를 여러 개 적고 코드에서 골라 쓰면 됩니다.
-문제마다 변수 이름을 다르게 두면 같은 코드로 서로 다른 플래그를 쓸 수 있습니다.
 
 ```
 FLAG_IDOR=GlassHouse{...}
@@ -265,9 +264,6 @@ FLAG_ACCEPTED=GlassHouse{...}
 
 제공 계정: `applicant01 / test1234`
 ```
-
-> **취약점 이름을 설명에 쓰지 마십시오.** 제목에도 쓰지 않습니다.
-> 폴더 이름에는 들어가지만, 설명에는 쓰지 않습니다.
 
 ### 올리기
 
@@ -304,29 +300,40 @@ PR 을 올려 `develop` 에 병합합니다. 병합한 브랜치는 삭제합니
            서버 응답에서 진짜 플래그가 나옵니다
 ```
 
-소스를 읽는 것과 공격하는 것은 별개입니다.
+소스는 로컬에서 읽고 공격은 출제 조 서버로 보냅니다([규칙 2-2](RULES.md#2-2-공격은-출제-조-서버로-보냅니다)).
 
-| 하는 일 | 대상 |
-|---|---|
-| 소스 읽기 | 내 노트북의 `challenges/easy/01-idor/` 파일 |
-| 공격하기 | 출제 조 주소 `http://<출제조IP>:8000` |
+### 출제 조 — 서버 띄우기
 
-코드를 읽을 수 있어도 플래그는 출제 조 서버의 `.env` 에만 있으므로,
-실제로 공격에 성공해야 얻을 수 있습니다.
-로컬에서 띄우면 플래그가 `FLAG_NOT_SET` 으로 나옵니다.
+`.env` 는 문제 폴더를 만들 때 이미 복사되어 있습니다. 두 방법 중 하나로 띄웁니다.
 
-
-### 출제 조
+**파이썬으로** — venv 를 만들어 둔 경우
 
 ```bash
 cd challenges/easy/01-idor
 source venv/bin/activate
-cp .env.example .env         # 실제 플래그를 적습니다
-python app.py                # host="0.0.0.0" 으로 실행됩니다
-
-# 또는 도커로
-docker compose up --build
+python app.py                # 끄기: Ctrl+C
 ```
+
+**도커로** — venv 없이 바로. Docker Desktop 을 설치하고 켜 둔 상태여야 합니다.
+
+```bash
+cd challenges/easy/01-idor
+docker compose up --build -d     # 켜기 (백그라운드로 돕니다)
+docker compose logs -f           # 요청 기록 보기 (Ctrl+C 로 나와도 서버는 계속 돕니다)
+docker compose down              # 끄기
+```
+
+| 이럴 때 | 할 일 |
+|---|---|
+| 코드를 고쳤다 | `docker compose up --build -d` 를 다시 실행 |
+| `.env` 만 고쳤다 | `docker compose up -d` 를 다시 실행 (빌드는 필요 없습니다) |
+| `port is already allocated` | 다른 문제 서버나 `python app.py` 가 켜져 있습니다. 끄고 다시 실행 |
+| `unknown command: docker compose` | `docker-compose` (하이픈)로 바꿔 칩니다. Homebrew 로 설치하면 이렇게 됩니다 |
+
+`.env` 는 이미지 안에 들어가지 않고(`.dockerignore`), 켤 때 환경변수로만 전달됩니다.
+`docker-compose.yml` 이 `.env` 를 통째로 넘기므로 변수 이름을 바꿔도 이 파일은 고치지 않습니다.
+
+### 출제 조 — 주소 알려 주기
 
 자기 IP를 확인해 푸는 조에게 알려 줍니다.
 
@@ -375,13 +382,7 @@ Network 탭에서 주고받은 요청을 확인하는 방법도 많이 씁니다
 - macOS에서 방화벽 허용 창이 뜨면 허용을 누릅니다.
 - 학교 와이파이는 기기 간 통신을 막는 경우가 있습니다. 안 되면 휴대폰 핫스팟을 사용합니다.
 
-### 힌트 공개 순서
-
-막혔을 때 한 단계씩 엽니다.
-
-1. 취약점 분류만 알려 줍니다. (예: "접근 제어 쪽입니다")
-2. 취약한 화면을 알려 줍니다. (예: "내 원서 조회")
-3. 취약한 파일을 알려 줍니다.
+힌트는 [규칙 2-4](RULES.md#2-4-힌트는-한-단계씩-엽니다) 순서대로 엽니다.
 
 ---
 

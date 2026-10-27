@@ -55,8 +55,12 @@ Glass House 프로젝트의 공통 규칙입니다. 작업을 시작하기 전�
 app/
 ├── app.py                      앱을 만들고 routes/ 를 등록합니다. 고치지 마십시오.
 ├── data.py                     계정과 원서 데이터입니다. 전원이 같이 씁니다.
+├── config_flags.py             .env 의 플래그와 비밀번호를 읽어 옵니다.
 ├── requirements.txt            필요한 라이브러리 목록과 버전입니다.
 ├── .env.example                설정값 견본입니다. 복사해서 .env 를 만듭니다.
+├── Dockerfile                  도커로 띄울 때 씁니다. 사용법은 CTF_WORKFLOW.md 4절.
+├── docker-compose.yml
+├── .dockerignore
 │
 ├── routes/                     기능(로직)을 만드는 곳입니다. 담당자별로 한 파일씩.
 │   ├── main.py                 정욱   메인          (완성. 참고용 견본)
@@ -153,6 +157,15 @@ pip install -r requirements.txt
 `requirements.txt` 로 설치하면 네 명의 라이브러리 버전이 똑같이 맞춰집니다.
 `pip install flask` 로 직접 설치하지 마십시오.
 
+### 설정 파일 만들기 (최초 한 번)
+
+```bash
+cp .env.example .env            # Windows: copy .env.example .env
+```
+
+관리자 비밀번호와 세션 열쇠가 이 파일에 들어 있습니다.
+**이 파일이 없으면 `reviewer` 계정으로 로그인되지 않습니다.**
+
 ### 실행
 
 ```bash
@@ -164,9 +177,10 @@ python app.py
 | 주소 | 용도 |
 |---|---|
 | `http://localhost:8000/` | 메인 화면 |
-| `http://localhost:8000/dev/` | 지금까지 만들어진 화면 목록 |
-| `http://localhost:8000/dev/auth/login.html` | 특정 화면 직접 열기 |
-| `http://localhost:8000/dev/toggle-login` | 로그인 상태 전환 (네비가 바뀝니다) |
+| `http://localhost:8000/login` | 로그인. 계정은 명세서 6-4절에 있습니다 |
+
+로그인한 계정의 권한에 따라 상단 메뉴가 바뀝니다.
+관리자 화면은 `reviewer` 계정으로 로그인해야 보입니다.
 
 > **HTML 파일을 더블클릭하면 화면이 제대로 나오지 않습니다.**
 > 템플릿 문법은 Flask가 처리하는 것이므로 반드시 서버를 띄워서 확인해야 합니다.
@@ -566,7 +580,8 @@ HTML에 `name="user_id"` 로 적혀 있으면 동작하지 않으며,
 
 ## 6-4. 로그인 계정
 
-회원가입 기능은 만들지 않습니다. 아래 계정이 `app.py` 에 미리 들어 있습니다.
+회원가입 기능은 만들지 않습니다. 아래 계정이 `data.py` 에 미리 들어 있습니다.
+`reviewer` 의 비밀번호만 `.env` 의 `ADMIN_PASSWORD` 에서 읽습니다. 아래 값은 `.env.example` 의 기본값입니다.
 데이터베이스는 쓰지 않으며, 서버를 껐다 켜면 처음 상태로 돌아갑니다.
 
 | 아이디 | 비밀번호 | 이름 | 권한 |

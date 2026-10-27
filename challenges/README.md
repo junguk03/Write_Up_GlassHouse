@@ -17,18 +17,18 @@ challenges/
 
 ## 새 문제 만들기
 
-`docs/CTF_WORKFLOW.md` 를 보십시오. 요약하면 이렇습니다.
+`docs/CTF_WORKFLOW.md` 를 보십시오. 지킬 약속은 `docs/RULES.md` 에 있습니다. 요약하면 이렇습니다.
 
 ```bash
 git checkout develop && git pull origin develop
 
 mkdir -p challenges/easy/02-bac
-rsync -a --exclude venv --exclude __pycache__ --exclude .env --exclude '*.pyc' \
+rsync -a --exclude venv --exclude __pycache__ --exclude '*.pyc' \
       app/ challenges/easy/02-bac/
 
-# 1. 검사하는 줄을 지우거나 변형해 취약하게 만듭니다
-# 2. config_flags.py 를 통해 플래그를 심습니다
-# 3. cp .env.example .env 후 실제 플래그를 적습니다
+# 1. .env 의 플래그 값 · 변수 이름 · ADMIN_PASSWORD · SECRET_KEY 를 바꿉니다
+# 2. 검사하는 줄을 지우거나 변형해 취약하게 만듭니다
+# 3. config_flags.py 의 flag() 로 플래그를 심습니다
 ```
 
 `solution/` 은 상대 조가 다 푼 뒤에 추가합니다.
