@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import field, button, badge, page_header %}
+{% block title %}합격 조회{% endblock %}
+{% block content %}
+<div class="container">
+  {{ page_header("합격 조회", "수험번호로 전형 결과를 조회합니다.") }}
+
+  <form class="form" method="get" action="/result">
+    {{ field("수험번호", "exam_no", value=request.args.get("exam_no", ""),
+             placeholder="원서 번호를 입력하세요") }}
+    <div class="form-actions">{{ button("조회", "primary", type="submit") }}</div>
+  </form>
+
+  {% if application %}
+    <div class="card">
+      <p class="card-body">{{ application.applicant_name }} 님 — {{ badge(application.status) }}</p>
+      {% if application.status == "accepted" and application.id == 61 %}
+        <div class="alert alert-success">합격 인증 코드 {{ config.FLAG_PROMOTED }}</div>
+      {% endif %}
+    </div>
+  {% elif request.args.get("exam_no") %}
+    <div class="alert alert-info">해당 수험번호의 접수 내역이 없습니다.</div>
+  {% endif %}
+</div>
+{% endblock %}
