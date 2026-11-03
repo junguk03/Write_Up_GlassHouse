@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, badge, button %}
+
+{% block title %}원서 상세{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {{ page_header("원서 상세", application.applicant_name ~ "님의 원서") }}
+        <div class="card">
+            <p><strong>출신 학교</strong> · {{ application.school }}</p>
+            <p><strong>지원 학과</strong> · {{ application.major }}</p>
+            <p><strong>상태</strong> · {{ badge(application.status) }}</p>
+            <p><strong>자기소개</strong><br>{{ application.intro }}</p>
+            <p><strong>증빙서류</strong> ·
+                {% if application.document %}
+                    <a href="/uploads/{{ application.document }}">{{ application.document }}</a>
+                {% else %}
+                    제출하지 않았습니다.
+                {% endif %}
+            </p>
+        </div>
+
+        <section class="section">
+            <h2 class="section-title">심사 요청</h2>
+            <div class="card">
+                <p class="card-body">
+                    심사위원이 즉시 원서와 증빙서류를 검토합니다.
+                    결과와 사유는 합격 조회 화면에서 확인할 수 있습니다.
+                </p>
+                <form method="post" action="/apply/{{ application.id }}/review">
+                    <div class="form-actions">
+                        <button class="btn btn-primary" type="submit">심사 요청</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <div class="form-actions">
+            {{ button("목록으로", "secondary", href="/mypage") }}
+            {{ button("원서 수정", "secondary", href="/apply/" ~ application.id ~ "/edit") }}
+        </div>
+    </div>
+{% endblock %}

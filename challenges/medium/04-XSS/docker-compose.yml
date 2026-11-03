@@ -1,0 +1,26 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8005:8005"
+    env_file: .env
+    environment:
+      BOT_URL: http://bot:5000/visit
+    networks:
+      - front
+      - back
+    restart: unless-stopped
+
+  bot:
+    build: ./bot
+    env_file: .env
+    environment:
+      TARGET_URL: http://web:8005
+    networks:
+      - back
+    restart: unless-stopped
+
+networks:
+  front:
+  back:
+    internal: true

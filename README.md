@@ -36,9 +36,12 @@ python app.py                 # http://localhost:8000
 
 ## 문제 목록
 
-| 난이도 | 문제 | 취약점 | 출제 | 풀이 |
+| 난이도 | 문제 | 출제 | 포트 | 풀이 |
 |---|---|---|---|---|
-| Easy | [01-idor](challenges/easy/01-idor) | IDOR | (예시) | 미작성 |
+| Easy | [02-idor](challenges/easy/02-idor) | A조 | 8001 | 미작성 |
+| Easy | [02-portal](challenges/easy/02-portal) | B조 | 8002 | 미작성 |
+| Medium | [03-bac](challenges/medium/03-bac) | A조 | 8003 | 미작성 |
+| Medium | [03-mass_assignment](challenges/medium/03-mass_assignment) | B조 | 8004 | 미작성 |
 
 전체 목록은 [challenges/README.md](challenges/README.md) 에 있습니다.
 
