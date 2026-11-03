@@ -39,7 +39,7 @@ USERS = {
     "applicant02": {"id": 7,  "password": "s3cr3t",   "name": "정민호",   "role": "applicant",
                     "email": "applicant02@example.com"},
     "reviewer":    {"id": 99, "password": secret("ADMIN_PASSWORD"), "name": "심사위원", "role": "admin",
-                    "email": "reviewer@glasshouse.ac.kr"},
+                    "email": secret("ADMIN_EMAIL")},
     "subAdmin":    {"id": 50, "password": "subpwd", "name": "부관리자", "role": "admin",
                     }
 }
