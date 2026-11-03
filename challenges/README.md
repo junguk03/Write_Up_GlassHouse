@@ -1,6 +1,6 @@
 # 문제 모음
 
-난이도별로 폴더를 나눕니다. 폴더 이름은 `<번호>-<짧은이름>` 입니다.
+난이도별로 폴더를 나눕니다. 폴더 이름은 `<주차>-<짧은이름>` 입니다.
 
 ```
 challenges/
@@ -11,9 +11,12 @@ challenges/
 
 ## 문제 목록
 
-| 난이도 | 폴더 | 취약점 | 출제 | 풀이 |
+| 난이도 | 문제 | 출제 | 포트 | 풀이 |
 |---|---|---|---|---|
-| Easy | [01-idor](easy/01-idor) | IDOR | (예시) | 미작성 |
+| Easy | [02-idor](easy/02-idor) | A조 | 8001 | 미작성 |
+| Easy | [02-portal](easy/02-portal) | B조 | 8002 | 미작성 |
+| Medium | [03-bac](medium/03-bac) | A조 | 8003 | 미작성 |
+| Medium | [03-mass_assignment](medium/03-mass_assignment) | B조 | 8004 | 미작성 |
 
 ## 새 문제 만들기
 

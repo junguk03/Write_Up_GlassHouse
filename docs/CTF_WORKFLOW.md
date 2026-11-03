@@ -13,16 +13,16 @@
 app/                              서비스 본체입니다. 정상 동작하며 취약점이 없습니다.
                                   여기는 아무도 수정하지 않습니다.
 
-challenges/easy/01-idor/          app/ 을 복사한 사본입니다. A조가 여기서 취약하게 만듭니다.
-challenges/easy/02-upload/        또 다른 사본입니다. B조가 여기서 취약하게 만듭니다.
+challenges/easy/04-sample/          app/ 을 복사한 사본입니다. A조가 여기서 취약하게 만듭니다.
+challenges/easy/04-upload/        또 다른 사본입니다. B조가 여기서 취약하게 만듭니다.
 ```
 
 두 조가 똑같이 `routes/mypage.py` 를 수정해도 **충돌하지 않습니다.**
 경로가 다르면 깃에게는 완전히 다른 파일이기 때문입니다.
 
 ```
-challenges/easy/01-idor/routes/mypage.py      A조
-challenges/easy/02-upload/routes/mypage.py    B조
+challenges/easy/04-sample/routes/mypage.py      A조
+challenges/easy/04-upload/routes/mypage.py    B조
                          ↑ 경로가 다르므로 충돌이 발생할 수 없습니다
 ```
 
@@ -45,7 +45,7 @@ challenges/
 ├── medium/
 └── hard/
 
-challenges/easy/01-idor/
+challenges/easy/04-sample/
 ├── README.md            문제 설명 · 난이도 · 출제자. 공개해도 되는 내용입니다
 ├── app.py               이하는 app/ 을 복사해 취약하게 만든 소스입니다
 ├── data.py
@@ -69,8 +69,8 @@ challenges/easy/01-idor/
 풀이를 브랜치에 숨길 필요 없이 **폴더를 나중에 더하기만** 하면 되므로,
 문제는 만들자마자 `develop` 에 병합해도 답이 새지 않습니다.
 
-난이도 폴더 아래에 `<번호>-<짧은이름>` 으로 만듭니다.
-예: `easy/01-idor`, `easy/02-upload`, `medium/01-xss-to-bac`
+난이도 폴더 아래에 `<주차>-<짧은이름>` 으로 만듭니다.
+예: `easy/04-sample`, `easy/04-upload`, `medium/05-xss-to-bac`
 
 ---
 
@@ -84,11 +84,11 @@ challenges/easy/01-idor/
 ```bash
 git checkout develop
 git pull origin develop
-git checkout -b chal/easy-01-idor
+git checkout -b chal/easy-04-sample
 
-mkdir -p challenges/easy/01-idor
+mkdir -p challenges/easy/04-sample
 rsync -a --exclude venv --exclude __pycache__ --exclude '*.pyc' \
-      app/ challenges/easy/01-idor/
+      app/ challenges/easy/04-sample/
 ```
 
 `cp -r` 대신 `rsync` 를 쓰는 이유는 필요 없는 것을 빼고 복사해 주기 때문입니다.
@@ -111,6 +111,19 @@ Windows 에서 `rsync` 가 없으면 Git Bash 를 쓰거나, 탐색기로 복사
    `.env.example` 에도 바꾼 변수 이름을 적어 둡니다. 값은 적지 않습니다.
 2. 취약하게 만들기 (검사하는 줄 삭제 또는 변형)
 3. 플래그 심기 (`config_flags.py` 의 `flag()` 로 `.env` 의 값을 읽어 씁니다)
+4. **포트 정하기.** 한 서버에 모든 문제를 함께 띄우므로 문제마다 포트가 달라야 합니다.
+   지금까지 쓴 번호 다음 번호를 씁니다. 두 곳을 같은 번호로 맞춥니다.
+   - `app.py` 맨 아래 `app.run(..., port=8005, debug=False)`
+   - `docker-compose.yml` 의 `ports: - "8005:8005"` (앞이 서버 바깥 포트, 뒤가 컨테이너 안 포트)
+   - `Dockerfile` 의 `EXPOSE 8005`
+5. **주석 지우기.** 개발용 설명 주석은 풀이 힌트가 됩니다. 꼭 필요한 짧은 주석만 남깁니다.
+
+| 문제 | 포트 |
+|---|---|
+| easy/02-idor | 8001 |
+| easy/02-portal | 8002 |
+| medium/03-bac | 8003 |
+| medium/03-mass_assignment | 8004 |
 
 ### 취약하게 만들기
 
@@ -124,7 +137,7 @@ if row["user_id"] != session["user_id"]:
     abort(403)
 return render_template("mypage/detail.html", application=row)
 
-# 취약 (challenges/easy/01-idor/routes/mypage.py)
+# 취약 (challenges/easy/04-sample/routes/mypage.py)
 row = db.execute("SELECT * FROM applications WHERE id=?", (app_id,)).fetchone()
 return render_template("mypage/detail.html", application=row)
 ```
@@ -244,17 +257,17 @@ FLAG_ACCEPTED=GlassHouse{...}
 
 ### 문제 설명 작성
 
-`challenges/easy/01-idor/README.md` 를 만듭니다.
+`challenges/easy/04-sample/README.md` 를 만듭니다.
 
 ```markdown
-# easy-01 — 접수 내역 조회
+# easy-04 — 문제 제목
 
 |  |  |
 |---|---|
 | 난이도 | Easy |
 | 분류 | Web |
 | 출제 | A조 (정욱, 성원) |
-| 접속 | http://192.168.0.17:8000 |
+| 접속 | http://192.168.0.17:8005 |
 | 플래그 형식 | `GlassHouse{...}` |
 
 ## 설명
@@ -273,12 +286,12 @@ FLAG_ACCEPTED=GlassHouse{...}
 ```bash
 git checkout develop
 git pull origin develop
-git checkout -b chal/easy-01-idor
+git checkout -b chal/easy-04-sample
 
-git add challenges/easy/01-idor
+git add challenges/easy/04-sample
 git status                   # .env 가 보이면 멈춥니다
-git commit -m "chal: add easy-01 idor challenge"
-git push -u origin chal/easy-01-idor
+git commit -m "chal: add easy-04 sample challenge"
+git push -u origin chal/easy-04-sample
 ```
 
 PR 을 올려 `develop` 에 병합합니다. 병합한 브랜치는 삭제합니다.
@@ -309,7 +322,7 @@ PR 을 올려 `develop` 에 병합합니다. 병합한 브랜치는 삭제합니
 **파이썬으로** — venv 를 만들어 둔 경우
 
 ```bash
-cd challenges/easy/01-idor
+cd challenges/easy/04-sample
 source venv/bin/activate
 python app.py                # 끄기: Ctrl+C
 ```
@@ -317,7 +330,7 @@ python app.py                # 끄기: Ctrl+C
 **도커로** — venv 없이 바로. Docker Desktop 을 설치하고 켜 둔 상태여야 합니다.
 
 ```bash
-cd challenges/easy/01-idor
+cd challenges/easy/04-sample
 docker compose up --build -d     # 켜기 (백그라운드로 돕니다)
 docker compose logs -f           # 요청 기록 보기 (Ctrl+C 로 나와도 서버는 계속 돕니다)
 docker compose down              # 끄기
@@ -344,12 +357,12 @@ ipconfig                     # Windows (IPv4 주소 항목)
 
 > **IP 를 알려 주지 않으면 푸는 조가 접속할 수 없습니다.**
 > `localhost` 는 "지금 이 컴퓨터" 라는 뜻이라, 노트북마다 자기 자신을 가리킵니다.
-> 푸는 조가 `localhost:8000` 을 열면 **자기 노트북의 서버** 가 뜹니다.
+> 푸는 조가 `localhost:8005` 을 열면 **자기 노트북의 서버** 가 뜹니다.
 >
 > | 누가 | 주소 |
 > |---|---|
-> | 서버를 띄운 사람 본인 | `http://localhost:8000` |
-> | 같은 와이파이의 다른 사람 | `http://192.168.0.17:8000` |
+> | 서버를 띄운 사람 본인 | `http://localhost:8005` |
+> | 같은 와이파이의 다른 사람 | `http://192.168.0.17:8005` |
 >
 > `app.py` 의 `host="0.0.0.0"` 은 "모든 네트워크 통로로 요청을 받겠다" 는 뜻입니다.
 > 이것이 없으면 자기 컴퓨터에서만 열립니다.
@@ -361,16 +374,16 @@ git checkout develop
 git pull origin develop
 ```
 
-`challenges/easy/01-idor/` 가 생깁니다. 이 폴더의 파일을 열어 읽습니다.
+`challenges/easy/04-sample/` 가 생깁니다. 이 폴더의 파일을 열어 읽습니다.
 브랜치를 따로 받을 필요가 없습니다.
 
 공격은 출제 조 주소로 보냅니다.
 
 ```bash
-curl -c cookie.txt -X POST http://192.168.0.17:8000/login \
+curl -c cookie.txt -X POST http://192.168.0.17:8005/login \
      -d "username=applicant01&password=test1234"
 
-curl -b cookie.txt http://192.168.0.17:8000/applications/43
+curl -b cookie.txt http://192.168.0.17:8005/applications/43
 ```
 
 브라우저 개발자 도구(F12)의 Application 탭에서 쿠키를 직접 고치거나,
@@ -394,7 +407,7 @@ Network 탭에서 주고받은 요청을 확인하는 방법도 많이 씁니다
 ### writeup.md 양식
 
 ```markdown
-# easy-01 — IDOR
+# easy-04 — 문제 제목
 
 |  |  |
 |---|---|
@@ -430,7 +443,7 @@ Network 탭에서 주고받은 요청을 확인하는 방법도 많이 씁니다
 ```python
 import re, sys, requests
 
-BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8000"
+BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8005"
 s = requests.Session()
 s.post(f"{BASE}/login", data={"username": "applicant01", "password": "test1234"})
 

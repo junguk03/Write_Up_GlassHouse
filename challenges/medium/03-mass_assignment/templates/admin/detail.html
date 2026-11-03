@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, badge, button %}
+
+{% block title %}원서 상세{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  {{ page_header("원서 상세", "지원자가 제출한 원서를 확인하세요.") }}
+
+  <section class="section">
+    <h2 class="section-title">지원자 정보</h2>
+
+    <div class="table-wrap">
+      <table class="table">
+        <tbody>
+          <tr>
+            <th scope="row">원서 번호</th>
+            <td>{{ application.id }}</td>
+          </tr>
+          <tr>
+            <th scope="row">지원자 이름</th>
+            <td>{{ application.applicant_name }}</td>
+          </tr>
+          <tr>
+            <th scope="row">출신 학교</th>
+            <td>{{ application.school }}</td>
+          </tr>
+          <tr>
+            <th scope="row">지원 학과</th>
+            <td>{{ application.major }}</td>
+          </tr>
+          <tr>
+            <th scope="row">현재 상태</th>
+            <td>{{ badge(application.status) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">자기소개</h2>
+    <div class="card">
+      <p class="card-body">{{ application.intro }}</p>
+    </div>
+  </section>
+
+  <section class="section">
+  <h2 class="section-title">심사 결과 처리</h2>
+
+  <form class="form"
+        method="post"
+        action="/admin/applications/{{ application.id }}/decide">
+
+    <p>원서를 검토한 후 결과를 선택해주세요.</p>
+
+    <div class="form-actions">
+      <button class="btn btn-primary"
+              type="submit"
+              name="decision"
+              value="accepted">
+        합격
+      </button>
+
+      <button class="btn btn-danger"
+              type="submit"
+              name="decision"
+              value="rejected">
+        불합격
+      </button>
+    </div>
+
+  </form>
+</section>
+
+  <div class="form-actions">
+    {{ button("목록으로", "secondary", href="/admin") }}
+  </div>
+
+</div>
+{% endblock %}

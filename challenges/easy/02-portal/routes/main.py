@@ -1,17 +1,7 @@
-"""
-메인 화면  (담당: 정욱)
-
-이 파일은 완성되어 있습니다. 다른 파일을 만들 때 모양을 참고하십시오.
-
-Blueprint 는 라우트를 파일별로 나누기 위한 Flask 기능입니다.
-파일마다 Blueprint 를 하나 만들고, app.py 가 그것들을 모아서 등록합니다.
-그래서 네 명이 서로 다른 파일을 고쳐도 충돌하지 않습니다.
-"""
 from flask import Blueprint, render_template
 
 import data
 
-# 첫 번째 인자가 이름입니다. url_for("main.index") 처럼 쓸 때 앞에 붙습니다.
 bp = Blueprint("main", __name__)
 
 
@@ -33,5 +23,4 @@ SCHEDULE = [
 
 @bp.get("/")
 def index():
-    # render_template(템플릿 파일, 템플릿에 넘길 값들)
     return render_template("main.html", notices=NOTICES, schedule=SCHEDULE)
