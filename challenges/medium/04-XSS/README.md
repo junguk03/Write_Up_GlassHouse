@@ -42,7 +42,7 @@ docker-compose up --build -d
 
 ## 출제자 확인 사항
 
-- `.env` 의 `FLAG_XSS` 값이 컨테이너 시작 시 `internal/waitlist.txt` 로 기록됩니다.
+- `.env` 의 `FLAG_XSS` 값이 앱이 켜질 때 `internal/waitlist.txt` 로 기록됩니다. 플래그를 바꾸면 앱을 다시 켜면 됩니다.
 - `ADMIN_PASSWORD` 는 `web` 과 `bot` 이 함께 씁니다. 두 서비스 모두 같은 `.env` 를 읽습니다.
 - 참가자가 `applicant01` 을 공유하면 서로의 원서와 심사 결과가 보입니다.
   대회에서는 계정을 나누거나 주기적으로 컨테이너를 재시작하십시오.
