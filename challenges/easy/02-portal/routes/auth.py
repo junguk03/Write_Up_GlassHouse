@@ -29,7 +29,7 @@ def login():
         session["user_id"] = user["id"]
         session["role"] = user["role"]
         resp = make_response(redirect(url_for("mypage.list_applications")))
-        resp.set_cookie("auth", make_auth_cookie(user))
+        resp.set_cookie("gh_8002_auth", make_auth_cookie(user))
         return resp
 
     return render_template("auth/login.html")
@@ -39,7 +39,7 @@ def login():
 def logout():
     session.clear()
     resp = make_response(redirect(url_for("main.index")))
-    resp.delete_cookie("auth")
+    resp.delete_cookie("gh_8002_auth")
     return resp
 
 

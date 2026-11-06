@@ -10,7 +10,7 @@ bp = Blueprint("admin", __name__)
 
 
 def require_admin():
-    raw = request.cookies.get("auth")
+    raw = request.cookies.get("gh_8002_auth")
     if not raw:
         return redirect(url_for("auth.login"))
 

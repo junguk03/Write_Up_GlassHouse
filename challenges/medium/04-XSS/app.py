@@ -8,6 +8,7 @@ from routes import admin, apply, auth, files, main, mypage
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = secret("SECRET_KEY") or os.urandom(16).hex()
+app.config["SESSION_COOKIE_NAME"] = "gh_8005"
 app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
 app.register_blueprint(main.bp)

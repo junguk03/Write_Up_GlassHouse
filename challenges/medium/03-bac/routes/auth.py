@@ -9,6 +9,7 @@ bp = Blueprint("auth", __name__)
 
 RESET_CODES = {}
 MAX_TRIES = 5
+PROTECTED = {"applicant01", "applicant02", "subAdmin"}
 
 
 @bp.route("/login", methods=["GET", "POST"])
@@ -48,7 +49,7 @@ def forgot():
         email = request.form.get("email", "")
         user = data.USERS.get(username)
 
-        if user is None or user["email"] != email:
+        if user is None or username in PROTECTED or user["email"] != email:
             flash("아이디 또는 이메일이 올바르지 않습니다.", "error")
             return render_template("auth/forgot.html")
 

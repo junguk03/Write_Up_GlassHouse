@@ -21,6 +21,9 @@ instance/
 **/uploads/*
 !**/uploads/.gitkeep
 
+# 참가자에게 나눠 줄 문제 zip
+dist/
+
 # ===== 파이썬 =====
 venv/
 .venv/
