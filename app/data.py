@@ -7,6 +7,8 @@
 네 명이 모두 이 파일을 읽어 쓰므로 **구조를 바꾸지 마십시오.**
 항목을 추가해야 하면 정욱에게 말해 주십시오.
 """
+import itertools
+
 from config_flags import secret
 
 # ---------------------------------------------------------------------------
@@ -25,10 +27,10 @@ SITE = {
 
 
 # ---------------------------------------------------------------------------
-# 로그인 계정  (회원가입 없이 미리 정해 둔 계정만 사용합니다)
+# 로그인 계정  (미리 정해 둔 계정 + 회원가입으로 만든 계정)
 #   키   = 아이디
 #   id   = 사용자 번호.  원서의 user_id 와 짝이 맞습니다.
-#   role = applicant 또는 admin
+#   role = applicant 또는 admin.  회원가입 계정은 항상 applicant 입니다.
 #   email = 비밀번호 찾기에 씁니다
 #
 # 소스가 공개되므로 관리자 비밀번호와 이메일은 .env 에서 읽습니다.
@@ -88,3 +90,13 @@ def find_user_by_id(user_id):
 def next_application_id():
     """새 원서에 쓸 번호를 돌려줍니다."""
     return max(APPLICATIONS) + 1 if APPLICATIONS else 1
+
+
+# 회원가입 계정 번호는 100 부터 씁니다. 미리 정해 둔 계정(1, 7, 99)과 겹치지 않습니다.
+# count() 는 동시에 가입해도 같은 번호를 두 번 주지 않습니다.
+_user_ids = itertools.count(100)
+
+
+def next_user_id():
+    """회원가입한 새 계정에 쓸 번호를 돌려줍니다."""
+    return next(_user_ids)
