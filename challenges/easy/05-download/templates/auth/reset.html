@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, field, button %}
+
+{% block title %}새 비밀번호{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {{ page_header("새 비밀번호", "앞으로 사용할 비밀번호를 입력하세요.") }}
+        <form class="form" method="post" action="/forgot/reset">
+            {{ field("새 비밀번호", "password", type="password", required=true) }}
+            {{ field("새 비밀번호 확인", "password_confirm", type="password", required=true) }}
+            <div class="form-actions">
+                {{ button("취소", "secondary", href="/login") }}
+                {{ button("변경하기", "primary", type="submit") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}
