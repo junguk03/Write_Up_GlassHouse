@@ -40,6 +40,8 @@ python app.py                 # http://localhost:8000
 |---|---|---|---|---|
 | Easy | [02-idor](challenges/easy/02-idor) | A조 | 8001 | 미작성 |
 | Easy | [02-portal](challenges/easy/02-portal) | B조 | 8002 | 미작성 |
+| Easy | [03-sqli](challenges/easy/03-sqli) | B조 | 8007 | 미작성 |
+| Easy | [05-download](challenges/easy/05-download) | B조 | 8008 | 미작성 |
 | Medium | [03-bac](challenges/medium/03-bac) | A조 | 8003 | 미작성 |
 | Medium | [03-mass_assignment](challenges/medium/03-mass_assignment) | B조 | 8004 | 미작성 |
 | Medium | [04-SSTI](challenges/medium/04-SSTI) | B조 | 8006 | 미작성 |

@@ -18,7 +18,7 @@ Glass House - 원서 접수 시스템
   routes/admin.py    종성   심사위원 포털
 
 화면 확인용 주소
-    http://localhost:8000/                      메인
+    http://localhost:8007/                      메인
 
 주의
     HTML 파일을 더블클릭하면 화면이 제대로 나오지 않습니다.
@@ -39,6 +39,10 @@ app = Flask(__name__)
 # 소스가 공개되므로 .env 에서 읽습니다. 이 값을 알면 세션을 위조할 수 있습니다.
 # .env 에 없으면 켤 때마다 무작위 값이 쓰여, 서버를 다시 켜면 로그인이 풀립니다.
 app.config["SECRET_KEY"] = secret("SECRET_KEY") or os.urandom(16).hex()
+
+# 쿠키는 포트를 구분하지 않습니다. 같은 서버에 뜬 다른 문제와 세션이 섞이지 않도록
+# 문제마다 쿠키 이름을 다르게 둡니다.
+app.config["SESSION_COOKIE_NAME"] = "gh_8007"
 app.config["FLAG_SQLI"] = flag("FLAG_SQLI")
 
 # 담당자별 라우트를 등록합니다.
@@ -92,4 +96,4 @@ a{{color:#0b63ce}}</style></head>
 
 if __name__ == "__main__":
     # host="0.0.0.0" 이면 같은 와이파이의 다른 노트북에서도 접속할 수 있습니다.
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    app.run(host="0.0.0.0", port=8007, debug=False)

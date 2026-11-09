@@ -10,6 +10,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = secret("SECRET_KEY") or os.urandom(16).hex()
+app.config["SESSION_COOKIE_NAME"] = "gh_8008"
 
 # 제출 서류 보관함을 준비한다.
 # 지원자가 올린 증빙서류는 보관함(uploads/)에, 내부 파일은 보관함 바깥(internal/)에 둔다.
@@ -37,4 +38,4 @@ def inject_globals():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8006, debug=False)
+    app.run(host="0.0.0.0", port=8008, debug=False)
