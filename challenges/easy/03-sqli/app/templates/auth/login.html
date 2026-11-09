@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, field, button %}
+
+{% block title %}로그인{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {{ page_header("로그인", "아이디와 비밀번호를 입력하세요.") }}
+        <form class="form" method="post" action="/login">
+            {{ field("아이디", "username", required=true) }}
+            {{ field("비밀번호", "password", type="password", required=true) }}
+            <div class="form-actions">
+                {{ button("비밀번호를 잊으셨나요?", "secondary", href="/forgot") }}
+                {{ button("로그인", "primary", type="submit") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}
