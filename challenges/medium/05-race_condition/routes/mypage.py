@@ -9,8 +9,8 @@
     abort(403)               권한 없음
     abort(404)               없는 자원
 """
-from flask import (Blueprint, abort, redirect, render_template, session,
-                   url_for)
+from flask import (Blueprint, abort, current_app, redirect, render_template,
+                   session, url_for)
 
 import data
 
@@ -29,8 +29,10 @@ def list_applications():
                     if a ["user_id"] == user_id]
 
     # TODO 3. 모은 목록을 applications 라는 이름으로 템플릿에 넘긴다
-
-    return render_template("mypage/list.html", applications=applications)
+    #         원서가 2장 이상이면(경쟁 조건 성공) 플래그를 함께 넘긴다.
+    #         applications 는 "내 원서" 만 모은 목록이라 남의 플래그는 보이지 않는다.
+    flag = current_app.config["FLAG_RACE"] if len(applications) >= 2 else None
+    return render_template("mypage/list.html", applications=applications, flag=flag)
 
 
 @bp.get("/applications/<int:app_id>")
