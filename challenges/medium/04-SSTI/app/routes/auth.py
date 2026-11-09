@@ -79,7 +79,9 @@ def forgot():
         email = request.form.get("email", "")
         user = data.USERS.get(username)
 
-        if user is None or user["email"] != email:
+        # 심사위원 계정은 비밀번호 찾기를 막습니다. 누가 바꿔 버리면 다른 참가자도 쓸 수 없습니다.
+        # 실패 문구는 아이디가 틀렸을 때와 같게 두어 계정이 있는지 드러내지 않습니다.
+        if user is None or user["role"] == "admin" or user["email"] != email:
             flash("아이디 또는 이메일이 올바르지 않습니다.", "error")
             return render_template("auth/forgot.html")
 

@@ -17,6 +17,8 @@ challenges/
 | Easy | [02-portal](easy/02-portal) | B조 | 8002 | 미작성 |
 | Medium | [03-bac](medium/03-bac) | A조 | 8003 | 미작성 |
 | Medium | [03-mass_assignment](medium/03-mass_assignment) | B조 | 8004 | 미작성 |
+| Medium | [04-SSTI](medium/04-SSTI) | B조 | 8006 | 미작성 |
+| Medium | [05-race_condition](medium/05-race_condition) | A조 | 8005 | 미작성 |
 
 ## 새 문제 만들기
 

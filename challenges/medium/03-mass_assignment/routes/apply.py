@@ -1,5 +1,5 @@
-from flask import (Blueprint, abort, flash, redirect, render_template,
-                   request, session, url_for)
+from flask import (Blueprint, abort, current_app, flash, redirect,
+                   render_template, request, session, url_for)
 
 import data
 
@@ -30,7 +30,7 @@ def create():
             "school": school,
             "major": major,
             "intro": intro,
-            "status": "submitted",
+            "status": "rejected",
         }
 
         flash("원서가 제출되었습니다.", "success")
@@ -49,11 +49,14 @@ def edit(app_id):
     application = data.APPLICATIONS.get(app_id)
     if application is None:
         abort(404)
+    if application["user_id"] != user["id"]:
+        abort(403)
 
     if request.method == "POST":
-
         for key in request.form:
             application[key] = request.form[key]
+        if application["status"] == "accepted":
+            flash("합격 인증 코드 " + current_app.config["FLAG_PROMOTED"], "success")
         return redirect(url_for("mypage.list_applications"))
 
     return render_template("apply/form.html", application=application)

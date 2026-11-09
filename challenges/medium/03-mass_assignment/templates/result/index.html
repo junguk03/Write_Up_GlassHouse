@@ -14,9 +14,6 @@
   {% if application %}
     <div class="card">
       <p class="card-body">{{ application.applicant_name }} 님 — {{ badge(application.status) }}</p>
-      {% if application.status == "accepted" and application.id == 61 %}
-        <div class="alert alert-success">합격 인증 코드 {{ config.FLAG_PROMOTED }}</div>
-      {% endif %}
     </div>
   {% elif request.args.get("exam_no") %}
     <div class="alert alert-info">해당 수험번호의 접수 내역이 없습니다.</div>

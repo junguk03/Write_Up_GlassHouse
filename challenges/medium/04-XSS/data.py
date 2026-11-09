@@ -40,7 +40,7 @@ APPLICATIONS = {
     43: {
         "id": 43, "user_id": 7, "applicant_name": "정민호",
         "school": "미러고등학교", "major": "정보보호학과",
-        "intro": "다른 사람의 원서입니다. applicant01 에게는 보이면 안 됩니다.",
+        "intro": "정보보호 동아리에서 웹 해킹을 공부하고 있습니다.",
         "status": "submitted",
         "document": None, "reason": "",
     },

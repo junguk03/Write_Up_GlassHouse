@@ -8,6 +8,7 @@ from routes import admin, apply, auth, main, mypage
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = secret("SECRET_KEY") or os.urandom(16).hex()
+app.config["SESSION_COOKIE_NAME"] = "gh_8003"
 app.config["FLAG_TAKEOVER"] = flag("FLAG_TAKEOVER")
 
 app.register_blueprint(main.bp)
