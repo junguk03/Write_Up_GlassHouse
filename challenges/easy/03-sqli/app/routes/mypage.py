@@ -45,7 +45,6 @@ def detail(app_id):
         abort(404)
 
     # TODO 3. 그 원서의 user_id 가 지금 로그인한 사람과 다르면 abort(403)
-    #         ← 이 검사를 빼면 IDOR 취약점이 됩니다. 지금은 넣어 둡니다.
     if application["user_id"] != user_id:
         abort(403)
 

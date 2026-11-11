@@ -21,14 +21,8 @@ bp = Blueprint("apply", __name__)
 
 
 def already_applied(user_id):
-    """중복 지원 조회. 입학처 시스템에 묻는 데 시간이 걸린다는 설정입니다.
-
-    확인(any) 과 돌려주기(return) 사이에 time.sleep 으로 틈이 생깁니다.
-    동시에 들어온 두 요청이 모두 "아직 원서 없음" 을 본 채로 기다렸다가,
-    둘 다 통과해 원서를 저장하면 원서가 2장이 됩니다. (경쟁 조건)
-    """
+    """중복 지원 조회. 입학처 시스템에 묻는 데 시간이 걸린다는 설정입니다."""
     applied = any(a["user_id"] == user_id for a in data.APPLICATIONS.values())
-    # 확인은 이미 끝났고, 결과를 돌려주기 전까지 틈이 생김
     time.sleep(0.3)
     return applied
 

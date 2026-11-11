@@ -1,6 +1,5 @@
 """
 로그인용 사용자 조회 (SQLite).
-로그인 쿼리에 입력을 그대로 결합해 SQL Injection 취약점을 둔다.
 """
 import sqlite3
 
@@ -21,7 +20,6 @@ def vulnerable_login(username, password):
             (u["id"], uname, u["password"], u["name"], u["role"], u.get("email", "")),
         )
 
-    # ⚠️ 취약점: 입력을 쿼리 문자열에 그대로 끼워 넣음 (SQL Injection)
     query = (
         "SELECT id, username, name, role FROM users "
         f"WHERE username = '{username}' AND password = '{password}'"
