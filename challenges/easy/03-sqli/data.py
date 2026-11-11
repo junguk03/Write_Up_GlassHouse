@@ -27,7 +27,7 @@ SITE = {
 
 
 # ---------------------------------------------------------------------------
-# 로그인 계정  (미리 정해 둔 계정 + 회원가입으로 만든 계정)
+# 로그인 계정  (심사위원 + 회원가입으로 만든 계정)
 #   키   = 아이디
 #   id   = 사용자 번호.  원서의 user_id 와 짝이 맞습니다.
 #   role = applicant 또는 admin.  회원가입 계정은 항상 applicant 입니다.
@@ -36,11 +36,7 @@ SITE = {
 # 소스가 공개되므로 관리자 비밀번호와 이메일은 .env 에서 읽습니다.
 # ---------------------------------------------------------------------------
 USERS = {
-    "applicant01": {"id": 1,  "password": "test1234", "name": "이정욱",   "role": "applicant",
-                    "email": "applicant01@example.com"},
-    "applicant02": {"id": 7,  "password": "s3cr3t",   "name": "정민호",   "role": "applicant",
-                    "email": "applicant02@example.com"},
-    "reviewer":    {"id": 99, "password": secret("ADMIN_PASSWORD"), "name": "심사위원", "role": "admin",
+    "reviewer": {"id": 99, "password": secret("ADMIN_PASSWORD"), "name": "심사위원", "role": "admin",
                     "email": secret("ADMIN_EMAIL")},
 }
 
@@ -54,26 +50,7 @@ USERS = {
 #   intro           자기소개
 #   status          draft / submitted / reviewing / accepted / rejected
 # ---------------------------------------------------------------------------
-APPLICATIONS = {
-    41: {
-        "id": 41, "user_id": 1, "applicant_name": "이정욱",
-        "school": "글래스고등학교", "major": "정보보호학과",
-        "intro": "보안에 관심이 많아 3년간 동아리에서 활동했습니다.",
-        "status": "submitted",
-    },
-    42: {
-        "id": 42, "user_id": 1, "applicant_name": "이정욱",
-        "school": "하우스고등학교", "major": "컴퓨터공학과",
-        "intro": "웹 서비스를 직접 만들어 본 경험이 있습니다.",
-        "status": "draft",
-    },
-    43: {
-        "id": 43, "user_id": 7, "applicant_name": "정민호",
-        "school": "미러고등학교", "major": "정보보호학과",
-        "intro": "다른 사람의 원서입니다. applicant01 에게는 보이면 안 됩니다.",
-        "status": "submitted",
-    },
-}
+APPLICATIONS = {}
 
 
 # ---------------------------------------------------------------------------
@@ -92,7 +69,7 @@ def next_application_id():
     return max(APPLICATIONS) + 1 if APPLICATIONS else 1
 
 
-# 회원가입 계정 번호는 100 부터 씁니다. 미리 정해 둔 계정(1, 7, 99)과 겹치지 않습니다.
+# 회원가입 계정 번호는 100 부터 씁니다. 심사위원(99)과 겹치지 않습니다.
 # count() 는 동시에 가입해도 같은 번호를 두 번 주지 않습니다.
 _user_ids = itertools.count(100)
 

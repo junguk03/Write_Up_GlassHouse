@@ -482,7 +482,7 @@ venv/          가상환경
 | `TemplateSyntaxError` | `{% endblock %}` 등을 빠뜨림 | 여는 태그와 닫는 태그 짝 확인 |
 | 한글이 깨짐 | 파일 인코딩 | 에디터에서 UTF-8로 저장 |
 | 수정했는데 그대로 | 브라우저 캐시 | 강력 새로고침 (Cmd/Ctrl + Shift + R) |
-| `Address already in use` | 다른 프로그램이 그 포트를 쓰는 중 | `app.py` 맨 아래 `port=8000` 을 8001 등으로 바꾸기 |
+| `Address already in use` | 다른 프로그램이 그 포트를 쓰는 중 | `app.py` 맨 아래 `port=8000` 을 비어 있는 번호로 바꾸기 (문제들이 8001~8009 를 씁니다) |
 
 막히면 30분 이상 혼자 붙잡지 말고 **오류 메시지 전문을 복사해서** 단톡에 올려 주십시오.
 스크린샷보다 텍스트가 검색도 되고 빠릅니다.
@@ -516,7 +516,7 @@ venv/          가상환경
 | `/admin` | GET | 지원자 목록 | 종성 | 화면 + 기능 |
 | `/admin/applications/<id>` | GET | 원서 상세 (심사) | 종성 | 화면 + 기능 |
 | `/admin/applications/<id>/decide` | POST | 합격 · 불합격 처리 | 종성 | 화면 + 기능 |
-| `/signup` | GET | 회원가입 | 성원 | **화면만** |
+| `/signup` | GET, POST | 회원가입 | 성원 | 화면 + 기능 |
 | `/apply/<id>/edit` | GET | 원서 수정 | 수하 | **화면만** |
 | `/download` | GET | 첨부파일 다운로드 | 수하 | **화면만** |
 
@@ -567,7 +567,7 @@ HTML에 `name="user_id"` 로 적혀 있으면 동작하지 않으며,
 | 비밀번호 찾기 | `username` `email` → `code` → `password` `password_confirm` | 완료 |
 | 원서 작성 | `school` `major` `intro` | 화요일에 구현 |
 | 원서 작성 (추가 칸) | `portfolio_url` `document` | **화면만. 기능 보류** |
-| 회원가입 | `username` `password` `password_confirm` `name` | **화면만. 기능 보류** |
+| 회원가입 | `username` `password` `password_confirm` `name` `email` | 완료 |
 | 합격 처리 | `decision` (`accepted` 또는 `rejected`) | 화요일에 구현 |
 
 - `intro` 는 자기소개입니다. 길게 쓸 수 있도록 `textarea` 를 사용합니다.
@@ -587,9 +587,9 @@ HTML에 `name="user_id"` 로 적혀 있으면 동작하지 않으며,
 
 ## 6-4. 로그인 계정
 
-회원가입 기능은 만들지 않습니다. 아래 계정이 `data.py` 에 미리 들어 있습니다.
+회원가입으로 새 계정을 만들 수 있습니다. 새 계정은 항상 지원자(`applicant`)이고 번호는 100번부터 붙습니다.
+아래 계정은 `data.py` 에 미리 들어 있습니다.
 `reviewer` 의 비밀번호와 이메일만 `.env` 의 `ADMIN_PASSWORD`, `ADMIN_EMAIL` 에서 읽습니다.
-아래 값은 `.env.example` 의 기본값입니다.
 
 비밀번호 찾기의 인증코드는 메일로 가지 않고 **서버를 띄운 터미널에만** 출력됩니다.
 바꾼 비밀번호는 메모리에만 저장되어, 서버를 다시 켜면 원래대로 돌아갑니다.
@@ -599,7 +599,7 @@ HTML에 `name="user_id"` 로 적혀 있으면 동작하지 않으며,
 |---|---|---|---|
 | `applicant01` | `test1234` | 이정욱 | 지원자 |
 | `applicant02` | `s3cr3t` | 정민호 | 지원자 |
-| `reviewer` | `adminpw` | 심사위원 | 관리자 |
+| `reviewer` | `.env` 의 `ADMIN_PASSWORD` | 심사위원 | 관리자 |
 
 원서는 41번과 42번이 `applicant01` 의 것이고, 43번이 `applicant02` 의 것입니다.
 `applicant01` 로 로그인한 상태에서 43번 원서가 보이면 안 됩니다.

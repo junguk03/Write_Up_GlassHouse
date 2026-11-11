@@ -17,6 +17,7 @@
 .
 ├── app/           서비스 본체 (취약점 없는 정상 버전). 여기는 수정하지 않는다
 ├── challenges/    CTF 문제 모음. easy / medium / hard 로 나뉨
+├── solution/      문제 풀이. 대회가 끝날 때까지 깃에 올리지 않는다 (.gitignore)
 └── docs/          설계 문서 · 팀 가이드
 ```
 
