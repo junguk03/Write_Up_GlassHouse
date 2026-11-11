@@ -38,5 +38,5 @@ rsync -a --exclude venv --exclude __pycache__ --exclude '*.pyc' \
 # 3. config_flags.py 의 flag() 로 플래그를 심습니다
 ```
 
-`solution/` 은 상대 조가 다 푼 뒤에 추가합니다.
-그래서 문제는 만들자마자 `develop` 에 병합해도 답이 새지 않습니다.
+풀이는 `solution/<난이도>/<문제 이름>/` 에 씁니다. `solution/` 은 `.gitignore` 에 들어 있어
+대회가 끝날 때까지 깃에 올라가지 않습니다. 그래서 문제는 만들자마자 `develop` 에 병합해도 답이 새지 않습니다.

@@ -7,7 +7,7 @@ from playwright.sync_api import sync_playwright
 
 app = Flask(__name__)
 
-TARGET_URL = os.environ.get("TARGET_URL", "http://web:8005")
+TARGET_URL = os.environ.get("TARGET_URL", "http://web:8009")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
 VIEW_SECONDS = int(os.environ.get("VIEW_SECONDS", "5"))
 QUEUE_SIZE = 10

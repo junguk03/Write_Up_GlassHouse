@@ -7,6 +7,8 @@
 네 명이 모두 이 파일을 읽어 쓰므로 **구조를 바꾸지 마십시오.**
 항목을 추가해야 하면 정욱에게 말해 주십시오.
 """
+import itertools
+
 from config_flags import secret
 
 # ---------------------------------------------------------------------------
@@ -25,7 +27,7 @@ SITE = {
 
 
 # ---------------------------------------------------------------------------
-# 로그인 계정  (회원가입 없이 미리 정해 둔 계정만 사용합니다)
+# 로그인 계정  (심사위원 + 회원가입으로 만든 계정)
 #   키   = 아이디
 #   id   = 사용자 번호.  원서의 user_id 와 짝이 맞습니다.
 #   role = applicant 또는 admin
@@ -34,11 +36,7 @@ SITE = {
 # 소스가 공개되므로 관리자 비밀번호와 이메일은 .env 에서 읽습니다.
 # ---------------------------------------------------------------------------
 USERS = {
-    "applicant01": {"id": 1,  "password": "test1234", "name": "이정욱",   "role": "applicant",
-                    "email": "applicant01@example.com"},
-    "applicant02": {"id": 7,  "password": "s3cr3t",   "name": "정민호",   "role": "applicant",
-                    "email": "applicant02@example.com"},
-    "reviewer":    {"id": 99, "password": secret("ADMIN_PASSWORD"), "name": "심사위원", "role": "admin",
+    "reviewer": {"id": 99, "password": secret("ADMIN_PASSWORD"), "name": "심사위원", "role": "admin",
                     "email": secret("ADMIN_EMAIL")},
 }
 
@@ -52,26 +50,7 @@ USERS = {
 #   intro           자기소개
 #   status          draft / submitted / reviewing / accepted / rejected
 # ---------------------------------------------------------------------------
-APPLICATIONS = {
-    41: {
-        "id": 41, "user_id": 1, "applicant_name": "이정욱",
-        "school": "글래스고등학교", "major": "정보보호학과",
-        "intro": "보안에 관심이 많아 3년간 동아리에서 활동했습니다.",
-        "status": "submitted",
-    },
-    42: {
-        "id": 42, "user_id": 1, "applicant_name": "이정욱",
-        "school": "하우스고등학교", "major": "컴퓨터공학과",
-        "intro": "웹 서비스를 직접 만들어 본 경험이 있습니다.",
-        "status": "draft",
-    },
-    43: {
-        "id": 43, "user_id": 7, "applicant_name": "정민호",
-        "school": "미러고등학교", "major": "정보보호학과",
-        "intro": "정보보호 동아리에서 웹 해킹을 공부하고 있습니다.",
-        "status": "submitted",
-    },
-}
+APPLICATIONS = {}
 
 
 # ---------------------------------------------------------------------------
@@ -88,3 +67,12 @@ def find_user_by_id(user_id):
 def next_application_id():
     """새 원서에 쓸 번호를 돌려줍니다."""
     return max(APPLICATIONS) + 1 if APPLICATIONS else 1
+
+
+# 회원가입 계정 번호는 100 부터 씁니다.
+_user_ids = itertools.count(100)
+
+
+def next_user_id():
+    """회원가입한 새 계정에 쓸 번호를 돌려줍니다."""
+    return next(_user_ids)
