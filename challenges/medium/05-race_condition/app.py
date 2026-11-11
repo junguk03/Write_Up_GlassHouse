@@ -25,5 +25,4 @@ def inject_globals():
 
 
 if __name__ == "__main__":
-    # 요청을 스레드로 동시에 처리해야 합니다. 워커를 여러 개 띄우면 data 가 나뉩니다.
     app.run(host="0.0.0.0", port=8005, debug=False, threaded=True)

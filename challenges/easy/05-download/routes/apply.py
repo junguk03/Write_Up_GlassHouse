@@ -63,7 +63,6 @@ def edit(app_id):
 def download():
     # 보관함에서 요청한 파일을 꺼내 내려 준다.
     filename = request.args.get("file", "")
-    # 경로 조작 방지: 상위 폴더로 빠져나가는 '../' 를 제거한다.
     filename = filename.replace("../", "")
     target = os.path.join(UPLOAD_DIR, filename)
     if not os.path.isfile(target):

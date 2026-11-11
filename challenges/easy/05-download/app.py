@@ -13,7 +13,6 @@ app.config["SECRET_KEY"] = secret("SECRET_KEY") or os.urandom(16).hex()
 app.config["SESSION_COOKIE_NAME"] = "gh_8008"
 
 # 제출 서류 보관함을 준비한다.
-# 지원자가 올린 증빙서류는 보관함(uploads/)에, 내부 파일은 보관함 바깥(internal/)에 둔다.
 UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
 INTERNAL_DIR = os.path.join(BASE_DIR, "internal")
 os.makedirs(UPLOAD_DIR, exist_ok=True)

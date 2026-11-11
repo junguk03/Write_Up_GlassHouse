@@ -63,8 +63,6 @@ def find_user_by_id(user_id):
     return None
 
 
-# 번호는 count() 로 뽑습니다. 동시에 요청이 와도 같은 번호를 두 번 주지 않아
-# 원서가 서로 덮어쓰이지 않습니다.
 _application_ids = itertools.count(1)
 
 
