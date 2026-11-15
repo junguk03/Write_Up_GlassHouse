@@ -12,7 +12,6 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = secret("SECRET_KEY") or os.urandom(16).hex()
 app.config["SESSION_COOKIE_NAME"] = "gh_8008"
 
-# 제출 서류 보관함을 준비한다.
 UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
 INTERNAL_DIR = os.path.join(BASE_DIR, "internal")
 os.makedirs(UPLOAD_DIR, exist_ok=True)

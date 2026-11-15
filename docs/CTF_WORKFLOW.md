@@ -126,7 +126,7 @@ Windows 에서 `rsync` 가 없으면 Git Bash 를 쓰거나, 탐색기로 복사
 | medium/03-mass_assignment | 8004 |
 | medium/05-race_condition | 8005 |
 | medium/04-SSTI | 8006 |
-| easy/03-sqli | 8007 |
+| easy/05-sqli | 8007 |
 | easy/05-download | 8008 |
 | medium/04-XSS (보류) | 8009 |
 
