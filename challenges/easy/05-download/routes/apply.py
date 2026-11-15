@@ -61,7 +61,6 @@ def edit(app_id):
 
 @bp.get("/download")
 def download():
-    # 보관함에서 요청한 파일을 꺼내 내려 준다.
     filename = request.args.get("file", "")
     filename = filename.replace("../", "")
     target = os.path.join(UPLOAD_DIR, filename)
