@@ -54,7 +54,7 @@ Glass House 프로젝트의 공통 규칙입니다. 작업을 시작하기 전�
 ```
 app/
 ├── app.py                      앱을 만들고 routes/ 를 등록합니다. 고치지 마십시오.
-├── data.py                     계정과 원서 데이터입니다. 전원이 같이 씁니다.
+├── data.py                     계정과 신청서 데이터입니다. 전원이 같이 씁니다.
 ├── config_flags.py             .env 의 플래그와 비밀번호를 읽어 옵니다.
 ├── requirements.txt            필요한 라이브러리 목록과 버전입니다.
 ├── .env.example                설정값 견본입니다. 복사해서 .env 를 만듭니다.
@@ -65,19 +65,19 @@ app/
 ├── routes/                     기능(로직)을 만드는 곳입니다. 담당자별로 한 파일씩.
 │   ├── main.py                 정욱   메인          (완성. 참고용 견본)
 │   ├── auth.py                 성원   로그인 · 로그아웃
-│   ├── mypage.py               성원   내 원서 목록 · 상세
-│   ├── apply.py                수하   원서 작성 · 합격 조회
-│   └── admin.py                종성   심사위원 포털
+│   ├── mypage.py               성원   내 신청서 목록 · 상세
+│   ├── apply.py                수하   신청서 작성 · 당첨 조회
+│   └── admin.py                종성   운영진 포털
 │
 ├── templates/                  화면(HTML)이 들어가는 곳입니다.
 │   ├── base.html               모든 화면의 공통 틀입니다. 수정 금지.
 │   ├── components/ui.html      버튼·입력칸·카드 같은 공통 부품입니다. 수정 금지.
 │   ├── main.html               정욱   메인
 │   ├── auth/                   성원   로그인 · 회원가입
-│   ├── mypage/                 성원   내 원서 목록 · 상세
-│   ├── apply/                  수하   원서 작성
-│   ├── result/                 수하   합격 조회
-│   └── admin/                  종성   심사위원 포털
+│   ├── mypage/                 성원   내 신청서 목록 · 상세
+│   ├── apply/                  수하   신청서 작성
+│   ├── result/                 수하   당첨 조회
+│   └── admin/                  종성   운영진 포털
 │
 ├── static/                     코드를 거치지 않고 그대로 전달되는 파일입니다.
 │   ├── css/style.css           공통 스타일시트입니다. 수정 금지.
@@ -93,7 +93,7 @@ app/
 `routes/` 안의 자기 파일을 열어 보면 만들어야 할 것이 `TODO` 주석으로 적혀 있습니다.
 `routes/main.py` 는 완성되어 있으니 모양이 헷갈릴 때 열어 보십시오.
 
-`data.py` 는 데이터베이스 대신 쓰는 파일입니다. 계정과 원서가 들어 있고
+`data.py` 는 데이터베이스 대신 쓰는 파일입니다. 계정과 신청서가 들어 있고
 전원이 같이 읽으므로 **구조를 바꾸지 마십시오.** 항목이 더 필요하면 말씀해 주십시오.
 
 `templates/` 와 `static/` 의 차이를 기억해 주십시오.
@@ -318,7 +318,7 @@ Flask에게 알려 주는 포장**이기 때문입니다. 포장 안쪽은 평�
 {% block content %}
 <div class="container">
 
-  {{ page_header("회원가입", "원서 접수를 위해 먼저 계정을 만들어 주십시오.") }}
+  {{ page_header("회원가입", "초대권 신청을 위해 먼저 계정을 만들어 주십시오.") }}
 
   <form class="form" method="post" action="/signup">
 
@@ -358,7 +358,7 @@ Flask에게 알려 주는 포장**이기 때문입니다. 포장 안쪽은 평�
 | 목록 한 칸 | `{{ card("제목", "내용") }}` |
 | 상태 표시 | `{{ badge("submitted") }}` |
 | 표 | `<table class="table">` 를 `<div class="table-wrap">` 로 감쌉니다 |
-| 내용이 없을 때 | `{{ empty("등록된 원서가 없습니다.") }}` |
+| 내용이 없을 때 | `{{ empty("등록된 신청서가 없습니다.") }}` |
 
 부품의 전체 목록과 인자는 아래 명세서에 있습니다.
 
@@ -383,7 +383,7 @@ Flask에게 알려 주는 포장**이기 때문입니다. 포장 안쪽은 평�
 {% if applications %}
   ... 목록 ...
 {% else %}
-  {{ empty("등록된 원서가 없습니다.") }}
+  {{ empty("등록된 신청서가 없습니다.") }}
 {% endif %}
 ```
 
@@ -401,13 +401,13 @@ Flask에게 알려 주는 포장**이기 때문입니다. 포장 안쪽은 평�
 | 파일 | 왜 고칠 일이 없나 |
 |---|---|
 | `app.py` | 새 주소는 자기 `routes/` 파일에 쓰면 자동으로 등록됩니다 |
-| `data.py` | 원서 추가는 코드에서 `data.APPLICATIONS[번호] = {...}` 로 합니다 |
+| `data.py` | 신청서 추가는 코드에서 `data.APPLICATIONS[번호] = {...}` 로 합니다 |
 | `templates/base.html` | 공통 틀입니다 |
 | `templates/components/ui.html` | 공통 부품입니다 |
 | `static/css/style.css` | 공통 스타일입니다 |
 
-**고쳐야 하는 경우는 하나뿐입니다.** 원서에 새 항목을 추가해야 할 때입니다.
-예를 들어 포트폴리오 주소 칸을 넣으면 `data.py` 의 구조가 바뀌고, 그러면 다른 화면도
+**고쳐야 하는 경우는 하나뿐입니다.** 신청서에 새 항목을 추가해야 할 때입니다.
+예를 들어 SNS 주소 칸을 넣으면 `data.py` 의 구조가 바뀌고, 그러면 다른 화면도
 그 항목을 알아야 합니다. 그럴 때는 직접 고치지 마시고 정욱에게 말씀해 주십시오.
 한 번에 반영해야 네 명이 동시에 맞춰집니다.
 
@@ -503,21 +503,21 @@ venv/          가상환경
 
 | 주소 | 메서드 | 화면 | 담당 | 범위 |
 |---|---|---|---|---|
-| `/` | GET | 메인 (모집 안내) | 정욱 | 완료 |
+| `/` | GET | 메인 (행사 안내) | 정욱 | 완료 |
 | `/login` | GET, POST | 로그인 | 성원 | 화면 + 기능 |
 | `/logout` | GET | 로그아웃 | 성원 | 화면 + 기능 |
 | `/forgot` | GET, POST | 비밀번호 찾기 (아이디 · 이메일) | 정욱 | 완료 |
 | `/forgot/verify` | GET, POST | 인증코드 확인 | 정욱 | 완료 |
 | `/forgot/reset` | GET, POST | 새 비밀번호 | 정욱 | 완료 |
-| `/mypage` | GET | 내 원서 목록 | 성원 | 화면 + 기능 |
-| `/applications/<id>` | GET | 원서 상세 | 성원 | 화면 + 기능 |
-| `/apply` | GET, POST | 원서 작성 | 수하 | 화면 + 기능 |
-| `/result` | GET | 합격 조회 | 수하 | 화면 + 기능 |
-| `/admin` | GET | 지원자 목록 | 종성 | 화면 + 기능 |
-| `/admin/applications/<id>` | GET | 원서 상세 (심사) | 종성 | 화면 + 기능 |
-| `/admin/applications/<id>/decide` | POST | 합격 · 불합격 처리 | 종성 | 화면 + 기능 |
+| `/mypage` | GET | 내 신청서 목록 | 성원 | 화면 + 기능 |
+| `/applications/<id>` | GET | 신청서 상세 | 성원 | 화면 + 기능 |
+| `/apply` | GET, POST | 신청서 작성 | 수하 | 화면 + 기능 |
+| `/result` | GET | 당첨 조회 | 수하 | 화면 + 기능 |
+| `/admin` | GET | 신청자 목록 | 종성 | 화면 + 기능 |
+| `/admin/applications/<id>` | GET | 신청서 상세 (검토) | 종성 | 화면 + 기능 |
+| `/admin/applications/<id>/decide` | POST | 당첨 · 미당첨 처리 | 종성 | 화면 + 기능 |
 | `/signup` | GET, POST | 회원가입 | 성원 | 화면 + 기능 |
-| `/apply/<id>/edit` | GET | 원서 수정 | 수하 | **화면만** |
+| `/apply/<id>/edit` | GET | 신청서 수정 | 수하 | **화면만** |
 | `/download` | GET | 첨부파일 다운로드 | 수하 | **화면만** |
 
 **화면만** 으로 표시된 것은 눌러도 아무 일이 일어나지 않아도 괜찮습니다.
@@ -544,15 +544,15 @@ templates/
 │   ├── verify.html            정욱   인증코드 확인
 │   └── reset.html             정욱   새 비밀번호
 ├── mypage/
-│   ├── list.html              성원   내 원서 목록
-│   └── detail.html            성원   원서 상세
+│   ├── list.html              성원   내 신청서 목록
+│   └── detail.html            성원   신청서 상세
 ├── apply/
-│   └── form.html              수하   원서 작성 · 수정 공용
+│   └── form.html              수하   신청서 작성 · 수정 공용
 ├── result/
-│   └── index.html             수하   합격 조회
+│   └── index.html             수하   당첨 조회
 └── admin/
-    ├── list.html              종성   지원자 목록
-    └── detail.html            종성   원서 상세 (심사)
+    ├── list.html              종성   신청자 목록
+    └── detail.html            종성   신청서 상세 (검토)
 ```
 
 ## 6-3. 폼 입력칸 이름
@@ -565,15 +565,15 @@ HTML에 `name="user_id"` 로 적혀 있으면 동작하지 않으며,
 |---|---|---|
 | 로그인 | `username` `password` | 화요일에 구현 |
 | 비밀번호 찾기 | `username` `email` → `code` → `password` `password_confirm` | 완료 |
-| 원서 작성 | `school` `major` `intro` | 화요일에 구현 |
-| 원서 작성 (추가 칸) | `portfolio_url` `document` | **화면만. 기능 보류** |
+| 신청서 작성 | `school` `major` `intro` | 화요일에 구현 |
+| 신청서 작성 (추가 칸) | `portfolio_url` `document` | **화면만. 기능 보류** |
 | 회원가입 | `username` `password` `password_confirm` `name` `email` | 완료 |
-| 합격 처리 | `decision` (`accepted` 또는 `rejected`) | 화요일에 구현 |
+| 당첨 처리 | `decision` (`accepted` 또는 `rejected`) | 화요일에 구현 |
 
-- `intro` 는 자기소개입니다. 길게 쓸 수 있도록 `textarea` 를 사용합니다.
+- `intro` 는 신청 사연입니다. 길게 쓸 수 있도록 `textarea` 를 사용합니다.
 - **기능 보류** 로 표시된 것은 화면만 만들고 동작은 나중에 붙입니다.
   입력칸은 지금 만들어 두되, 눌러도 아무 일이 일어나지 않아도 괜찮습니다.
-- `document` 는 증빙서류 파일입니다. 파일 첨부 기능은 일정상 뒤로 미뤘습니다.
+- `document` 는 확인서류 파일입니다. 파일 첨부 기능은 일정상 뒤로 미뤘습니다.
 
 **파일 첨부가 있는 `<form>` 에는 `enctype` 이 반드시 필요합니다.**
 
@@ -587,7 +587,7 @@ HTML에 `name="user_id"` 로 적혀 있으면 동작하지 않으며,
 
 ## 6-4. 로그인 계정
 
-회원가입으로 새 계정을 만들 수 있습니다. 새 계정은 항상 지원자(`applicant`)이고 번호는 100번부터 붙습니다.
+회원가입으로 새 계정을 만들 수 있습니다. 새 계정은 항상 신청자(`applicant`)이고 번호는 100번부터 붙습니다.
 아래 계정은 `data.py` 에 미리 들어 있습니다.
 `reviewer` 의 비밀번호와 이메일만 `.env` 의 `ADMIN_PASSWORD`, `ADMIN_EMAIL` 에서 읽습니다.
 
@@ -597,12 +597,12 @@ HTML에 `name="user_id"` 로 적혀 있으면 동작하지 않으며,
 
 | 아이디 | 비밀번호 | 이름 | 권한 |
 |---|---|---|---|
-| `applicant01` | `test1234` | 이정욱 | 지원자 |
-| `applicant02` | `s3cr3t` | 정민호 | 지원자 |
-| `reviewer` | `.env` 의 `ADMIN_PASSWORD` | 심사위원 | 관리자 |
+| `applicant01` | `test1234` | 이정욱 | 신청자 |
+| `applicant02` | `s3cr3t` | 정민호 | 신청자 |
+| `reviewer` | `.env` 의 `ADMIN_PASSWORD` | 운영진 | 관리자 |
 
-원서는 41번과 42번이 `applicant01` 의 것이고, 43번이 `applicant02` 의 것입니다.
-`applicant01` 로 로그인한 상태에서 43번 원서가 보이면 안 됩니다.
+신청서는 41번과 42번이 `applicant01` 의 것이고, 43번이 `applicant02` 의 것입니다.
+`applicant01` 로 로그인한 상태에서 43번 신청서가 보이면 안 됩니다.
 
 ## 6-5. 템플릿으로 넘어오는 변수
 
@@ -620,8 +620,8 @@ HTML에 `name="user_id"` 로 적혀 있으면 동작하지 않으며,
 | `user.role` | 문자열 | `applicant` 또는 `admin` |
 | `site` | 사전 | 사이트 공통 정보 |
 | `site.name` | 문자열 | 기관명 |
-| `site.recruit_title` | 문자열 | 모집 공고 제목 |
-| `site.period_start` / `site.period_end` | 문자열 | 접수 시작·마감일 |
+| `site.recruit_title` | 문자열 | 행사 공고 제목 |
+| `site.period_start` / `site.period_end` | 문자열 | 신청 시작·마감일 |
 | `site.days_left` | 정수 | 마감까지 남은 일수 |
 | `site.contact_tel` / `site.contact_email` | 문자열 | 문의처 |
 | `site.office_hours` | 문자열 | 운영시간 |
@@ -630,26 +630,26 @@ HTML에 `name="user_id"` 로 적혀 있으면 동작하지 않으며,
 
 | 변수 | 형태 | 쓰이는 화면 |
 |---|---|---|
-| `applications` | 목록 | 내 원서 목록, 지원자 목록 |
-| `application` | 사전 | 원서 상세, 원서 작성, 심사 상세 |
+| `applications` | 목록 | 내 신청서 목록, 신청자 목록 |
+| `application` | 사전 | 신청서 상세, 신청서 작성, 검토 상세 |
 | `notices` | 목록 | 메인 |
 | `schedule` | 목록 | 메인 |
 
-### 원서(`application`) 항목
+### 신청서(`application`) 항목
 
-원서는 아래 **일곱 개 항목만** 가집니다. 꼭 필요한 것만 남겼습니다.
+신청서는 아래 **일곱 개 항목만** 가집니다. 꼭 필요한 것만 남겼습니다.
 
 | 키 | 형태 | 설명 |
 |---|---|---|
-| `id` | 정수 | 원서 번호 |
-| `user_id` | 정수 | 이 원서의 주인 |
-| `applicant_name` | 문자열 | 지원자 이름 |
-| `school` | 문자열 | 출신 학교 |
-| `major` | 문자열 | 지원 학과 |
-| `intro` | 문자열 | 자기소개 |
+| `id` | 정수 | 신청서 번호 |
+| `user_id` | 정수 | 이 신청서의 주인 |
+| `applicant_name` | 문자열 | 신청자 이름 |
+| `school` | 문자열 | 소속 |
+| `major` | 문자열 | 희망 좌석 |
+| `intro` | 문자열 | 신청 사연 |
 | `status` | 문자열 | 아래 표 참고 |
 
-지원 동기, 포트폴리오 주소, 첨부파일 이름, 제출 일시는 당장 필요하지 않아 뺐습니다.
+신청 이유, SNS 주소, 첨부파일 이름, 제출 일시는 당장 필요하지 않아 뺐습니다.
 나중에 필요해지면 그때 추가합니다. 화면에 입력칸을 만들어 두는 것은 상관없습니다.
 
 ### 상태(`status`) 값
@@ -657,10 +657,10 @@ HTML에 `name="user_id"` 로 적혀 있으면 동작하지 않으며,
 | 값 | 표시 | 뱃지 색 |
 |---|---|---|
 | `draft` | 작성중 | 회색 |
-| `submitted` | 제출완료 | 남색 |
-| `reviewing` | 심사중 | 주황 |
-| `accepted` | 합격 | 초록 |
-| `rejected` | 불합격 | 빨강 |
+| `submitted` | 제출완료 | 회색 |
+| `reviewing` | 검토중 | 주황 |
+| `accepted` | 당첨 | 초록 |
+| `rejected` | 미당첨 | 빨강 |
 
 ### 공지(`notices`) · 일정(`schedule`) 항목
 
@@ -697,11 +697,11 @@ HTML에 `name="user_id"` 로 적혀 있으면 동작하지 않으며,
 {{ button("삭제", "danger", size="sm") }}
 
 {{ field("아이디", "username", required=true, help="영문과 숫자 4자 이상") }}
-{{ textarea("자기소개", "intro", rows=8, required=true) }}
-{{ select("지원 학과", "major", [("sec", "정보보호학과"), ("cs", "컴퓨터공학과")]) }}
-{{ file_field("증빙서류", "document", accept=".pdf,.png,.jpg") }}
+{{ textarea("신청 사연", "intro", rows=8, required=true) }}
+{{ select("희망 좌석", "major", [("sec", "일반석"), ("cs", "VIP석")]) }}
+{{ file_field("확인서류", "document", accept=".pdf,.png,.jpg") }}
 
-{{ card("글래스고등학교 / 정보보호학과", "2026-10-14 제출", href="/applications/41") }}
+{{ card("글래스하우스 / 일반석", "2026-10-14 제출", href="/applications/41") }}
 {{ badge("submitted") }}
 ```
 
@@ -745,9 +745,9 @@ HTML에 `name="user_id"` 로 적혀 있으면 동작하지 않으며,
 | 클래스 | 용도 |
 |---|---|
 | `.btn` | 모든 버튼의 기본 |
-| `.btn-primary` | 남색. 주요 동작 |
+| `.btn-primary` | 초록. 주요 동작 |
 | `.btn-secondary` | 회색 테두리. 보조 동작 |
-| `.btn-danger` | 빨강. 삭제·불합격 |
+| `.btn-danger` | 빨강. 삭제·미당첨 |
 | `.btn-ghost` | 테두리만 |
 | `.btn-sm` | 작은 크기 |
 | `.btn-block` | 가로 전체 |

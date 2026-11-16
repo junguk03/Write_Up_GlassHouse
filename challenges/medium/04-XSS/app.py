@@ -12,7 +12,7 @@ app.config["SECRET_KEY"] = secret("SECRET_KEY") or os.urandom(16).hex()
 app.config["SESSION_COOKIE_NAME"] = "gh_8009"
 app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
-WAITLIST = """2026학년도 신입생 수시 추가 합격자 명단 (대외비)
+WAITLIST = """2026 크리스마스 파티 추가 당첨자 명단 (대외비)
 
 발표일 전까지 외부 공개를 금지합니다.
 명단 열람 확인 코드: {flag}

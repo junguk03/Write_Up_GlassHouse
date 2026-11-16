@@ -1,0 +1,5 @@
+{
+  "kid": "xmas-2026",
+  "alg": "HS256",
+  "secret": "change-me"
+}

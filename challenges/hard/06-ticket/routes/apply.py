@@ -1,0 +1,73 @@
+from flask import (Blueprint, abort, flash, redirect, render_template,
+                   request, session, url_for)
+
+import data
+
+bp = Blueprint("apply", __name__)
+
+
+@bp.route("/apply", methods=["GET", "POST"])
+def create():
+    user = data.find_user_by_id(session.get("user_id"))
+    if user is None:
+        return redirect(url_for("auth.login"))
+
+    if request.method == "POST":
+        school = request.form.get("school", "").strip()
+        major = request.form.get("major", "").strip()
+        intro = request.form.get("intro", "").strip()
+
+        if not school or not major or not intro:
+            flash("소속, 희망 좌석, 신청 사연을 모두 입력해 주십시오.", "error")
+            return render_template("apply/form.html", application=None)
+
+        app_id = data.next_application_id()
+
+        data.APPLICATIONS[app_id] = {
+            "id": app_id,
+            "user_id": user["id"],
+            "applicant_name": user["name"],
+            "school": school,
+            "major": major,
+            "intro": intro,
+            "status": "submitted",
+        }
+
+        flash("신청서가 제출되었습니다.", "success")
+        return redirect(url_for("mypage.list_applications"))
+
+    return render_template("apply/form.html", application=None)
+
+
+@bp.get("/apply/<int:app_id>/edit")
+def edit(app_id):
+    user = data.find_user_by_id(session.get("user_id"))
+    if user is None:
+        return redirect(url_for("auth.login"))
+
+    application = data.APPLICATIONS.get(app_id)
+    if application is None:
+        abort(404)
+    if application["user_id"] != user["id"]:
+        abort(403)
+
+    return render_template("apply/form.html", application=application)
+
+
+@bp.get("/download")
+def download():
+    return redirect(url_for("mypage.list_applications"))
+
+
+@bp.get("/result")
+def index():
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect(url_for("auth.login"))
+
+    applications = [
+        a for a in data.APPLICATIONS.values()
+        if a["user_id"] == user_id and a["status"] in ("accepted", "rejected")
+    ]
+
+    return render_template("result/index.html", applications=applications)

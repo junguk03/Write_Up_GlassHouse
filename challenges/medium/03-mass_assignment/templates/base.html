@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}원서 접수{% endblock %} | {{ site.name }}</title>
+  <title>{% block title %}초대권 신청{% endblock %} | {{ site.name }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   {% block extra_css %}{% endblock %}
 </head>
@@ -11,12 +11,12 @@
 
   <div class="utilbar">
     <div class="container utilbar-inner">
-      <span class="utilbar-note">입학 문의 {{ site.contact_tel }} · {{ site.office_hours }}</span>
+      <span class="utilbar-note">행사 문의 {{ site.contact_tel }} · {{ site.office_hours }}</span>
       <nav class="utilbar-links">
         {% if user %}
           <span class="utilbar-user"><strong>{{ user.name }}</strong>님</span>
           {% if user.role == 'admin' %}
-            <a href="/admin">심사위원 포털</a>
+            <a href="/admin">운영진 포털</a>
           {% endif %}
           <a href="/logout">로그아웃</a>
         {% else %}
@@ -33,15 +33,15 @@
         <span class="logo-mark">GH</span>
         <span class="logo-text">
           <strong>{{ site.name }}</strong>
-          <small>입학 원서 접수 시스템</small>
+          <small>초대권 신청 시스템</small>
         </span>
       </a>
 
       <nav class="gnb">
-        <a href="/">모집 안내</a>
-        <a href="/apply">원서 작성</a>
-        <a href="/mypage">내 원서 조회</a>
-        <a href="/result">합격 조회</a>
+        <a href="/">행사 안내</a>
+        <a href="/apply">신청서 작성</a>
+        <a href="/mypage">내 신청서 조회</a>
+        <a href="/result">당첨 조회</a>
       </nav>
     </div>
   </header>
@@ -64,12 +64,12 @@
     <div class="container">
       <div class="footer-top">
         <div>
-          <p class="footer-title">{{ site.name }} 입학관리처</p>
+          <p class="footer-title">{{ site.name }} 운영 사무국</p>
           <p class="footer-line">서울특별시 유리구 하우스로 123 · 대표전화 {{ site.contact_tel }}</p>
           <p class="footer-line">이메일 {{ site.contact_email }} · 운영시간 {{ site.office_hours }}</p>
         </div>
         <ul class="footer-links">
-          <li><a href="/">모집 요강</a></li>
+          <li><a href="/">행사 개요</a></li>
           <li><a href="/">공지사항</a></li>
           <li><a href="/">자주 묻는 질문</a></li>
           <li><a href="/">개인정보 처리방침</a></li>

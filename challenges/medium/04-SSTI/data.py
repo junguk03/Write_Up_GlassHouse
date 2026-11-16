@@ -15,8 +15,8 @@ from config_flags import secret
 # 사이트 공통 정보
 # ---------------------------------------------------------------------------
 SITE = {
-    "name": "글래스하우스 정보보호학과",
-    "recruit_title": "2026학년도 신입생 수시 원서 접수",
+    "name": "글래스하우스 크리스마스 파티",
+    "recruit_title": "2026 크리스마스 파티 초대권 신청",
     "period_start": "2026-10-20",
     "period_end": "2026-11-07",
     "days_left": 22,
@@ -27,27 +27,27 @@ SITE = {
 
 
 # ---------------------------------------------------------------------------
-# 로그인 계정  (심사위원 + 회원가입으로 만든 계정)
+# 로그인 계정  (운영진 + 회원가입으로 만든 계정)
 #   키   = 아이디
-#   id   = 사용자 번호.  원서의 user_id 와 짝이 맞습니다.
+#   id   = 사용자 번호.  신청서의 user_id 와 짝이 맞습니다.
 #   role = applicant 또는 admin
 #   email = 비밀번호 찾기에 씁니다
 #
 # 소스가 공개되므로 관리자 비밀번호와 이메일은 .env 에서 읽습니다.
 # ---------------------------------------------------------------------------
 USERS = {
-    "reviewer": {"id": 99, "password": secret("ADMIN_PASSWORD"), "name": "심사위원", "role": "admin",
+    "reviewer": {"id": 99, "password": secret("ADMIN_PASSWORD"), "name": "운영진", "role": "admin",
                     "email": secret("ADMIN_EMAIL")},
 }
 
 
 # ---------------------------------------------------------------------------
-# 원서
-#   id              원서 번호
-#   user_id         이 원서의 주인
-#   applicant_name  지원자 이름
-#   school / major  출신 학교 · 지원 학과
-#   intro           자기소개
+# 신청서
+#   id              신청서 번호
+#   user_id         이 신청서의 주인
+#   applicant_name  신청자 이름
+#   school / major  소속 · 희망 좌석
+#   intro           신청 사연
 #   status          draft / submitted / reviewing / accepted / rejected
 # ---------------------------------------------------------------------------
 APPLICATIONS = {}
@@ -65,7 +65,7 @@ def find_user_by_id(user_id):
 
 
 def next_application_id():
-    """새 원서에 쓸 번호를 돌려줍니다."""
+    """새 신청서에 쓸 번호를 돌려줍니다."""
     return max(APPLICATIONS) + 1 if APPLICATIONS else 1
 
 

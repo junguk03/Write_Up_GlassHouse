@@ -3,43 +3,43 @@
 
 {% set is_edit = application is not none %}
 
-{% block title %}{{ "원서 수정" if is_edit else "원서 작성" }}{% endblock %}
+{% block title %}{{ "신청서 수정" if is_edit else "신청서 작성" }}{% endblock %}
 
 {% block content %}
 <div class="container">
 
   {% if is_edit %}
-    {{ page_header("원서 수정", application.id ~ "번 원서의 내용을 수정합니다.") }}
+    {{ page_header("신청서 수정", application.id ~ "번 신청서의 내용을 수정합니다.") }}
   {% else %}
-    {{ page_header("원서 작성", site.recruit_title) }}
+    {{ page_header("신청서 작성", site.recruit_title) }}
   {% endif %}
 
     <form class="form" method="post" action="{{ "" if is_edit else "/apply" }}" enctype="multipart/form-data">
 
     <div class="form-row">
-      {{ field("출신 학교", "school",
+      {{ field("소속", "school",
                value=application.school if is_edit else "",
-               placeholder="예: 글래스고등학교", required=true) }}
+               placeholder="예: 글래스하우스", required=true) }}
 
-      {{ select("지원 학과", "major",
-                [("정보보호학과", "정보보호학과"), ("컴퓨터공학과", "컴퓨터공학과")],
+      {{ select("희망 좌석", "major",
+                [("일반석", "일반석"), ("VIP석", "VIP석")],
                 value=application.major if is_edit else "", required=true) }}
     </div>
 
-    {{ textarea("자기소개", "intro",
+    {{ textarea("신청 사연", "intro",
                 value=application.intro if is_edit else "",
                 rows=10, required=true,
-                placeholder="지원 동기와 관련 경험을 자유롭게 작성해 주십시오.") }}
+                placeholder="파티에 참석하고 싶은 이유를 자유롭게 작성해 주십시오.") }}
 
-    {{ field("포트폴리오 주소", "portfolio_url", type="url",
+    {{ field("SNS 주소", "portfolio_url", type="url",
              placeholder="https://", help="선택 사항입니다.") }}
 
-    {{ file_field("증빙서류", "document", accept=".pdf,.png,.jpg",
+    {{ file_field("확인서류", "document", accept=".pdf,.png,.jpg",
                   help="PDF, PNG, JPG 파일만 올릴 수 있습니다.") }}
 
     <ul class="notes">
-      <li>제출한 원서는 마이페이지에서 확인할 수 있습니다.</li>
-      <li>접수 기간은 {{ site.period_start }} ~ {{ site.period_end }} 입니다.</li>
+      <li>제출한 신청서는 마이페이지에서 확인할 수 있습니다.</li>
+      <li>신청 기간은 {{ site.period_start }} ~ {{ site.period_end }} 입니다.</li>
     </ul>
 
     <div class="form-actions">

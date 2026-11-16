@@ -114,8 +114,8 @@
 #}
 {% macro badge(status) -%}
   {%- set labels = {
-    "draft": "작성중", "submitted": "제출완료", "reviewing": "심사중",
-    "accepted": "합격", "rejected": "불합격"
+    "draft": "작성중", "submitted": "제출완료", "reviewing": "검토중",
+    "accepted": "당첨", "rejected": "미당첨"
   } -%}
   <span class="badge badge-{{ status }}">{{ labels.get(status, status) }}</span>
 {%- endmacro %}
