@@ -3,8 +3,8 @@ import itertools
 from config_flags import secret
 
 SITE = {
-    "name": "글래스하우스 정보보호학과",
-    "recruit_title": "2026학년도 신입생 수시 원서 접수",
+    "name": "글래스하우스 크리스마스 파티",
+    "recruit_title": "2026 크리스마스 파티 초대권 신청",
     "period_start": "2026-10-20",
     "period_end": "2026-11-07",
     "days_left": 22,
@@ -15,7 +15,7 @@ SITE = {
 
 
 USERS = {
-    "reviewer": {"id": 99, "password": secret("ADMIN_PASSWORD"), "name": "심사위원", "role": "admin"},
+    "reviewer": {"id": 99, "password": secret("ADMIN_PASSWORD"), "name": "운영진", "role": "admin"},
 }
 
 

@@ -1,5 +1,5 @@
 """
-Glass House - 원서 접수 시스템
+Glass House - 초대권 신청 시스템
 
 실행 방법
     source venv/bin/activate      (Windows: venv\\Scripts\\Activate.ps1)
@@ -13,9 +13,9 @@ Glass House - 원서 접수 시스템
 
   routes/main.py     정욱   메인                  (완성. 참고용 견본)
   routes/auth.py     성원   로그인 · 로그아웃
-  routes/mypage.py   성원   내 원서 목록 · 상세
-  routes/apply.py    수하   원서 작성 · 합격 조회
-  routes/admin.py    종성   심사위원 포털
+  routes/mypage.py   성원   내 신청서 목록 · 상세
+  routes/apply.py    수하   신청서 작성 · 당첨 조회
+  routes/admin.py    종성   운영진 포털
 
 화면 확인용 주소
     http://localhost:8000/                      메인

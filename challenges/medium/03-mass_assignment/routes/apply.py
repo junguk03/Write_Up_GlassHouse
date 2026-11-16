@@ -18,7 +18,7 @@ def create():
         intro = request.form.get("intro", "").strip()
 
         if not school or not major or not intro:
-            flash("출신 학교, 지원 학과, 자기소개를 모두 입력해 주십시오.", "error")
+            flash("소속, 희망 좌석, 신청 사연을 모두 입력해 주십시오.", "error")
             return render_template("apply/form.html", application=None)
 
         app_id = data.next_application_id()
@@ -33,7 +33,7 @@ def create():
             "status": "rejected",
         }
 
-        flash("원서가 제출되었습니다.", "success")
+        flash("신청서가 제출되었습니다.", "success")
         return redirect(url_for("mypage.list_applications"))
 
     return render_template("apply/form.html", application=None)
@@ -56,7 +56,7 @@ def edit(app_id):
         for key in request.form:
             application[key] = request.form[key]
         if application["status"] == "accepted":
-            flash("합격 인증 코드 " + current_app.config["FLAG_PROMOTED"], "success")
+            flash("당첨 인증 코드 " + current_app.config["FLAG_PROMOTED"], "success")
         return redirect(url_for("mypage.list_applications"))
 
     return render_template("apply/form.html", application=application)

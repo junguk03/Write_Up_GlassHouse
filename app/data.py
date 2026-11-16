@@ -15,8 +15,8 @@ from config_flags import secret
 # 사이트 공통 정보
 # ---------------------------------------------------------------------------
 SITE = {
-    "name": "글래스하우스 정보보호학과",
-    "recruit_title": "2026학년도 신입생 수시 원서 접수",
+    "name": "글래스하우스 크리스마스 파티",
+    "recruit_title": "2026 크리스마스 파티 초대권 신청",
     "period_start": "2026-10-20",
     "period_end": "2026-11-07",
     "days_left": 22,
@@ -29,7 +29,7 @@ SITE = {
 # ---------------------------------------------------------------------------
 # 로그인 계정  (미리 정해 둔 계정 + 회원가입으로 만든 계정)
 #   키   = 아이디
-#   id   = 사용자 번호.  원서의 user_id 와 짝이 맞습니다.
+#   id   = 사용자 번호.  신청서의 user_id 와 짝이 맞습니다.
 #   role = applicant 또는 admin.  회원가입 계정은 항상 applicant 입니다.
 #   email = 비밀번호 찾기에 씁니다
 #
@@ -40,37 +40,37 @@ USERS = {
                     "email": "applicant01@example.com"},
     "applicant02": {"id": 7,  "password": "s3cr3t",   "name": "정민호",   "role": "applicant",
                     "email": "applicant02@example.com"},
-    "reviewer":    {"id": 99, "password": secret("ADMIN_PASSWORD"), "name": "심사위원", "role": "admin",
+    "reviewer":    {"id": 99, "password": secret("ADMIN_PASSWORD"), "name": "운영진", "role": "admin",
                     "email": secret("ADMIN_EMAIL")},
 }
 
 
 # ---------------------------------------------------------------------------
-# 원서
-#   id              원서 번호
-#   user_id         이 원서의 주인
-#   applicant_name  지원자 이름
-#   school / major  출신 학교 · 지원 학과
-#   intro           자기소개
+# 신청서
+#   id              신청서 번호
+#   user_id         이 신청서의 주인
+#   applicant_name  신청자 이름
+#   school / major  소속 · 희망 좌석
+#   intro           신청 사연
 #   status          draft / submitted / reviewing / accepted / rejected
 # ---------------------------------------------------------------------------
 APPLICATIONS = {
     41: {
         "id": 41, "user_id": 1, "applicant_name": "이정욱",
-        "school": "글래스고등학교", "major": "정보보호학과",
-        "intro": "보안에 관심이 많아 3년간 동아리에서 활동했습니다.",
+        "school": "글래스하우스", "major": "일반석",
+        "intro": "매년 가족과 함께 크리스마스 파티에 참석해 왔습니다.",
         "status": "submitted",
     },
     42: {
         "id": 42, "user_id": 1, "applicant_name": "이정욱",
-        "school": "하우스고등학교", "major": "컴퓨터공학과",
-        "intro": "웹 서비스를 직접 만들어 본 경험이 있습니다.",
+        "school": "스노우하우스", "major": "VIP석",
+        "intro": "친구들과 특별한 연말을 보내고 싶습니다.",
         "status": "draft",
     },
     43: {
         "id": 43, "user_id": 7, "applicant_name": "정민호",
-        "school": "미러고등학교", "major": "정보보호학과",
-        "intro": "다른 사람의 원서입니다. applicant01 에게는 보이면 안 됩니다.",
+        "school": "미러하우스", "major": "일반석",
+        "intro": "다른 사람의 신청서입니다. applicant01 에게는 보이면 안 됩니다.",
         "status": "submitted",
     },
 }
@@ -88,7 +88,7 @@ def find_user_by_id(user_id):
 
 
 def next_application_id():
-    """새 원서에 쓸 번호를 돌려줍니다."""
+    """새 신청서에 쓸 번호를 돌려줍니다."""
     return max(APPLICATIONS) + 1 if APPLICATIONS else 1
 
 

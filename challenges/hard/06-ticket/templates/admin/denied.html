@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, button %}
+
+{% block title %}운영진 포털{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  {{ page_header("운영진 포털", "운영진 초대권이 있어야 들어올 수 있습니다.") }}
+
+  <div class="alert alert-error">운영진 초대권이 필요합니다. 운영 사무국에서 발급받은 초대권으로 다시 접속해 주십시오.</div>
+
+  <div class="form-actions">
+    {{ button("메인으로", "secondary", href="/") }}
+  </div>
+
+</div>
+{% endblock %}

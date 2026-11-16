@@ -41,7 +41,7 @@ def api_detail(app_id):
 
     application = data.APPLICATIONS.get(app_id)
     if application is None:
-        return jsonify({"error": "없는 원서입니다."}), 404
+        return jsonify({"error": "없는 신청서입니다."}), 404
 
     if application["user_id"] != user_id:
         return jsonify({"error": "권한이 없습니다."}), 403

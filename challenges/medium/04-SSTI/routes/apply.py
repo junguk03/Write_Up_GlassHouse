@@ -18,7 +18,7 @@ def create():
         intro = request.form.get("intro", "").strip()
 
         if not school or not major or not intro:
-            flash("출신 학교, 지원 학과, 자기소개를 모두 입력해 주십시오.", "error")
+            flash("소속, 희망 좌석, 신청 사연을 모두 입력해 주십시오.", "error")
             return render_template("apply/form.html", application=None)
 
         app_id = data.next_application_id()
@@ -33,7 +33,7 @@ def create():
             "status": "submitted",
         }
 
-        flash("원서가 제출되었습니다.", "success")
+        flash("신청서가 제출되었습니다.", "success")
         return redirect(url_for("mypage.list_applications"))
 
     return render_template("apply/form.html", application=None)
@@ -83,9 +83,9 @@ def preview():
 
     html = (
         "<div class='container'>"
-        "<h2>자기소개 미리보기</h2>"
+        "<h2>신청 사연 미리보기</h2>"
         "<div class='preview'>" + intro + "</div>"
-        "<p><a href='/apply'>← 원서 작성으로</a></p>"
+        "<p><a href='/apply'>← 신청서 작성으로</a></p>"
         "</div>"
     )
     return render_template_string(html)

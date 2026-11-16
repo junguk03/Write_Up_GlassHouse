@@ -113,9 +113,9 @@ Windows 에서 `rsync` 가 없으면 Git Bash 를 쓰거나, 탐색기로 복사
 3. 플래그 심기 (`config_flags.py` 의 `flag()` 로 `.env` 의 값을 읽어 씁니다)
 4. **포트 정하기.** 한 서버에 모든 문제를 함께 띄우므로 문제마다 포트가 달라야 합니다.
    지금까지 쓴 번호 다음 번호를 씁니다. 두 곳을 같은 번호로 맞춥니다.
-   - `app.py` 맨 아래 `app.run(..., port=8010, debug=False)`
-   - `docker-compose.yml` 의 `ports: - "8010:8010"` (앞이 서버 바깥 포트, 뒤가 컨테이너 안 포트)
-   - `Dockerfile` 의 `EXPOSE 8010`
+   - `app.py` 맨 아래 `app.run(..., port=8011, debug=False)`
+   - `docker-compose.yml` 의 `ports: - "8011:8011"` (앞이 서버 바깥 포트, 뒤가 컨테이너 안 포트)
+   - `Dockerfile` 의 `EXPOSE 8011`
 5. **주석 지우기.** 개발용 설명 주석은 풀이 힌트가 됩니다. 꼭 필요한 짧은 주석만 남깁니다.
 
 | 문제 | 포트 |
@@ -129,8 +129,9 @@ Windows 에서 `rsync` 가 없으면 Git Bash 를 쓰거나, 탐색기로 복사
 | easy/05-sqli | 8007 |
 | easy/05-download | 8008 |
 | medium/04-XSS (보류) | 8009 |
+| hard/06-ticket | 8010 |
 
-다음 문제는 8010 을 씁니다. 8000 은 CTFd 가 씁니다.
+다음 문제는 8011 을 씁니다. 8000 은 CTFd 가 씁니다.
 
 ### 취약하게 만들기
 
@@ -153,7 +154,7 @@ return render_template("mypage/detail.html", application=row)
 > Medium 이상에서는 **있어 보이지만 뚫리는 검증**을 넣는 편이 좋습니다.
 >
 > ```python
-> # 로그인할 때만 목록이 채워지고, 원서를 새로 쓰면 갱신되지 않는 허점
+> # 로그인할 때만 목록이 채워지고, 신청서를 새로 쓰면 갱신되지 않는 허점
 > if str(app_id) not in session.get("my_apps", []):
 >     abort(403)
 > ```
@@ -199,14 +200,14 @@ from config_flags import flag
 APPLICATIONS = {
     43: {
         "id": 43, "user_id": 7, "applicant_name": "정민호",
-        "school": "미러고등학교", "major": "정보보호학과",
+        "school": "미러하우스", "major": "일반석",
         "intro": f"제 포부는 {flag('FLAG_IDOR')} 입니다.",
         "status": "submitted",
     },
 }
 ```
 
-43번은 남의 원서라 정상 버전에서는 403 으로 막힙니다.
+43번은 남의 신청서라 정상 버전에서는 403 으로 막힙니다.
 소유권 검사를 지운 취약 버전에서만 보입니다.
 
 **관리자 화면에만 — Broken Access Control 용**
@@ -218,7 +219,7 @@ app.config["FLAG_ADMIN"] = flag("FLAG_ADMIN")
 
 ```html
 {# templates/admin/list.html #}
-<div class="alert alert-info">심사위원 전용 · 내부 코드 {{ config.FLAG_ADMIN }}</div>
+<div class="alert alert-info">운영진 전용 · 내부 코드 {{ config.FLAG_ADMIN }}</div>
 ```
 
 `config` 는 Jinja 가 기본으로 넘겨주므로 따로 전달하지 않아도 됩니다.
@@ -228,7 +229,7 @@ app.config["FLAG_ADMIN"] = flag("FLAG_ADMIN")
 ```html
 {# templates/result/index.html #}
 {% if applications | selectattr("status", "equalto", "accepted") | list %}
-  <div class="alert alert-success">합격 인증 코드 {{ config.FLAG_ACCEPTED }}</div>
+  <div class="alert alert-success">당첨 인증 코드 {{ config.FLAG_ACCEPTED }}</div>
 {% endif %}
 ```
 
@@ -246,8 +247,8 @@ def notice():
     return current_app.config["FLAG_XSS"]
 ```
 
-지원자 계정으로는 들어갈 수 없습니다.
-저장형 XSS 로 심사위원 브라우저에서 호출해야 얻습니다.
+신청자 계정으로는 들어갈 수 없습니다.
+저장형 XSS 로 운영진 브라우저에서 호출해야 얻습니다.
 
 ### 한 문제에 플래그를 여러 개 두기
 
@@ -279,8 +280,8 @@ FLAG_ACCEPTED=GlassHouse{...}
 
 ## 설명
 
-원서 접수 시스템이 열렸습니다. 다른 지원자의 원서는 볼 수 없어야 하는데,
-어떤 지원자가 자기소개란에 이상한 문자열을 적어 두었다는 제보가 있습니다.
+초대권 신청 시스템이 열렸습니다. 다른 신청자의 신청서는 볼 수 없어야 하는데,
+어떤 신청자가 신청 사연란에 이상한 문자열을 적어 두었다는 제보가 있습니다.
 
 제공 계정: `applicant01 / test1234`
 ```
@@ -458,7 +459,7 @@ for app_id in range(1, 100):
     r = s.get(f"{BASE}/applications/{app_id}")
     m = re.search(r"GlassHouse\{[^}]+\}", r.text)
     if m:
-        print(f"[+] 원서 {app_id} 번에서 발견: {m.group()}")
+        print(f"[+] 신청서 {app_id} 번에서 발견: {m.group()}")
         break
 ```
 

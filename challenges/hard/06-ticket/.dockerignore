@@ -1,0 +1,11 @@
+# 이미지 안에 넣지 않을 것
+# 비밀값은 이미지에 굽지 않고, 실행할 때 env_file 과 읽기 전용 볼륨으로만 넘깁니다.
+
+.env
+keys/ticket_key.json
+vault/
+venv/
+__pycache__/
+*.pyc
+uploads/*
+README.md

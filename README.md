@@ -1,6 +1,6 @@
 # Write_Up_GlassHouse
 
-원서 접수/관리 시스템을 대상으로 한 웹 취약점 진단 및 모의해킹 프로젝트.
+초대권 신청/관리 시스템을 대상으로 한 웹 취약점 진단 및 모의해킹 프로젝트.
 실제 서비스에서 발생할 수 있는 취약점을 재현하고, 공격과 대응 방안을 문서화한다.
 
 ## 문서
@@ -47,6 +47,7 @@ python app.py                 # http://localhost:8000
 | Medium | [03-mass_assignment](challenges/medium/03-mass_assignment) | B조 | 8004 | 미작성 |
 | Medium | [04-SSTI](challenges/medium/04-SSTI) | B조 | 8006 | 미작성 |
 | Medium | [05-race_condition](challenges/medium/05-race_condition) | A조 | 8005 | 미작성 |
+| Hard | [06-ticket](challenges/hard/06-ticket) | A조 | 8010 | 미작성 |
 
 전체 목록은 [challenges/README.md](challenges/README.md) 에 있습니다.
 
@@ -56,8 +57,8 @@ python app.py                 # http://localhost:8000
 |---|---|---|---|
 | 1 | 정욱 | 공통 레이아웃 · 컴포넌트 · 메인 | `feat/layout-base` |
 | 2 | 성원 | 회원가입 · 로그인 · 마이페이지 | `feat/auth` |
-| 3 | 수하 | 원서 작성 · 증빙서류 첨부 · 합격자 조회 | `feat/apply` |
-| 4 | 종성 | 심사위원 포털 · 합격 확정 · 관리자 | `feat/admin` |
+| 3 | 수하 | 신청서 작성 · 확인서류 첨부 · 당첨자 조회 | `feat/apply` |
+| 4 | 종성 | 운영진 포털 · 당첨 확정 · 관리자 | `feat/admin` |
 
 ## 규칙
 

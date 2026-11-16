@@ -18,7 +18,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(INTERNAL_DIR, exist_ok=True)
 for _app in data.APPLICATIONS.values():
     with open(os.path.join(UPLOAD_DIR, _app["document"]), "w", encoding="utf-8") as f:
-        f.write(f"{_app['applicant_name']} 님이 제출한 증빙서류입니다.\n")
+        f.write(f"{_app['applicant_name']} 님이 제출한 확인서류입니다.\n")
 with open(os.path.join(INTERNAL_DIR, "flag.txt"), "w", encoding="utf-8") as f:
     f.write(flag("FLAG_DOWNLOAD"))
 

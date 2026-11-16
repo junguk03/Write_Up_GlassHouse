@@ -1,24 +1,24 @@
 {% extends "base.html" %}
 {% from "components/ui.html" import page_header, badge, empty %}
 
-{% block title %}지원자 목록{% endblock %}
+{% block title %}신청자 목록{% endblock %}
 
 {% block content %}
 <div class="container">
 
-  {{ page_header("지원자 목록", "접수된 원서를 확인하세요.") }}
+  {{ page_header("신청자 목록", "들어온 신청서를 확인하세요.") }}
 
-  <div class="alert alert-info">심사위원 전용 · 내부 인증 코드 {{ config.FLAG_ADMIN }}</div>
+  <div class="alert alert-info">운영진 전용 · 내부 인증 코드 {{ config.FLAG_ADMIN }}</div>
 
   {% if applications %}
     <div class="table-wrap">
       <table class="table">
         <thead>
           <tr>
-            <th scope="col">원서 번호</th>
-            <th scope="col">지원자</th>
-            <th scope="col">출신 학교</th>
-            <th scope="col">지원 학과</th>
+            <th scope="col">신청서 번호</th>
+            <th scope="col">신청자</th>
+            <th scope="col">소속</th>
+            <th scope="col">희망 좌석</th>
             <th scope="col">상태</th>
             <th scope="col">관리</th>
           </tr>
@@ -44,7 +44,7 @@
       </table>
     </div>
   {% else %}
-    {{ empty("등록된 원서가 없습니다.") }}
+    {{ empty("등록된 신청서가 없습니다.") }}
   {% endif %}
 
 </div>

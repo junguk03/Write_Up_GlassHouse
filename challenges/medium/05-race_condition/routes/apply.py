@@ -8,7 +8,7 @@ bp = Blueprint("apply", __name__)
 
 
 def already_applied(user_id):
-    """중복 지원 조회. 입학처 시스템에 묻는 데 시간이 걸린다는 설정입니다."""
+    """중복 신청 조회. 운영 사무국 시스템에 묻는 데 시간이 걸린다는 설정입니다."""
     applied = any(a["user_id"] == user_id for a in data.APPLICATIONS.values())
     time.sleep(0.3)
     return applied
@@ -26,11 +26,11 @@ def create():
         intro = request.form.get("intro", "").strip()
 
         if not school or not major or not intro:
-            flash("출신 학교, 지원 학과, 자기소개를 모두 입력해 주십시오.", "error")
+            flash("소속, 희망 좌석, 신청 사연을 모두 입력해 주십시오.", "error")
             return render_template("apply/form.html", application=None)
 
         if already_applied(user["id"]):
-            flash("추가 접수는 1인 1원서만 가능합니다.", "error")
+            flash("추가 신청은 1인 1매만 가능합니다.", "error")
             return redirect(url_for("mypage.list_applications"))
 
         app_id = data.next_application_id()
@@ -45,7 +45,7 @@ def create():
             "status": "submitted",
         }
 
-        flash("원서가 제출되었습니다.", "success")
+        flash("신청서가 제출되었습니다.", "success")
         return redirect(url_for("mypage.list_applications"))
 
     return render_template("apply/form.html", application=None)

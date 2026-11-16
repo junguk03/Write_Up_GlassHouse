@@ -60,6 +60,9 @@ def signup():
         if username in data.USERS:
             flash("이미 사용 중인 아이디입니다.", "error")
             return render_template("auth/signup.html", form=form)
+        if any(word in username.lower() for word in ("admin", "reviewer", "root", "manager", "operator", "staff")):
+            flash("사용할 수 없는 아이디입니다.", "error")
+            return render_template("auth/signup.html", form=form)
         if not password or password != request.form.get("password_confirm", ""):
             flash("비밀번호가 비어 있거나 서로 다릅니다.", "error")
             return render_template("auth/signup.html", form=form)
