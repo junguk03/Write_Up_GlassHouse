@@ -1,14 +1,16 @@
 import os
 
+from dotenv import load_dotenv
 from flask import Flask, session
 
 import data
-from config_flags import secret
 from routes import admin, apply, auth, files, main, mypage
 from routes.files import UPLOAD_DIR
 
+load_dotenv()
+
 app = Flask(__name__)
-app.config["SECRET_KEY"] = secret("SECRET_KEY") or os.urandom(16).hex()
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") or os.urandom(16).hex()
 app.config["SESSION_COOKIE_NAME"] = "gh_8010"
 
 app.register_blueprint(main.bp)
