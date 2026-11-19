@@ -6,6 +6,7 @@
 from flask import (Blueprint, abort, flash, redirect, render_template,
                    request, session, url_for)
 from markupsafe import Markup
+from flask import render_template_string
 
 import data
 
@@ -67,8 +68,6 @@ def wishlist_detail(wishlist_id):
     wishlist = data.WISHLISTS.get(wishlist_id)
     if wishlist is None:
         abort(404)
-    if wishlist["user_id"] != user["id"]:
-        abort(403)
 
     return render_template("santa/wishlist_detail.html", wishlist=wishlist)
 
@@ -80,7 +79,7 @@ def profile():
         return redirect(url_for("auth.login"))
 
     if request.method == "POST":
-        updates = {k: request.form[k].strip() for k in PROFILE_FIELDS if k in request.form}
+        updates = {k: v.strip() for k, v in request.form.items()}
         if not all(updates.values()):
             flash("이름과 이메일은 비울 수 없습니다.", "error")
             return render_template("santa/profile.html")
@@ -119,7 +118,14 @@ def card_preview():
 
     to = request.form.get("to", "").strip()
     message = request.form.get("message", "").strip()
-    preview = Markup(render_template("santa/card.html", to=to, message=message))
+    card = (
+        '<div class="xmas-card">'
+        '<p class="xmas-card-to">To. ' + to + '</p>'
+        '<p class="xmas-card-message">' + message + '</p>'
+        '<p class="xmas-card-from">From. 글래스하우스 엘프 사무실</p>'
+        '</div>'
+    )
+    preview = Markup(render_template_string(card))
 
     wishlists = list(data.WISHLISTS.values())
     return render_template("santa/elf.html", wishlists=wishlists, preview=preview,

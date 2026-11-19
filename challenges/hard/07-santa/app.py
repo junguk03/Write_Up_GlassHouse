@@ -30,7 +30,7 @@ from flask import Flask, session
 from jinja2 import TemplateNotFound
 
 import data
-from config_flags import secret
+from config_flags import flag, secret
 from routes import admin, apply, auth, main, mypage, santa
 
 app = Flask(__name__)
@@ -40,6 +40,7 @@ app = Flask(__name__)
 # .env 에 없으면 켤 때마다 무작위 값이 쓰여, 서버를 다시 켜면 로그인이 풀립니다.
 app.config["SECRET_KEY"] = secret("SECRET_KEY") or os.urandom(16).hex()
 app.config["SESSION_COOKIE_NAME"] = "gh_8011"
+app.config["FLAG_H07_SANTA"] = flag("FLAG_H07_SANTA")
 
 # 담당자별 라우트를 등록합니다.
 app.register_blueprint(main.bp)
