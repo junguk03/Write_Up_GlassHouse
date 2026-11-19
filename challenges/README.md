@@ -23,6 +23,7 @@ challenges/
 | Medium | [05-race_condition](medium/05-race_condition) | A조 | 8005 | 미작성 |
 | Hard | [06-ticket](hard/06-ticket) | A조 | 8010 | 미작성 |
 | Hard | [06-convert](hard/06-convert) | B조 | 8011 | 미작성 |
+| Hard | [07-santa](hard/07-santa) | A조 | 8011 | 미작성 |
 
 ## 새 문제 만들기
 

@@ -131,6 +131,7 @@ Windows 에서 `rsync` 가 없으면 Git Bash 를 쓰거나, 탐색기로 복사
 | medium/04-XSS (보류) | 8009 |
 | hard/06-ticket | 8010 |
 | hard/06-convert | 8011 |
+| hard/07-santa | 8011 |
 
 다음 문제는 8012 를 씁니다. 8000 은 CTFd 가 씁니다.
 

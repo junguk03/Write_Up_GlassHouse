@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, button %}
+
+{% block title %}위시리스트 상세{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {{ page_header(wishlist.title, wishlist.owner_name ~ "님의 위시리스트") }}
+        <div class="card">
+            <p><strong>받고 싶은 선물</strong></p>
+            <ul>
+                {% for item in wishlist["items"] %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+            {% if wishlist.memo %}
+                <p><strong>산타에게 남기는 메모</strong><br>{{ wishlist.memo }}</p>
+            {% endif %}
+        </div>
+        <div class="form-actions">
+            {{ button("목록으로", "secondary", href="/wishlist") }}
+        </div>
+    </div>
+{% endblock %}

@@ -48,6 +48,7 @@ python app.py                 # http://localhost:8000
 | Medium | [04-SSTI](challenges/medium/04-SSTI) | B조 | 8006 | 미작성 |
 | Medium | [05-race_condition](challenges/medium/05-race_condition) | A조 | 8005 | 미작성 |
 | Hard | [06-ticket](challenges/hard/06-ticket) | A조 | 8010 | 미작성 |
+| Hard | [07-santa](challenges/hard/07-santa) | A조 | 8011 | 미작성 |
 
 전체 목록은 [challenges/README.md](challenges/README.md) 에 있습니다.
 
