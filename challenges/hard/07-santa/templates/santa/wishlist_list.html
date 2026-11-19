@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, card, button, empty %}
+
+{% block title %}내 위시리스트{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {{ page_header("내 위시리스트", "산타에게 받고 싶은 선물을 적어 두세요.") }}
+
+        {% if wishlists %}
+            <div class="card-grid">
+                {% for w in wishlists %}
+                    {{ card(w.title,
+                body=w["items"] | join(", "),
+                meta="위시리스트 " ~ w.id ~ "번",
+                href="/wishlist/" ~ w.id) }}
+                {% endfor %}
+            </div>
+        {% else %}
+            {{ empty("등록된 위시리스트가 없습니다.") }}
+        {% endif %}
+
+        <div class="form-actions">
+            {{ button("새 위시리스트", "primary", href="/wishlist/new") }}
+        </div>
+    </div>
+{% endblock %}
