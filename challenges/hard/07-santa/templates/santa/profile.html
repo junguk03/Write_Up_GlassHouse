@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, field, button %}
+
+{% block title %}프로필{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {{ page_header("프로필", "시크릿 산타에게 보일 이름과 연락처입니다.") }}
+        <form class="form" method="post" action="/profile">
+            <p class="help-text">아이디 · {{ user.username }} (바꿀 수 없습니다)</p>
+            {{ field("이름", "name", value=user.name, required=true) }}
+            {{ field("이메일", "email", type="email", value=user.email, required=true) }}
+            <div class="form-actions">
+                {{ button("저장", "primary", type="submit") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}

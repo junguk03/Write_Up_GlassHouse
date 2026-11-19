@@ -1,0 +1,43 @@
+# 서버를 도커로 띄웁니다.
+#
+#   docker compose up --build -d
+#
+# 컨테이너는 두 개입니다.
+#   web        원서 접수 앱            바깥 공개 (8011)
+#   converter  내부 문서 변환 도구      공개 안 함 (내부망 전용)
+#
+# web 과 converter 는 uploads 볼륨을 함께 써서, web 이 받은 파일을
+# converter 가 같은 자리에서 읽습니다.
+
+services:
+  web:
+    build: .
+    command: python app.py
+    ports:
+      - "8011:8011"
+    env_file: .env
+    volumes:
+      - uploads:/srv/uploads
+    networks:
+      - default
+      - internal
+    restart: unless-stopped
+
+  converter:
+    build: .
+    command: python converter.py
+    # 바깥으로 포트를 열지 않습니다. 내부망에서만 web 이 http://converter:9000 으로 부릅니다.
+    environment:
+      FLAG_E07_CONVERT: ${FLAG_E07_CONVERT}
+    volumes:
+      - uploads:/srv/uploads
+    networks:
+      - internal
+    restart: unless-stopped
+
+volumes:
+  uploads:
+
+networks:
+  internal:
+    internal: true

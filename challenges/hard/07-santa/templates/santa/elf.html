@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, field, textarea, button, empty %}
+
+{% block title %}엘프 사무실{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  {{ page_header("엘프 사무실", "위시리스트를 확인하고 크리스마스 카드를 준비합니다.") }}
+
+  {% if wishlists %}
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">번호</th>
+            <th scope="col">주인</th>
+            <th scope="col">제목</th>
+            <th scope="col">선물</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for w in wishlists %}
+            <tr>
+              <td>{{ w.id }}</td>
+              <td>{{ w.owner_name }}</td>
+              <td>{{ w.title }}</td>
+              <td>{{ w["items"] | join(", ") }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    {{ empty("등록된 위시리스트가 없습니다.") }}
+  {% endif %}
+
+  <h2 class="section-title">카드 미리보기</h2>
+  <form class="form" method="post" action="/elf/card/preview">
+    {{ field("받는 사람", "to", value=form.to if form else "", required=true) }}
+    {{ textarea("카드 문구", "message", value=form.message if form else "", rows=4, required=true) }}
+    <div class="form-actions">
+      {{ button("미리보기", "primary", type="submit") }}
+    </div>
+  </form>
+
+  {% if preview %}
+    <div class="card">{{ preview }}</div>
+  {% endif %}
+
+</div>
+{% endblock %}
