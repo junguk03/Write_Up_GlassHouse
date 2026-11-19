@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, field, button %}
+
+{% block title %}비밀번호 찾기{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {{ page_header("비밀번호 찾기", "가입할 때 등록한 아이디와 이메일을 입력하세요.") }}
+        <form class="form" method="post" action="/forgot">
+            {{ field("아이디", "username", required=true) }}
+            {{ field("이메일", "email", type="email", required=true) }}
+            <div class="form-actions">
+                {{ button("취소", "secondary", href="/login") }}
+                {{ button("인증코드 받기", "primary", type="submit") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}
