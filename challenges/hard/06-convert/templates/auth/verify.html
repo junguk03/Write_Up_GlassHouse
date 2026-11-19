@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, field, button %}
+
+{% block title %}인증코드 확인{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {{ page_header("인증코드 확인", "이메일로 받은 6자리 인증코드를 입력하세요.") }}
+        <form class="form" method="post" action="/forgot/verify">
+            {{ field("인증코드", "code", required=true, help="5회 틀리면 처음부터 다시 진행해야 합니다.") }}
+            <div class="form-actions">
+                {{ button("취소", "secondary", href="/login") }}
+                {{ button("확인", "primary", type="submit") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}

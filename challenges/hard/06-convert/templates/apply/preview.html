@@ -1,0 +1,28 @@
+{#
+  apply/preview.html - SNS 주소 미리보기
+
+  신청서에 적은 SNS 주소가 제대로 열리는지 서버가 대신 확인해 보여 줍니다.
+#}
+{% extends "base.html" %}
+{% from "components/ui.html" import button, field, page_header %}
+
+{% block title %}SNS 미리보기{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  {{ page_header("SNS 미리보기", "신청서에 적은 SNS 주소가 제대로 열리는지 확인합니다.") }}
+
+  <form class="form" method="get" action="/preview">
+    {{ field("주소", "url", type="text", value=url, placeholder="https://") }}
+    <div class="form-actions">
+      {{ button("미리보기", "primary", type="submit") }}
+    </div>
+  </form>
+
+  {% if result %}
+    <pre class="preview-box" style="white-space:pre-wrap;word-break:break-all;background:#f8f9fa;border:1px solid #dee2e6;padding:14px;border-radius:4px">{{ result }}</pre>
+  {% endif %}
+
+</div>
+{% endblock %}
