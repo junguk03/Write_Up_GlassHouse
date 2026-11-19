@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}임시저장 불러오기{% endblock %}
+{% block content %}
+<div class="container">
+  <h2>임시저장 불러오기</h2>
+  <p>저장해 둔 신청서 내용입니다. 이어서 작성하세요.</p>
+  <pre>{{ draft }}</pre>
+  <p><a href="/apply">← 신청서 작성으로</a></p>
+</div>
+{% endblock %}

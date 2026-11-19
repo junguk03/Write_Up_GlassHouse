@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, badge, empty %}
+
+{% block title %}신청자 목록{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  {{ page_header("신청자 목록", "들어온 신청서를 확인하세요.") }}
+
+  {% if applications %}
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">신청서 번호</th>
+            <th scope="col">신청자</th>
+            <th scope="col">소속</th>
+            <th scope="col">희망 좌석</th>
+            <th scope="col">상태</th>
+            <th scope="col">관리</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for application in applications %}
+            <tr>
+              <td>{{ application.id }}</td>
+              <td>{{ application.applicant_name }}</td>
+              <td>{{ application.school }}</td>
+              <td>{{ application.major }}</td>
+              <td>{{ badge(application.status) }}</td>
+              <td>
+                <a class="btn btn-secondary btn-sm"
+                   href="/admin/applications/{{ application.id }}">
+                  상세보기
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    {{ empty("등록된 신청서가 없습니다.") }}
+  {% endif %}
+
+</div>
+{% endblock %}
