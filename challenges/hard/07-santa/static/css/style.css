@@ -309,3 +309,9 @@ li { list-style: none; }
   .form-actions { flex-direction: column-reverse; }
   .form-actions .btn { width: 100%; }
 }
+
+/* 시크릿 산타 카드 */
+.xmas-card { border: 2px dashed #c0392b; border-radius: 8px; padding: 20px; background: #fffaf5; }
+.xmas-card-to { font-weight: 700; }
+.xmas-card-message { white-space: pre-wrap; margin: 12px 0; }
+.xmas-card-from { text-align: right; color: #666; }

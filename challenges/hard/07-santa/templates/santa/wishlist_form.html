@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "components/ui.html" import page_header, field, textarea, button %}
+
+{% block title %}새 위시리스트{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {{ page_header("새 위시리스트", "선물은 한 줄에 하나씩 적습니다.") }}
+        <form class="form" method="post" action="/wishlist/new">
+            {{ field("제목", "title", required=true) }}
+            {{ textarea("받고 싶은 선물", "items", rows=5, required=true) }}
+            {{ textarea("산타에게 남기는 메모", "memo", rows=3) }}
+            <div class="form-actions">
+                {{ button("취소", "secondary", href="/wishlist") }}
+                {{ button("등록", "primary", type="submit") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}

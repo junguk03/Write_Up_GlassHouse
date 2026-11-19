@@ -31,7 +31,7 @@ from jinja2 import TemplateNotFound
 
 import data
 from config_flags import secret
-from routes import admin, apply, auth, main, mypage
+from routes import admin, apply, auth, main, mypage, santa
 
 app = Flask(__name__)
 
@@ -47,6 +47,7 @@ app.register_blueprint(auth.bp)
 app.register_blueprint(mypage.bp)
 app.register_blueprint(apply.bp)
 app.register_blueprint(admin.bp)
+app.register_blueprint(santa.bp)
 
 @app.context_processor
 def inject_globals():

@@ -31,7 +31,9 @@
           <span class="utilbar-user"><strong>{{ user.name }}</strong>님</span>
           {% if user.role == 'admin' %}
             <a href="/admin">운영진 포털</a>
+            <a href="/elf">엘프 사무실</a>
           {% endif %}
+          <a href="/profile">프로필</a>
           <a href="/logout">로그아웃</a>
         {% else %}
           <a href="/login">로그인</a>
@@ -57,6 +59,7 @@
         <a href="/apply">신청서 작성</a>
         <a href="/mypage">내 신청서 조회</a>
         <a href="/result">당첨 조회</a>
+        <a href="/wishlist">시크릿 산타</a>
       </nav>
     </div>
   </header>
