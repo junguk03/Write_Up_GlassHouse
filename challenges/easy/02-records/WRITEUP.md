@@ -202,11 +202,3 @@ $ python3 exploit.py http://127.0.0.1:8001
      → id=50 신청서 major 필드의 GlassHouse{...} 유출
 ```
 
----
-
-## 캡처 체크리스트 (images/ 에 저장)
-- `01-mypage-own.png` — 로그인 후 `/mypage`, 내 신청서만 보이는 화면
-- `02-direct-403.png` — `/applications/50` 직접 접근 → 403(Forbidden)
-- `03-idor-code.png` — `routes/mypage.py` 의 `detail()` (view_id 소유권 미검사 부분 하이라이트)
-- `04-own-detail.png` — `/applications/51` 내 신청서 정상 상세 → **3-2 정상 동작**에 배치 (대조용)
-- `05-flag.png` — `/applications/51?view=50` → 내용이 50번으로 바뀌고 플래그 노출 → **5 풀이 결과**
