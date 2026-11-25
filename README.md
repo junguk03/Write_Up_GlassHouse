@@ -43,7 +43,7 @@ python app.py                 # http://localhost:8000
 | Easy | [02-portal](challenges/easy/02-portal) | B조 | 8002 | 미작성 |
 | Easy | [05-sqli](challenges/easy/05-sqli) | B조 | 8007 | 미작성 |
 | Easy | [05-download](challenges/easy/05-download) | B조 | 8008 | 미작성 |
-| Medium | [03-bac](challenges/medium/03-bac) | A조 | 8003 | 미작성 |
+| Medium | [03-party-desk](challenges/medium/03-party-desk) | A조 | 8003 | 미작성 |
 | Medium | [03-mass_assignment](challenges/medium/03-mass_assignment) | B조 | 8004 | 미작성 |
 | Medium | [04-SSTI](challenges/medium/04-SSTI) | B조 | 8006 | 미작성 |
 | Medium | [05-race_condition](challenges/medium/05-race_condition) | A조 | 8005 | 미작성 |

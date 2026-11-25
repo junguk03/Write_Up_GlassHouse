@@ -122,7 +122,7 @@ Windows 에서 `rsync` 가 없으면 Git Bash 를 쓰거나, 탐색기로 복사
 |---|---|
 | easy/02-idor | 8001 |
 | easy/02-portal | 8002 |
-| medium/03-bac | 8003 |
+| medium/03-party-desk | 8003 |
 | medium/03-mass_assignment | 8004 |
 | medium/05-race_condition | 8005 |
 | medium/04-SSTI | 8006 |
