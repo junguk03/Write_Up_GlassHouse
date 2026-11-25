@@ -113,27 +113,50 @@ Windows 에서 `rsync` 가 없으면 Git Bash 를 쓰거나, 탐색기로 복사
 3. 플래그 심기 (`config_flags.py` 의 `flag()` 로 `.env` 의 값을 읽어 씁니다)
 4. **포트 정하기.** 한 서버에 모든 문제를 함께 띄우므로 문제마다 포트가 달라야 합니다.
    지금까지 쓴 번호 다음 번호를 씁니다. 두 곳을 같은 번호로 맞춥니다.
-   - `app.py` 맨 아래 `app.run(..., port=8011, debug=False)`
-   - `docker-compose.yml` 의 `ports: - "8011:8011"` (앞이 서버 바깥 포트, 뒤가 컨테이너 안 포트)
-   - `Dockerfile` 의 `EXPOSE 8011`
+   - `app.py` 맨 아래 `app.run(..., port=8014, debug=False)`
+   - `docker-compose.yml` 의 `ports: - "8014:8014"` (앞이 서버 바깥 포트, 뒤가 컨테이너 안 포트)
+   - `Dockerfile` 의 `EXPOSE 8014`
 5. **주석 지우기.** 개발용 설명 주석은 풀이 힌트가 됩니다. 꼭 필요한 짧은 주석만 남깁니다.
 
 | 문제 | 포트 |
 |---|---|
-| easy/02-idor | 8001 |
+| easy/02-records | 8001 |
 | easy/02-portal | 8002 |
-| medium/03-party-desk | 8003 |
-| medium/03-mass_assignment | 8004 |
-| medium/05-race_condition | 8005 |
-| medium/04-SSTI | 8006 |
-| easy/05-sqli | 8007 |
-| easy/05-download | 8008 |
+| medium/03-party-desk | 8003 (대회 때는 팀별 8301~) |
+| medium/03-review | 8004 |
+| medium/05-deadline | 8005 |
+| medium/04-mirror | 8006 |
+| easy/05-staff | 8007 |
+| easy/05-gift | 8008 |
 | medium/04-XSS (보류) | 8009 |
 | hard/06-ticket | 8010 |
-| hard/06-convert | 8011 |
-| hard/07-santa | 8011 |
+| hard/06-convert (미사용) | 8011 |
+| hard/06-draft (미사용) | 8012 |
+| hard/06-santa | 8013 |
 
-다음 문제는 8012 를 씁니다. 8000 은 CTFd 가 씁니다.
+다음 문제는 8014 를 씁니다. 8000 은 CTFd 가 씁니다.
+
+### 팀마다 따로 띄우는 문제 (03-party-desk)
+
+03-party-desk 는 한 팀이 비밀번호를 바꾸면 다른 팀에도 남습니다. 그래서 대회 때는 팀마다 따로 띄웁니다.
+같은 이미지로 컨테이너를 팀 수만큼 만들고, 서버 바깥 포트만 다르게 엽니다.
+
+```
+서버
+├── party-desk-team1 컨테이너   안 8003  →  바깥 8301
+├── party-desk-team2 컨테이너   안 8003  →  바깥 8302
+└── …
+```
+
+```bash
+cd challenges/medium/03-party-desk
+./teams.sh up 5      # 팀 1~5 켜기 (8301 ~ 8305)
+./teams.sh down 5    # 끄기
+```
+
+- 컨테이너마다 데이터가 따로라서 한 팀의 변경이 다른 팀에 보이지 않습니다.
+- 그냥 `docker compose up` 으로 켜면 예전처럼 8003 하나로 뜹니다 (혼자 확인할 때).
+- 8301~8399 는 팀용으로 비워 둡니다. CTFd 의 03-party-desk 설명에 팀별 포트 표를 넣습니다.
 
 ### 취약하게 만들기
 
@@ -434,6 +457,7 @@ Network 탭에서 주고받은 요청을 확인하는 방법도 많이 씁니다
 ## 2. 공격 과정
 
 요청과 응답을 그대로 붙여 넣습니다. 스크린샷이 있으면 같이 넣습니다.
+마지막에 익스플로잇(아래 `solver.py` 또는 최종 요청)을 붙입니다.
 
 ## 3. 원인
 

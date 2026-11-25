@@ -15,7 +15,7 @@ def list_applications():
     applications = [a for a in data.APPLICATIONS.values()
                     if a ["user_id"] == user_id]
 
-    flag = current_app.config["FLAG_RACE"] if len(applications) >= 2 else None
+    flag = current_app.config["FLAG_DEADLINE"] if len(applications) >= 2 else None
     return render_template("mypage/list.html", applications=applications, flag=flag)
 
 

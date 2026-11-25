@@ -13,17 +13,18 @@ challenges/
 
 | 난이도 | 문제 | 출제 | 포트 | 풀이 |
 |---|---|---|---|---|
-| Easy | [02-idor](easy/02-idor) | A조 | 8001 | 미작성 |
-| Easy | [02-portal](easy/02-portal) | B조 | 8002 | 미작성 |
-| Easy | [05-sqli](easy/05-sqli) | B조 | 8007 | 미작성 |
-| Easy | [05-download](easy/05-download) | B조 | 8008 | 미작성 |
-| Medium | [03-party-desk](medium/03-party-desk) | A조 | 8003 | 미작성 |
-| Medium | [03-mass_assignment](medium/03-mass_assignment) | B조 | 8004 | 미작성 |
-| Medium | [04-SSTI](medium/04-SSTI) | B조 | 8006 | 미작성 |
-| Medium | [05-race_condition](medium/05-race_condition) | A조 | 8005 | 미작성 |
-| Hard | [06-ticket](hard/06-ticket) | A조 | 8010 | 미작성 |
-| Hard | [06-convert](hard/06-convert) | B조 | 8011 | 미작성 |
-| Hard | [07-santa](hard/07-santa) | A조 | 8011 | 미작성 |
+| Easy | [02-records](easy/02-records) | A조 | 8001 | [solution.md](../solution/easy/02-records/solution.md) |
+| Easy | [02-portal](easy/02-portal) | B조 | 8002 | [solution.md](../solution/easy/02-portal/solution.md) |
+| Easy | [05-staff](easy/05-staff) | B조 | 8007 | [solution.md](../solution/easy/05-staff/solution.md) |
+| Easy | [05-gift](easy/05-gift) | B조 | 8008 | [solution.md](../solution/easy/05-gift/solution.md) |
+| Medium | [03-party-desk](medium/03-party-desk) | A조 | 8003 (팀별 8301~) | [solution.md](../solution/medium/03-party-desk/solution.md) |
+| Medium | [03-review](medium/03-review) | B조 | 8004 | [solution.md](../solution/medium/03-review/solution.md) |
+| Medium | [04-mirror](medium/04-mirror) | B조 | 8006 | [solution.md](../solution/medium/04-mirror/solution.md) |
+| Medium | [05-deadline](medium/05-deadline) | A조 | 8005 | [solution.md](../solution/medium/05-deadline/solution.md) |
+| Hard | [06-ticket](hard/06-ticket) | A조 | 8010 | [solution.md](../solution/hard/06-ticket/solution.md) |
+| Hard | [06-santa](hard/06-santa) | A조 | 8013 | [solution.md](../solution/hard/06-santa/solution.md) |
+| Hard | [06-convert](hard/06-convert) | B조 | 8011 | 대회 미사용 |
+| Hard | [06-draft](hard/06-draft) | B조 | 8012 | 대회 미사용 |
 
 ## 새 문제 만들기
 

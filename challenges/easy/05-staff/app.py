@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = secret("SECRET_KEY") or os.urandom(16).hex()
 
 app.config["SESSION_COOKIE_NAME"] = "gh_8007"
-app.config["FLAG_SQLI"] = flag("FLAG_SQLI")
+app.config["FLAG_STAFF"] = flag("FLAG_STAFF")
 
 app.register_blueprint(main.bp)
 app.register_blueprint(auth.bp)

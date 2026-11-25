@@ -23,7 +23,7 @@ USERS = {
 APPLICATIONS = {
     50: {
         "id": 50, "user_id": 8, "applicant_name": "flag",
-        "school": "Flag!!", "major": flag("FLAG_IDOR"),
+        "school": "Flag!!", "major": flag("FLAG_RECORDS"),
         "intro": "SUCCESS Find FLAGG",
         "status": "submitted",
     },
