@@ -2,7 +2,7 @@ services:
   web:
     build: .
     ports:
-      - "8010:8010"
+      - "8009:8009"
     env_file: .env
     restart: unless-stopped
     # 비밀 파일은 읽기 전용으로만 넘깁니다.

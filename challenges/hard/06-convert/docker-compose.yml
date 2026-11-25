@@ -3,7 +3,7 @@
 #   docker compose up --build -d
 #
 # 컨테이너는 두 개입니다.
-#   web        원서 접수 앱            바깥 공개 (8011)
+#   web        원서 접수 앱            바깥 공개 (8012)
 #   converter  내부 문서 변환 도구      공개 안 함 (내부망 전용)
 #
 # web 과 converter 는 uploads 볼륨을 함께 써서, web 이 받은 파일을
@@ -14,7 +14,7 @@ services:
     build: .
     command: python app.py
     ports:
-      - "8011:8011"
+      - "8012:8012"
     env_file: .env
     volumes:
       - uploads:/srv/uploads

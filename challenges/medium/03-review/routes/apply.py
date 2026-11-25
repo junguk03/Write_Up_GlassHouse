@@ -56,7 +56,7 @@ def edit(app_id):
         for key in request.form:
             application[key] = request.form[key]
         if application["status"] == "accepted":
-            flash("당첨 인증 코드 " + current_app.config["FLAG_PROMOTED"], "success")
+            flash("당첨 인증 코드 " + current_app.config["FLAG_REVIEW"], "success")
         return redirect(url_for("mypage.list_applications"))
 
     return render_template("apply/form.html", application=application)

@@ -8,7 +8,7 @@ import pickle
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 KEY_PATH = os.path.join(BASE_DIR, "keys", "ticket_key.json")
 
-COOKIE_NAME = "gh_8010_ticket"
+COOKIE_NAME = "gh_8009_ticket"
 LEGACY_PREFIX = "v1."
 
 

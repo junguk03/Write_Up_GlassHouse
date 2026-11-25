@@ -1,8 +1,9 @@
 services:
   web:
     build: .
+    image: glasshouse-party-desk
     ports:
-      - "8003:8003"
+      - "${TEAM_PORT:-8003}:8003"
     env_file: .env
     restart: unless-stopped
     mem_limit: 256m

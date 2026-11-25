@@ -9,7 +9,7 @@ from routes import admin, apply, auth, files, main, mypage
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = secret("SECRET_KEY") or os.urandom(16).hex()
-app.config["SESSION_COOKIE_NAME"] = "gh_8009"
+app.config["SESSION_COOKIE_NAME"] = "gh_8011"
 app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
 
 WAITLIST = """2026 크리스마스 파티 추가 당첨자 명단 (대외비)
@@ -37,4 +37,4 @@ def inject_globals():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8009, debug=False, threaded=True)
+    app.run(host="0.0.0.0", port=8011, debug=False, threaded=True)

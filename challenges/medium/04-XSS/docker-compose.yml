@@ -2,7 +2,7 @@ services:
   web:
     build: .
     ports:
-      - "8009:8009"
+      - "8011:8011"
     env_file: .env
     environment:
       BOT_URL: http://bot:5000/visit
@@ -15,7 +15,7 @@ services:
     build: ./bot
     env_file: .env
     environment:
-      TARGET_URL: http://web:8009
+      TARGET_URL: http://web:8011
     networks:
       - back
     restart: unless-stopped

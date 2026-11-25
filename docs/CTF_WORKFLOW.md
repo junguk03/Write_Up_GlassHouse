@@ -17,7 +17,7 @@ challenges/easy/04-sample/          app/ 을 복사한 사본입니다. A조가 
 challenges/easy/04-upload/        또 다른 사본입니다. B조가 여기서 취약하게 만듭니다.
 ```
 
-두 조가 똑같이 `routes/mypage.py` 를 수정해도 **충돌하지 않습니다.**
+두 조가 똑같이 `routes/mypage.py` 를 수정해도 충돌하지 않습니다.
 경로가 다르면 깃에게는 완전히 다른 파일이기 때문입니다.
 
 ```
@@ -65,8 +65,8 @@ challenges/easy/04-sample/
     └── writeup.md       글로 쓴 풀이
 ```
 
-**`solution/` 을 나중에 추가하는 것이 핵심입니다.**
-풀이를 브랜치에 숨길 필요 없이 **폴더를 나중에 더하기만** 하면 되므로,
+`solution/` 을 나중에 추가하는 것이 핵심입니다.
+풀이를 브랜치에 숨길 필요 없이 폴더를 나중에 더하기만 하면 되므로,
 문제는 만들자마자 `develop` 에 병합해도 답이 새지 않습니다.
 
 난이도 폴더 아래에 `<주차>-<짧은이름>` 으로 만듭니다.
@@ -78,7 +78,7 @@ challenges/easy/04-sample/
 
 ### 폴더 준비
 
-**복사 전에 반드시 `develop` 을 최신화합니다.**
+복사 전에 반드시 `develop` 을 최신화합니다.
 뒤처진 상태에서 복사하면 의도하지 않은 구멍이 섞여 들어갑니다.
 
 ```bash
@@ -98,7 +98,7 @@ rsync -a --exclude venv --exclude __pycache__ --exclude '*.pyc' \
 | `venv/` | 사람마다 다시 만드는 폴더입니다. 수십 MB 라 복사하면 무거워집니다 |
 | `__pycache__/` | 파이썬이 만든 캐시입니다 |
 
-`.env` 는 **같이 복사됩니다.** 원본의 값이 그대로 따라오므로 다음 단계에서 반드시 바꿉니다.
+`.env` 는 같이 복사됩니다. 원본의 값이 그대로 따라오므로 다음 단계에서 반드시 바꿉니다.
 `app/.env` 가 없으면 먼저 `cp app/.env.example app/.env` 로 만들어 둡니다.
 
 Windows 에서 `rsync` 가 없으면 Git Bash 를 쓰거나, 탐색기로 복사한 뒤
@@ -106,34 +106,57 @@ Windows 에서 `rsync` 가 없으면 Git Bash 를 쓰거나, 탐색기로 복사
 
 복사한 뒤 할 일은 셋입니다.
 
-1. **`.env` 바꾸기.** 플래그 값, 플래그 변수 이름, `ADMIN_PASSWORD`, `SECRET_KEY` 를
+1. `.env` 바꾸기. 플래그 값, 플래그 변수 이름, `ADMIN_PASSWORD`, `SECRET_KEY` 를
    다른 문제와 겹치지 않게 바꿉니다([규칙 1-3](RULES.md#1-3-플래그와-변수-이름은-문제마다-다르게-합니다), [1-4](RULES.md#1-4-알면-바로-뚫리는-값도-env-로-뺍니다)).
    `.env.example` 에도 바꾼 변수 이름을 적어 둡니다. 값은 적지 않습니다.
 2. 취약하게 만들기 (검사하는 줄 삭제 또는 변형)
 3. 플래그 심기 (`config_flags.py` 의 `flag()` 로 `.env` 의 값을 읽어 씁니다)
-4. **포트 정하기.** 한 서버에 모든 문제를 함께 띄우므로 문제마다 포트가 달라야 합니다.
+4. 포트 정하기. 한 서버에 모든 문제를 함께 띄우므로 문제마다 포트가 달라야 합니다.
    지금까지 쓴 번호 다음 번호를 씁니다. 두 곳을 같은 번호로 맞춥니다.
-   - `app.py` 맨 아래 `app.run(..., port=8011, debug=False)`
-   - `docker-compose.yml` 의 `ports: - "8011:8011"` (앞이 서버 바깥 포트, 뒤가 컨테이너 안 포트)
-   - `Dockerfile` 의 `EXPOSE 8011`
-5. **주석 지우기.** 개발용 설명 주석은 풀이 힌트가 됩니다. 꼭 필요한 짧은 주석만 남깁니다.
+   - `app.py` 맨 아래 `app.run(..., port=8014, debug=False)`
+   - `docker-compose.yml` 의 `ports: - "8014:8014"` (앞이 서버 바깥 포트, 뒤가 컨테이너 안 포트)
+   - `Dockerfile` 의 `EXPOSE 8014`
+5. 주석 지우기. 개발용 설명 주석은 풀이 힌트가 됩니다. 꼭 필요한 짧은 주석만 남깁니다.
 
 | 문제 | 포트 |
 |---|---|
-| easy/02-idor | 8001 |
+| easy/02-records | 8001 |
 | easy/02-portal | 8002 |
-| medium/03-party-desk | 8003 |
-| medium/03-mass_assignment | 8004 |
-| medium/05-race_condition | 8005 |
-| medium/04-SSTI | 8006 |
-| easy/05-sqli | 8007 |
-| easy/05-download | 8008 |
-| medium/04-XSS (보류) | 8009 |
-| hard/06-ticket | 8010 |
-| hard/06-convert | 8011 |
-| hard/07-santa | 8011 |
+| medium/03-party-desk | 8003 (대회 때는 팀별 8301~) |
+| medium/03-review | 8004 |
+| medium/05-deadline | 8005 |
+| medium/04-mirror | 8006 |
+| easy/05-staff | 8007 |
+| easy/05-gift | 8008 |
+| hard/06-ticket | 8009 |
+| hard/06-santa | 8010 |
+| medium/04-XSS (미사용) | 8011 |
+| hard/06-convert (미사용) | 8012 |
+| hard/06-draft (미사용) | 8013 |
 
-다음 문제는 8012 를 씁니다. 8000 은 CTFd 가 씁니다.
+다음 문제는 8014 를 씁니다. 8000 은 CTFd 가 씁니다.
+
+### 팀마다 따로 띄우는 문제 (03-party-desk)
+
+03-party-desk 는 한 팀이 비밀번호를 바꾸면 다른 팀에도 남습니다. 그래서 대회 때는 팀마다 따로 띄웁니다.
+같은 이미지로 컨테이너를 팀 수만큼 만들고, 서버 바깥 포트만 다르게 엽니다.
+
+```
+서버
+├── party-desk-team1 컨테이너   안 8003  →  바깥 8301
+├── party-desk-team2 컨테이너   안 8003  →  바깥 8302
+└── …
+```
+
+```bash
+cd challenges/medium/03-party-desk
+./teams.sh up 5      # 팀 1~5 켜기 (8301 ~ 8305)
+./teams.sh down 5    # 끄기
+```
+
+- 컨테이너마다 데이터가 따로라서 한 팀의 변경이 다른 팀에 보이지 않습니다.
+- 그냥 `docker compose up` 으로 켜면 예전처럼 8003 하나로 뜹니다 (혼자 확인할 때).
+- 8301~8399 는 팀용으로 비워 둡니다. CTFd 의 03-party-desk 설명에 팀별 포트 표를 넣습니다.
 
 ### 취약하게 만들기
 
@@ -153,7 +176,7 @@ return render_template("mypage/detail.html", application=row)
 ```
 
 > 소스를 공개하는 화이트박스 방식이므로 검사를 아예 없애면 금방 발견됩니다.
-> Medium 이상에서는 **있어 보이지만 뚫리는 검증**을 넣는 편이 좋습니다.
+> Medium 이상에서는 있어 보이지만 뚫리는 검증을 넣는 편이 좋습니다.
 >
 > ```python
 > # 로그인할 때만 목록이 채워지고, 신청서를 새로 쓰면 갱신되지 않는 허점
@@ -166,14 +189,14 @@ return render_template("mypage/detail.html", application=row)
 플래그는 `.env` 에 두고 코드가 읽어 씁니다([규칙 1-2](RULES.md#1-2-플래그는-env-에만-둡니다)).
 데이터베이스를 쓰지 않으므로 별도의 초기화 스크립트는 필요 없습니다.
 
-**`config_flags.py`** — 깃에 올립니다. `app/` 에 들어 있어 복사하면 따라옵니다.
+`config_flags.py` — 깃에 올립니다. `app/` 에 들어 있어 복사하면 따라옵니다.
 
 | 함수 | 쓰는 곳 | `.env` 에 없으면 |
 |---|---|---|
 | `flag("FLAG_...")` | 플래그 | 더미 플래그를 돌려줍니다 |
 | `secret("ADMIN_PASSWORD")` | 비밀번호, `SECRET_KEY` | `None` 을 돌려줘 그 계정은 로그인되지 않습니다 |
 
-**`.env.example`** — 깃에 올립니다. 변수 이름만 알려 주는 견본입니다.
+`.env.example` — 깃에 올립니다. 변수 이름만 알려 주는 견본입니다.
 
 ```
 SECRET_KEY=change-me
@@ -181,7 +204,7 @@ ADMIN_PASSWORD=change-me
 FLAG_IDOR=GlassHouse{여기에_실제_플래그를_넣습니다}
 ```
 
-**`.env`** — 깃에 올라가지 않습니다. 출제 조만 실제 값을 가집니다.
+`.env` — 깃에 올라가지 않습니다. 출제 조만 실제 값을 가집니다.
 
 ```
 SECRET_KEY=a3f9c21b7e
@@ -191,9 +214,9 @@ FLAG_IDOR=GlassHouse{0wn3rsh1p_ch3ck_m1ss1ng}
 
 ### 플래그를 어디에 두는가
 
-**공격에 성공해야만 닿는 자리**에 둡니다. 취약점 종류마다 자리가 다릅니다.
+공격에 성공해야만 닿는 자리에 둡니다. 취약점 종류마다 자리가 다릅니다.
 
-**데이터 안에 — IDOR 용**
+데이터 안에 — IDOR 용
 
 ```python
 # data.py
@@ -212,7 +235,7 @@ APPLICATIONS = {
 43번은 남의 신청서라 정상 버전에서는 403 으로 막힙니다.
 소유권 검사를 지운 취약 버전에서만 보입니다.
 
-**관리자 화면에만 — Broken Access Control 용**
+관리자 화면에만 — Broken Access Control 용
 
 ```python
 # app.py
@@ -226,7 +249,7 @@ app.config["FLAG_ADMIN"] = flag("FLAG_ADMIN")
 
 `config` 는 Jinja 가 기본으로 넘겨주므로 따로 전달하지 않아도 됩니다.
 
-**조건을 달성해야 — 상태 조작 용**
+조건을 달성해야 — 상태 조작 용
 
 ```html
 {# templates/result/index.html #}
@@ -235,12 +258,12 @@ app.config["FLAG_ADMIN"] = flag("FLAG_ADMIN")
 {% endif %}
 ```
 
-**파일로 — 경로 조작 용**
+파일로 — 경로 조작 용
 
-`flag.txt` 를 앱 폴더 **바깥**에 두고 `.gitignore` 에 넣습니다.
+`flag.txt` 를 앱 폴더 바깥에 두고 `.gitignore` 에 넣습니다.
 `/download?file=../../flag.txt` 로 읽어 내야 합니다.
 
-**전용 주소로 — XSS · SSRF 용**
+전용 주소로 — XSS · SSRF 용
 
 ```python
 @bp.get("/admin/notice")
@@ -262,7 +285,7 @@ FLAG_ADMIN=GlassHouse{...}
 FLAG_ACCEPTED=GlassHouse{...}
 ```
 
-**플래그를 바꿀 때는 `.env` 만 고치고 서버를 다시 띄우면 됩니다.**
+플래그를 바꿀 때는 `.env` 만 고치고 서버를 다시 띄우면 됩니다.
 `.env` 는 깃에 올라가지 않으므로 커밋도 PR 도 필요 없습니다.
 
 ### 문제 설명 작성
@@ -312,7 +335,7 @@ PR 을 올려 `develop` 에 병합합니다. 병합한 브랜치는 삭제합니
 
 ## 4. 교환하기
 
-화이트박스 방식으로 진행합니다. **소스 코드는 주고, 서버도 띄우고, 플래그만 주지 않습니다.**
+화이트박스 방식으로 진행합니다. 소스 코드는 주고, 서버도 띄우고, 플래그만 주지 않습니다.
 공개 대회에서도 같은 방식을 씁니다.
 
 ```
@@ -329,7 +352,7 @@ PR 을 올려 `develop` 에 병합합니다. 병합한 브랜치는 삭제합니
 
 `.env` 는 문제 폴더를 만들 때 이미 복사되어 있습니다. 두 방법 중 하나로 띄웁니다.
 
-**파이썬으로** — venv 를 만들어 둔 경우
+파이썬으로 — venv 를 만들어 둔 경우
 
 ```bash
 cd challenges/easy/04-sample
@@ -337,7 +360,7 @@ source venv/bin/activate
 python app.py                # 끄기: Ctrl+C
 ```
 
-**도커로** — venv 없이 바로. Docker Desktop 을 설치하고 켜 둔 상태여야 합니다.
+도커로 — venv 없이 바로. Docker Desktop 을 설치하고 켜 둔 상태여야 합니다.
 
 ```bash
 cd challenges/easy/04-sample
@@ -365,9 +388,9 @@ ipconfig getifaddr en0       # macOS
 ipconfig                     # Windows (IPv4 주소 항목)
 ```
 
-> **IP 를 알려 주지 않으면 푸는 조가 접속할 수 없습니다.**
+> IP 를 알려 주지 않으면 푸는 조가 접속할 수 없습니다.
 > `localhost` 는 "지금 이 컴퓨터" 라는 뜻이라, 노트북마다 자기 자신을 가리킵니다.
-> 푸는 조가 `localhost:8005` 을 열면 **자기 노트북의 서버** 가 뜹니다.
+> 푸는 조가 `localhost:8005` 을 열면 자기 노트북의 서버 가 뜹니다.
 >
 > | 누가 | 주소 |
 > |---|---|
@@ -434,6 +457,7 @@ Network 탭에서 주고받은 요청을 확인하는 방법도 많이 씁니다
 ## 2. 공격 과정
 
 요청과 응답을 그대로 붙여 넣습니다. 스크린샷이 있으면 같이 넣습니다.
+마지막에 익스플로잇(아래 `solver.py` 또는 최종 요청)을 붙입니다.
 
 ## 3. 원인
 

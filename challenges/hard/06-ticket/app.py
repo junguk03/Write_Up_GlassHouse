@@ -11,7 +11,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") or os.urandom(16).hex()
-app.config["SESSION_COOKIE_NAME"] = "gh_8010"
+app.config["SESSION_COOKIE_NAME"] = "gh_8009"
 
 app.register_blueprint(main.bp)
 app.register_blueprint(auth.bp)
@@ -36,4 +36,4 @@ def inject_globals():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8010, debug=False)
+    app.run(host="0.0.0.0", port=8009, debug=False)
