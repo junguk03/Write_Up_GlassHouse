@@ -8,7 +8,7 @@
 | 난이도 | Medium |
 | 접속 | `http://<출제조IP>:8004` |
 | 시작 | 회원가입으로 계정 생성 (일반 신청자) |
-| 플래그 형식 | `GlassHouse{...}` (`app.config["FLAG_PROMOTED"]`, 당첨 시 flash) |
+| 플래그 형식 | `GlassHouse{...}` (`app.config["FLAG_REVIEW"]`, 당첨 시 flash) |
 
 **최종 목표:** 신청서를 내면 결과가 "미당첨(`rejected`)" 으로 고정된다. 신청서 **수정 기능이 폼의 모든 필드를 그대로 받아** 저장하는 허점을 이용해, 화면에 없는 `status=accepted` 를 끼워 넣어 스스로 "당첨" 으로 만들고 당첨 인증 코드(플래그)를 받는다.
 
@@ -70,7 +70,7 @@ def edit(app_id):
         for key in request.form:            # (1) 폼에 들어온 모든 키를
             application[key] = request.form[key]   # (2) 신청서에 통째로 덮어씀
         if application["status"] == "accepted":    # (3) 그 결과 status 가 accepted 면
-            flash("당첨 인증 코드 " + current_app.config["FLAG_PROMOTED"], "success")  # 플래그
+            flash("당첨 인증 코드 " + current_app.config["FLAG_REVIEW"], "success")  # 플래그
         return redirect(url_for("mypage.list_applications"))
 ```
 - **원인:** 수정이 **허용 필드 목록(화이트리스트) 없이** `request.form` 의 모든 키를 신청서 객체에 그대로 할당한다(Mass Assignment). 화면 폼에 없는 민감 필드(`status`)도 **요청에 포함만 시키면** 덮어쓸 수 있다. 바로 아래 (3)에서 그 값을 당첨 판정에 쓰므로, `status=accepted` 를 주입하면 당첨 처리된다.
@@ -108,7 +108,7 @@ def edit(app_id):
 3. 마이페이지 신청서 상태가 **당첨** 으로 바뀐다.
 
 **플래그:** `GlassHouse{...}`
-> 실제 값은 배포본 `.env` 의 `FLAG_PROMOTED`(변수명 변경 시 해당 이름)를 따른다.
+> 실제 값은 배포본 `.env` 의 `FLAG_REVIEW`(변수명 변경 시 해당 이름)를 따른다.
 
 ---
 

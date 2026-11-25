@@ -42,7 +42,7 @@ INTERNAL_DIR = os.path.join(BASE_DIR, "internal")   # 바깥 보관함
 # 공개 안내 파일들은 uploads/ 에
 # 플래그는 internal/flag.txt 에
 with open(os.path.join(INTERNAL_DIR, "flag.txt"), "w") as f:
-    f.write(flag("FLAG_DOWNLOAD"))
+    f.write(flag("FLAG_GIFT"))
 ```
 
 `uploads/` 와 `internal/` 은 **같은 상위 폴더(`BASE_DIR`) 바로 아래 나란히 있는 형제 디렉토리**다. 이 위치 관계가 풀이의 핵심이 된다. 보관함에서 한 칸만 위로 올라가면 바로 옆에 `internal/` 이 있다.

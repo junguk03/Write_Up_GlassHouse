@@ -125,7 +125,7 @@ return render_template("mypage/detail.html", application=target)  # 출력 대�
 ![/applications/51?view=50 — 내용이 id=50 으로 바뀌고 좌석 자리에 플래그 노출](images/05-flag.png)
 
 **플래그:** `GlassHouse{...}`
-> 실제 값은 배포본 `.env` 의 `FLAG_IDOR`(변수명 변경 시 해당 이름)를 따른다.
+> 실제 값은 배포본 `.env` 의 `FLAG_RECORDS`(변수명 변경 시 해당 이름)를 따른다.
 
 ---
 

