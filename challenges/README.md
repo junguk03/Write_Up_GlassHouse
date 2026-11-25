@@ -21,10 +21,10 @@ challenges/
 | Medium | [03-review](medium/03-review) | B조 | 8004 | [solution.md](../solution/medium/03-review/solution.md) |
 | Medium | [04-mirror](medium/04-mirror) | B조 | 8006 | [solution.md](../solution/medium/04-mirror/solution.md) |
 | Medium | [05-deadline](medium/05-deadline) | A조 | 8005 | [solution.md](../solution/medium/05-deadline/solution.md) |
-| Hard | [06-ticket](hard/06-ticket) | A조 | 8010 | [solution.md](../solution/hard/06-ticket/solution.md) |
-| Hard | [06-santa](hard/06-santa) | A조 | 8013 | [solution.md](../solution/hard/06-santa/solution.md) |
-| Hard | [06-convert](hard/06-convert) | B조 | 8011 | 대회 미사용 |
-| Hard | [06-draft](hard/06-draft) | B조 | 8012 | 대회 미사용 |
+| Hard | [06-ticket](hard/06-ticket) | A조 | 8009 | [solution.md](../solution/hard/06-ticket/solution.md) |
+| Hard | [06-santa](hard/06-santa) | A조 | 8010 | [solution.md](../solution/hard/06-santa/solution.md) |
+| Hard | [06-convert](hard/06-convert) | B조 | 8012 | 대회 미사용 |
+| Hard | [06-draft](hard/06-draft) | B조 | 8013 | 대회 미사용 |
 
 ## 새 문제 만들기
 

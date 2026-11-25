@@ -27,5 +27,5 @@ pack medium 05-deadline   8005
 pack medium 04-mirror     8006
 pack easy   05-staff      8007
 pack easy   05-gift       8008
-pack hard   06-ticket     8010
-pack hard   06-santa      8013
+pack hard   06-ticket     8009
+pack hard   06-santa      8010

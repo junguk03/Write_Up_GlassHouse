@@ -6,8 +6,8 @@
 |---|---|
 | 분류 | Web / 경로 조작 → 서명 위조 → 역직렬화(pickle) 명령 실행 |
 | 난이도 | Hard |
-| 접속 | `http://<출제조IP>:8010` |
-| 시작 | 회원가입 후 로그인하면 신청자 초대권(쿠키 `gh_8010_ticket`)을 받는다 |
+| 접속 | `http://<출제조IP>:8009` |
+| 시작 | 회원가입 후 로그인하면 신청자 초대권(쿠키 `gh_8009_ticket`)을 받는다 |
 | 플래그 위치 | 서버의 `vault/flag-<무작위>.txt` |
 
 최종 목표: 서버 "금고"(`vault/`)에 있는 파일을 읽는다. 웹 화면 어디에도 금고를 여는 기능은 없으므로 서버에서 명령을 실행해야 한다.
@@ -18,7 +18,7 @@
 
 ## 2. 의도한 풀이 과정 (요약)
 
-1. 로그인하면 `gh_8010_ticket` 쿠키를 받는다. `.` 앞부분을 base64 로 풀면 `{"tid":..,"name":..,"role":"guest"}` 이다. 운영진 포털은 이 쿠키의 `role` 이 `staff` 인지만 본다.
+1. 로그인하면 `gh_8009_ticket` 쿠키를 받는다. `.` 앞부분을 base64 로 풀면 `{"tid":..,"name":..,"role":"guest"}` 이다. 운영진 포털은 이 쿠키의 `role` 이 `staff` 인지만 본다.
 2. 뒷부분은 HMAC 서명이라 키 없이는 고칠 수 없다. 키는 `keys/ticket_key.json` 에 있다.
 3. `/uploads/<이름>` 의 `..` 검사를 두 번 인코딩(`%252e%252e`)으로 우회해 키 파일을 읽는다.
 4. 키로 `role: staff` 초대권을 직접 서명해 쿠키에 넣고 `/admin` 에 들어간다.
@@ -92,7 +92,7 @@ def read_legacy(token):
 - 금고 안 파일 이름은 무작위라 `ls vault` 로 먼저 봐도 되고, `cat vault/*` 로 한 번에 읽어도 된다.
 
 ```bash
-$ python3 exploit.py http://127.0.0.1:8010
+$ python3 exploit.py http://127.0.0.1:8009
 [*] 서명 키 획득
 [*] /admin: 200
 [+] FLAG: GlassHouse{...}
@@ -123,7 +123,7 @@ $ python3 exploit.py http://127.0.0.1:8010
 ```python
 #!/usr/bin/env python3
 # hard-06 (초대권) - 키 파일 읽기 -> staff 초대권 위조 -> 옛 초대권(pickle)으로 명령 실행 -> 금고 읽기
-# 사용: python3 exploit.py http://<IP>:8010
+# 사용: python3 exploit.py http://<IP>:8009
 import base64
 import hashlib
 import hmac
@@ -135,8 +135,8 @@ import sys
 
 import requests
 
-BASE = sys.argv[1].rstrip("/") if len(sys.argv) > 1 else "http://127.0.0.1:8010"
-COOKIE = "gh_8010_ticket"
+BASE = sys.argv[1].rstrip("/") if len(sys.argv) > 1 else "http://127.0.0.1:8009"
+COOKIE = "gh_8009_ticket"
 
 
 def b64(raw):

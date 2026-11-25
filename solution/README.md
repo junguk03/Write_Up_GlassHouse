@@ -23,5 +23,5 @@ solution/<난이도>/<문제>/
 | Medium | 03-review | 8004 | [solution.md](medium/03-review/solution.md) | 수하 |
 | Medium | 04-mirror | 8006 | [solution.md](medium/04-mirror/solution.md) | 종성 |
 | Medium | 05-deadline | 8005 | [solution.md](medium/05-deadline/solution.md) | 정욱 |
-| Hard | 06-ticket | 8010 | [solution.md](hard/06-ticket/solution.md) | 정욱 |
-| Hard | 06-santa | 8013 | [solution.md](hard/06-santa/solution.md) | 성원 |
+| Hard | 06-ticket | 8009 | [solution.md](hard/06-ticket/solution.md) | 정욱 |
+| Hard | 06-santa | 8010 | [solution.md](hard/06-santa/solution.md) | 성원 |

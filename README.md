@@ -47,10 +47,10 @@ python app.py                 # http://localhost:8000
 | Medium | [03-review](challenges/medium/03-review) | B조 | 8004 | [solution.md](solution/medium/03-review/solution.md) |
 | Medium | [04-mirror](challenges/medium/04-mirror) | B조 | 8006 | [solution.md](solution/medium/04-mirror/solution.md) |
 | Medium | [05-deadline](challenges/medium/05-deadline) | A조 | 8005 | [solution.md](solution/medium/05-deadline/solution.md) |
-| Hard | [06-ticket](challenges/hard/06-ticket) | A조 | 8010 | [solution.md](solution/hard/06-ticket/solution.md) |
-| Hard | [06-santa](challenges/hard/06-santa) | A조 | 8013 | [solution.md](solution/hard/06-santa/solution.md) |
-| Hard | [06-convert](challenges/hard/06-convert) | B조 | 8011 | 대회 미사용 |
-| Hard | [06-draft](challenges/hard/06-draft) | B조 | 8012 | 대회 미사용 |
+| Hard | [06-ticket](challenges/hard/06-ticket) | A조 | 8009 | [solution.md](solution/hard/06-ticket/solution.md) |
+| Hard | [06-santa](challenges/hard/06-santa) | A조 | 8010 | [solution.md](solution/hard/06-santa/solution.md) |
+| Hard | [06-convert](challenges/hard/06-convert) | B조 | 8012 | 대회 미사용 |
+| Hard | [06-draft](challenges/hard/06-draft) | B조 | 8013 | 대회 미사용 |
 
 전체 목록은 [challenges/README.md](challenges/README.md) 에 있습니다.
 

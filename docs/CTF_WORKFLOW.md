@@ -128,11 +128,11 @@ Windows 에서 `rsync` 가 없으면 Git Bash 를 쓰거나, 탐색기로 복사
 | medium/04-mirror | 8006 |
 | easy/05-staff | 8007 |
 | easy/05-gift | 8008 |
-| medium/04-XSS (보류) | 8009 |
-| hard/06-ticket | 8010 |
-| hard/06-convert (미사용) | 8011 |
-| hard/06-draft (미사용) | 8012 |
-| hard/06-santa | 8013 |
+| hard/06-ticket | 8009 |
+| hard/06-santa | 8010 |
+| medium/04-XSS (미사용) | 8011 |
+| hard/06-convert (미사용) | 8012 |
+| hard/06-draft (미사용) | 8013 |
 
 다음 문제는 8014 를 씁니다. 8000 은 CTFd 가 씁니다.
 

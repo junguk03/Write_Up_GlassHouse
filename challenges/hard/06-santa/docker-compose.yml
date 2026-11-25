@@ -2,7 +2,7 @@ services:
   web:
     build: .
     ports:
-      - "8013:8013"
+      - "8010:8010"
     env_file: .env
     restart: unless-stopped
     # 공용 서버라 컨테이너를 잠급니다. 파일은 못 바꾸고(재시작하면 처음 상태), 자원은 이 안에서만 씁니다.
