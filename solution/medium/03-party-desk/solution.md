@@ -10,9 +10,9 @@
 | 제공 계정 | `applicant01 / test1234` (+ 소스 제공) |
 | 플래그 형식 | `GlassHouse{...}` (환경변수 `FLAG_PARTY_DESK`) |
 
-**최종 목표:** 운영진 전용 화면 `/admin`에 접근해 "내부 인증 코드"로 노출되는 플래그를 읽는다.
+최종 목표: 운영진 전용 화면 `/admin`에 접근해 "내부 인증 코드"로 노출되는 플래그를 읽는다.
 `/admin`은 `role == "admin"` 세션만 허용하며, 해당 권한을 가진 계정은 `reviewer` 하나뿐이다.
-따라서 목표는 **관리자 이메일 확보 → reviewer 비밀번호 재설정 → 관리자 화면 접근**으로 귀결된다.
+따라서 목표는 관리자 이메일 확보 → reviewer 비밀번호 재설정 → 관리자 화면 접근으로 귀결된다.
 
 ---
 
@@ -20,11 +20,11 @@
 
 1. 플래그가 `/admin` 목록 화면에 박혀 있고, 이 화면은 관리자(admin) 역할만 들어갈 수 있음을 확인한다.
 2. 관리자 역할은 `reviewer`뿐 → 로그인 수단(비밀번호 재설정)을 공략 대상으로 정한다.
-3. 재설정 1단계 `/forgot`은 **아이디+이메일**이 맞아야 통과한다. 그런데 reviewer의 이메일은 소스에 없고 런타임 비밀값(`secret("ADMIN_EMAIL")`)이다 → **이메일을 어딘가에서 유출시켜야 한다.**
-4. 소스(`data.py`)를 보면 신청서 레코드 `APPLICATIONS[50]`에 `email: secret("ADMIN_EMAIL")`이 박혀 있고, 이 레코드의 소유자는 **subAdmin(user_id 50)** 이다. subAdmin 계정 자격증명(`subAdmin / subpwd`)도 소스에 평문으로 들어 있다.
-5. **subAdmin으로 로그인** → `GET /api/applications/50` → 응답 JSON에 reviewer의 이메일이 그대로 노출된다 (**관리자 이메일 유출**).
-6. 유출한 이메일로 `/forgot`을 통과한다. 이때 "사고 방지용" 보호 목록 `PROTECTED`에 정작 관리자 `reviewer`가 빠져 있어 재설정이 허용된다(**결함 ①**).
-7. 마지막 단계 `/forgot/reset`이 인증코드 통과 여부(`reset_verified`)를 확인하지 않는다 → **이메일로 온 6자리 코드를 모르고도** 2단계를 건너뛰고 비밀번호를 바꾼다(**결함 ②**).
+3. 재설정 1단계 `/forgot`은 아이디+이메일이 맞아야 통과한다. 그런데 reviewer의 이메일은 소스에 없고 런타임 비밀값(`secret("ADMIN_EMAIL")`)이다 → 이메일을 어딘가에서 유출시켜야 한다.
+4. 소스(`data.py`)를 보면 신청서 레코드 `APPLICATIONS[50]`에 `email: secret("ADMIN_EMAIL")`이 박혀 있고, 이 레코드의 소유자는 subAdmin(user_id 50) 이다. subAdmin 계정 자격증명(`subAdmin / subpwd`)도 소스에 평문으로 들어 있다.
+5. subAdmin으로 로그인 → `GET /api/applications/50` → 응답 JSON에 reviewer의 이메일이 그대로 노출된다 (관리자 이메일 유출).
+6. 유출한 이메일로 `/forgot`을 통과한다. 이때 "사고 방지용" 보호 목록 `PROTECTED`에 정작 관리자 `reviewer`가 빠져 있어 재설정이 허용된다(결함 ①).
+7. 마지막 단계 `/forgot/reset`이 인증코드 통과 여부(`reset_verified`)를 확인하지 않는다 → 이메일로 온 6자리 코드를 모르고도 2단계를 건너뛰고 비밀번호를 바꾼다(결함 ②).
 8. 바뀐 비밀번호로 reviewer 로그인 → `/admin`에서 플래그를 읽는다.
 
 ---
@@ -38,7 +38,7 @@
 <div class="alert alert-info">운영진 전용 · 내부 인증 코드 {{ config.FLAG_PARTY_DESK }}</div>
 ```
 
-이 화면을 그리는 `/admin`은 관리자 전용이다 — `routes/admin.py`의 `require_admin()`은 `role != "admin"`이면 `abort(403)`으로 정상 동작한다. 즉 **정면 돌파는 불가**하고 admin 세션을 합법적으로 얻어야 한다.
+이 화면을 그리는 `/admin`은 관리자 전용이다 — `routes/admin.py`의 `require_admin()`은 `role != "admin"`이면 `abort(403)`으로 정상 동작한다. 즉 정면 돌파는 불가하고 admin 세션을 합법적으로 얻어야 한다.
 
 ### 3-2. admin 역할은 reviewer 하나뿐
 `data.py`:
@@ -54,10 +54,10 @@ USERS = {
 ```
 
 로그인 시 `session["role"] = user["role"]`이 그대로 들어가므로, reviewer로 로그인하면 admin 세션이 된다.
-reviewer의 비밀번호·이메일은 모두 `secret()`(= `.env` 런타임 비밀)이라 **소스만 봐서는 알 수 없다.**
+reviewer의 비밀번호·이메일은 모두 `secret()`(= `.env` 런타임 비밀)이라 소스만 봐서는 알 수 없다.
 
 ### 3-3. 비밀번호 재설정에는 reviewer 이메일이 필요하다
-`routes/auth.py`의 `/forgot`은 `user["email"] != email`이면 거부한다. 따라서 재설정을 시작하려면 **reviewer의 실제 이메일을 먼저 알아내야** 한다. → 유출 경로를 찾는 것이 첫 과제.
+`routes/auth.py`의 `/forgot`은 `user["email"] != email`이면 거부한다. 따라서 재설정을 시작하려면 reviewer의 실제 이메일을 먼저 알아내야 한다. → 유출 경로를 찾는 것이 첫 과제.
 
 ### 3-4. 관리자 이메일이 신청서 레코드에 박혀 있다
 `data.py`의 신청서 데이터:
@@ -74,7 +74,7 @@ APPLICATIONS = {
 }
 ```
 
-`APPLICATIONS[50]`의 소유자는 `user_id = 50`, 즉 **subAdmin**이다. 그리고 subAdmin의 자격증명 `subAdmin / subpwd`는 소스에 평문으로 노출되어 있다 → subAdmin으로 직접 로그인할 수 있다.
+`APPLICATIONS[50]`의 소유자는 `user_id = 50`, 즉 subAdmin이다. 그리고 subAdmin의 자격증명 `subAdmin / subpwd`는 소스에 평문으로 노출되어 있다 → subAdmin으로 직접 로그인할 수 있다.
 
 ---
 
@@ -98,10 +98,10 @@ def api_detail(app_id):
     return jsonify(application)              # ← email 등 레코드 전체를 그대로 반환
 ```
 
-소유권 검사 자체는 있지만, **subAdmin은 app #50의 정당한 소유자**(user_id 50 == 50)이므로 검사를 통과한다. 문제는 이 API가 **레코드 전체(email 포함)를 직렬화해서 돌려준다**는 점이다. 관리자 이메일이 staff 소유 신청서에 저장되어 있는 설계상 실수와 맞물려, subAdmin이 자기 신청서를 조회하는 것만으로 **관리자 이메일이 유출**된다.
+소유권 검사 자체는 있지만, subAdmin은 app #50의 정당한 소유자(user_id 50 == 50)이므로 검사를 통과한다. 문제는 이 API가 레코드 전체(email 포함)를 직렬화해서 돌려준다는 점이다. 관리자 이메일이 staff 소유 신청서에 저장되어 있는 설계상 실수와 맞물려, subAdmin이 자기 신청서를 조회하는 것만으로 관리자 이메일이 유출된다.
 
-- **성립 조건:** subAdmin으로 로그인(자격증명은 소스에 평문) → `GET /api/applications/50`.
-- **실제 응답(검증):**
+- 성립 조건: subAdmin으로 로그인(자격증명은 소스에 평문) → `GET /api/applications/50`.
+- 실제 응답(검증):
   ```json
   {"id":50,"user_id":50,"applicant_name":"이정욱","school":"글래스하우스",
    "major":"일반석","status":"submitted","intro":"...",
@@ -124,9 +124,9 @@ def forgot():
     return redirect(url_for("auth.verify"))
 ```
 
-README는 "신청자 계정은 사고가 나지 않도록 따로 막아 두었다"고 안내한다. 실제로 `applicant01/02`, `subAdmin`은 막혀 있다. **그러나 진짜 민감한 관리자 계정 `reviewer`는 목록에 없다.** 보호 대상을 거꾸로 설정한 접근 통제 결함 — reviewer가 재설정 대상이 될 수 있다. (유출한 이메일로 `email` 검사도 통과한다.)
+README는 "신청자 계정은 사고가 나지 않도록 따로 막아 두었다"고 안내한다. 실제로 `applicant01/02`, `subAdmin`은 막혀 있다. 그러나 진짜 민감한 관리자 계정 `reviewer`는 목록에 없다. 보호 대상을 거꾸로 설정한 접근 통제 결함 — reviewer가 재설정 대상이 될 수 있다. (유출한 이메일로 `email` 검사도 통과한다.)
 
-`/forgot` 통과 시 `session["reset_user"] = "reviewer"`가 설정되고, 6자리 코드는 **서버 로그로만** 출력된다(`print(...)`) — 공격자는 이 코드를 볼 수 없다. 정상이라면 여기서 막혀야 한다.
+`/forgot` 통과 시 `session["reset_user"] = "reviewer"`가 설정되고, 6자리 코드는 서버 로그로만 출력된다(`print(...)`) — 공격자는 이 코드를 볼 수 없다. 정상이라면 여기서 막혀야 한다.
 
 ### 결함 C — 마지막 단계가 인증 통과 여부를 확인하지 않음 (`/forgot/reset`) ★핵심
 
@@ -148,9 +148,9 @@ def reset():
         data.USERS[username]["password"] = password   # ← 비밀번호 변경
 ```
 
-`reset()`은 **`reset_verified`를 전혀 검사하지 않고** `reset_user`만 있으면 비밀번호를 바꿔 버린다. 결과적으로 `/forgot/verify`(코드 입력) 단계를 통째로 건너뛰고 `/forgot` 직후 `/forgot/reset`에 바로 POST하면, 코드를 모른 채 reviewer 비밀번호를 원하는 값으로 바꿀 수 있다 — 상태 머신의 "검증 완료" 상태를 강제하지 않은 전형적 **단계 우회(Broken Access Control)**.
+`reset()`은 `reset_verified`를 전혀 검사하지 않고 `reset_user`만 있으면 비밀번호를 바꿔 버린다. 결과적으로 `/forgot/verify`(코드 입력) 단계를 통째로 건너뛰고 `/forgot` 직후 `/forgot/reset`에 바로 POST하면, 코드를 모른 채 reviewer 비밀번호를 원하는 값으로 바꿀 수 있다 — 상태 머신의 "검증 완료" 상태를 강제하지 않은 전형적 단계 우회(Broken Access Control).
 
-> 참고(운영 이슈): 변경된 비밀번호는 DB가 아니라 프로세스 메모리의 전역 `data.USERS`에 저장된다. 서버 한 대를 여러 팀이 공유하면 reviewer 비밀번호가 서로 덮어써져 재현이 깨진다 → **팀별 인스턴스(컨테이너 분리)** 운영이 필요한 이유다.
+> 참고(운영 이슈): 변경된 비밀번호는 DB가 아니라 프로세스 메모리의 전역 `data.USERS`에 저장된다. 서버 한 대를 여러 팀이 공유하면 reviewer 비밀번호가 서로 덮어써져 재현이 깨진다 → 팀별 인스턴스(컨테이너 분리) 운영이 필요한 이유다.
 
 ---
 
@@ -187,7 +187,7 @@ def reset():
 ```
 
 ### 패치 ② — 보호 목록을 화이트리스트 기반으로 전환
-막을 계정을 열거하는 블랙리스트(`PROTECTED`)는 관리자 누락 같은 실수가 난다. **재설정을 허용할 역할만 허용**한다.
+막을 계정을 열거하는 블랙리스트(`PROTECTED`)는 관리자 누락 같은 실수가 난다. 재설정을 허용할 역할만 허용한다.
 ```python
 RESETTABLE_ROLES = {"applicant"}
 def forgot():
@@ -197,16 +197,16 @@ def forgot():
 ```
 
 ### 패치 ③ — 민감정보 노출 차단
-- API가 레코드 전체를 반환하지 말고 **필요한 필드만** 직렬화한다(`email` 등 제외).
+- API가 레코드 전체를 반환하지 말고 필요한 필드만 직렬화한다(`email` 등 제외).
   ```python
   return jsonify({k: application[k] for k in ("id","applicant_name","school","major","status","intro")})
   ```
-- 애초에 **관리자 이메일을 일반 신청서 레코드에 저장하지 않는다**(`APPLICATIONS[50]`의 `email` 제거).
+- 애초에 관리자 이메일을 일반 신청서 레코드에 저장하지 않는다(`APPLICATIONS[50]`의 `email` 제거).
 - subAdmin의 평문·약한 비밀번호(`subpwd`)를 제거하고, 운영 계정 자격증명을 소스에 하드코딩하지 않는다.
 
 ### (권장) 부가 강화
-- 아이디/이메일 유효 여부와 무관하게 동일 응답을 주어 **계정 열거** 차단.
-- 재설정 상태를 세션 불린이 아니라 **서명된 1회용·단기 만료 토큰**으로 관리해 단계 위조를 구조적으로 차단.
+- 아이디/이메일 유효 여부와 무관하게 동일 응답을 주어 계정 열거 차단.
+- 재설정 상태를 세션 불린이 아니라 서명된 1회용·단기 만료 토큰으로 관리해 단계 위조를 구조적으로 차단.
 
 ### 검증 방법
 - (음성) 패치 ① 후: `/forgot` 직후 `/forgot/verify`를 건너뛰고 `/forgot/reset` POST → `/forgot`으로 되돌려지고 비밀번호가 바뀌지 않음.
@@ -267,7 +267,7 @@ m = re.search(r"GlassHouse\{[^}]*\}", r.text)
 print(f"[+] FLAG: {m.group(0)}" if m else "[-] 플래그를 찾지 못함")
 ```
 
-**실행 예시**
+실행 예시
 ```bash
 $ python3 exploit.py http://127.0.0.1:8003
 [*] subAdmin login      -> 302

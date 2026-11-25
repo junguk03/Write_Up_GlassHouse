@@ -10,21 +10,21 @@
 | 시작 | 회원가입으로 계정 생성 (초기 role = `applicant`) |
 | 플래그 형식 | `GlassHouse{...}` (환경변수 `FLAG_SANTA`) |
 
-**최종 목표:** 운영진(엘프)만 들어가는 "엘프 사무실"의 카드 미리보기 기능을 악용해, 메모리(`app.config`)에만 올라가 있는 플래그를 유출한다.
-플래그는 파일로 떨어지지 않고 `app.py`가 `.env`에서 읽어 `app.config["FLAG_SANTA"]`에만 보관한다. 따라서 **파일을 읽는 게 아니라, 앱 안에서 도는 코드로 `config` 값을 뽑아내야** 한다.
+최종 목표: 운영진(엘프)만 들어가는 "엘프 사무실"의 카드 미리보기 기능을 악용해, 메모리(`app.config`)에만 올라가 있는 플래그를 유출한다.
+플래그는 파일로 떨어지지 않고 `app.py`가 `.env`에서 읽어 `app.config["FLAG_SANTA"]`에만 보관한다. 따라서 파일을 읽는 게 아니라, 앱 안에서 도는 코드로 `config` 값을 뽑아내야 한다.
 
 ![app.config 에만 올라가는 플래그](images/10-config-flag.png)
 
-최종 체인: **IDOR로 정찰 → Mass Assignment로 운영진 승격 → SSTI로 플래그 유출.**
+최종 체인: IDOR로 정찰 → Mass Assignment로 운영진 승격 → SSTI로 플래그 유출.
 
 ---
 
 ## 2. 의도한 풀이 과정 (요약)
 
 1. 플래그가 엘프 사무실(`/elf`, `/elf/card/preview`)에서만 닿을 수 있고, 이 기능은 `role == "admin"`만 허용함을 확인한다. 회원가입 계정은 `applicant` 고정이라 정면으로는 못 들어간다.
-2. 위시리스트 상세(`/wishlist/<id>`)에 **소유자 검사가 없음**(IDOR)을 발견한다. 운영진 소유의 13번을 열어 다음 공략 지점(프로필의 role)을 알려주는 힌트를 얻는다.
-3. 프로필 저장이 화이트리스트(`PROFILE_FIELDS`)를 선언만 하고 쓰지 않아, **폼 전체를 `.update()`로 덮어씀**(Mass Assignment)을 확인한다. `role=admin`을 끼워 넣어 스스로 운영진으로 승격한다.
-4. 승격 후 엘프 사무실의 카드 미리보기가 사용자 입력을 **템플릿 소스로 이어붙여 `render_template_string()`에 넣는**(SSTI) 것을 확인한다. `{{ config.FLAG_SANTA }}`로 메모리의 플래그를 렌더시킨다.
+2. 위시리스트 상세(`/wishlist/<id>`)에 소유자 검사가 없음(IDOR)을 발견한다. 운영진 소유의 13번을 열어 다음 공략 지점(프로필의 role)을 알려주는 힌트를 얻는다.
+3. 프로필 저장이 화이트리스트(`PROFILE_FIELDS`)를 선언만 하고 쓰지 않아, 폼 전체를 `.update()`로 덮어씀(Mass Assignment)을 확인한다. `role=admin`을 끼워 넣어 스스로 운영진으로 승격한다.
+4. 승격 후 엘프 사무실의 카드 미리보기가 사용자 입력을 템플릿 소스로 이어붙여 `render_template_string()`에 넣는(SSTI) 것을 확인한다. `{{ config.FLAG_SANTA }}`로 메모리의 플래그를 렌더시킨다.
 
 각 단계의 "왜/무엇을 확인했는지"는 3~4절에서 코드와 함께 설명한다.
 
@@ -52,7 +52,7 @@ data.USERS[username] = {"id": data.next_user_id(), "password": password,
                         "name": name, "role": "applicant", "email": email}
 ```
 
-→ 가입 단계에서는 role을 못 바꾼다. **승격 경로를 다른 곳에서 찾아야 한다.**
+→ 가입 단계에서는 role을 못 바꾼다. 승격 경로를 다른 곳에서 찾아야 한다.
 
 ### 3-2. 위시리스트 IDOR로 다음 단서 획득
 내 위시리스트만 보이지만, 상세 조회는 소유자를 확인하지 않는다(4절 결함 A). 운영진 소유인 13번(`user_id=99`)을 열면 메모에 결정적 힌트가 있다 — `data.py`의 `WISHLISTS[13]`:
@@ -87,10 +87,10 @@ def wishlist_detail(wishlist_id):
     return render_template("santa/wishlist_detail.html", wishlist=wishlist)
 ```
 
-목록(`/wishlist`)은 `w["user_id"] == user["id"]`로 내 것만 거르지만, 상세는 존재 여부(`404`)만 보고 **소유자를 검사하지 않는다.**
+목록(`/wishlist`)은 `w["user_id"] == user["id"]`로 내 것만 거르지만, 상세는 존재 여부(`404`)만 보고 소유자를 검사하지 않는다.
 
-- **성립 조건:** 로그인 상태에서 `GET /wishlist/13` (번호만 바꾸면 남의 것 열람).
-- **영향:** 운영진 위시리스트 memo에 담긴 공략 힌트 유출.
+- 성립 조건: 로그인 상태에서 `GET /wishlist/13` (번호만 바꾸면 남의 것 열람).
+- 영향: 운영진 위시리스트 memo에 담긴 공략 힌트 유출.
 
 ![소유자 검사가 없는 wishlist_detail](images/02-idor-code.png)
 
@@ -112,17 +112,17 @@ def profile():
         ...
 ```
 
-`request.form.items()`를 `PROFILE_FIELDS`로 거르지 않는다. 폼에 `role=admin`을 **한 칸 더 끼워 넣으면** `USERS[나]["role"]`이 `admin`으로 바뀌고, 바로 아래 (3)줄이 그 값을 `session["role"]`에 그대로 넣는다.
+`request.form.items()`를 `PROFILE_FIELDS`로 거르지 않는다. 폼에 `role=admin`을 한 칸 더 끼워 넣으면 `USERS[나]["role"]`이 `admin`으로 바뀌고, 바로 아래 (3)줄이 그 값을 `session["role"]`에 그대로 넣는다.
 
-- **성립 조건:** 로그인 상태에서 `/profile`에 POST하며 `role=admin` 필드 추가 (`name`, `email`도 함께 보내 `all(updates.values())` 통과).
-- **영향:** 평범한 지원자가 **스스로 운영진(admin)으로 승격** → 엘프 사무실 진입 가능.
-- **함정:** 회원가입(`auth.py`)에서는 role을 막아 놓고 프로필 수정에서 열어 둔 것. "프로필 수정은 내 정보만 바꾸니 안전하겠지"라는 착각을 노린다.
+- 성립 조건: 로그인 상태에서 `/profile`에 POST하며 `role=admin` 필드 추가 (`name`, `email`도 함께 보내 `all(updates.values())` 통과).
+- 영향: 평범한 지원자가 스스로 운영진(admin)으로 승격 → 엘프 사무실 진입 가능.
+- 함정: 회원가입(`auth.py`)에서는 role을 막아 놓고 프로필 수정에서 열어 둔 것. "프로필 수정은 내 정보만 바꾸니 안전하겠지"라는 착각을 노린다.
 
 ![프로필 저장 — form 전체를 .update()](images/05-profile-massassign-code.png)
 
 ### 결함 C — 카드 미리보기의 SSTI (플래그 유출) ★핵심
 
-안전한 템플릿 `templates/santa/card.html`(`{{ to }}`, `{{ message }}`로 값만 받음)이 이미 있는데, 라우트는 그걸 **쓰지 않고** 문자열을 직접 이어붙여 `render_template_string()`에 통째로 넘긴다:
+안전한 템플릿 `templates/santa/card.html`(`{{ to }}`, `{{ message }}`로 값만 받음)이 이미 있는데, 라우트는 그걸 쓰지 않고 문자열을 직접 이어붙여 `render_template_string()`에 통째로 넘긴다:
 
 ```python
 @bp.post("/elf/card/preview")
@@ -143,10 +143,10 @@ def card_preview():
     ...
 ```
 
-`render_template_string()`은 **인자 문자열 자체를 Jinja2 템플릿으로 컴파일**한다. 사용자 입력(`to`, `message`)이 데이터가 아니라 **템플릿 소스의 일부**로 들어가므로, `{{ ... }}`를 넣으면 서버에서 평가된다 → **SSTI**. Jinja2 템플릿 안에서는 `config`(= `app.config`)에 바로 접근할 수 있다.
+`render_template_string()`은 인자 문자열 자체를 Jinja2 템플릿으로 컴파일한다. 사용자 입력(`to`, `message`)이 데이터가 아니라 템플릿 소스의 일부로 들어가므로, `{{ ... }}`를 넣으면 서버에서 평가된다 → SSTI. Jinja2 템플릿 안에서는 `config`(= `app.config`)에 바로 접근할 수 있다.
 
-- **성립 조건:** admin 세션으로 `/elf/card/preview`에 `message={{ config.FLAG_SANTA }}` 전송.
-- **영향:** 메모리에만 있던 플래그가 카드 미리보기에 렌더되어 노출.
+- 성립 조건: admin 세션으로 `/elf/card/preview`에 `message={{ config.FLAG_SANTA }}` 전송.
+- 영향: 메모리에만 있던 플래그가 카드 미리보기에 렌더되어 노출.
 
 ![card_preview — 입력을 이어붙여 render_template_string](images/09-ssti-code.png)
 
@@ -176,7 +176,7 @@ def card_preview():
 ![승격 후 — 운영진 메뉴 등장](images/08-profile-after.png)
 ![카드 미리보기에 렌더된 플래그](images/11-flag.png)
 
-**플래그:** `GlassHouse{...}`
+플래그: `GlassHouse{...}`
 > 실제 값은 배포본 `.env`의 `FLAG_SANTA`를 따른다.
 
 ---
@@ -254,7 +254,7 @@ m = re.search(r"GlassHouse\{[^}]*\}", r.text)
 print(f"[+] FLAG: {m.group(0)}" if m else "[-] 플래그를 찾지 못함 (승격 실패 가능)")
 ```
 
-**실행 예시**
+실행 예시
 ```bash
 $ python3 exploit.py http://127.0.0.1:8013
 [*] logged in as applicant
