@@ -25,7 +25,6 @@ def require_admin():
     if role is None:
         return redirect(url_for("auth.login"))
     # TODO 2. session.get("role") 이 "admin" 이 아니면 abort(403)
-    #         ← 이 검사를 빼면 Broken Access Control 취약점이 됩니다. 지금은 넣어 둡니다.
     if role != "admin":
         abort(403)
 
