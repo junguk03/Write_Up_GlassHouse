@@ -4,8 +4,7 @@
 
 ```
 solution/<난이도>/<문제>/
-├── solution.md     라이트업
-├── exploit.py      익스플로잇 (있으면)
+├── solution.md     라이트업 (마지막 절에 익스플로잇 코드)
 └── images/         캡처 (있으면)
 ```
 

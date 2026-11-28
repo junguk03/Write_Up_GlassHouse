@@ -47,7 +47,7 @@ README 의 제목과 설명에 쓰지 않습니다. 폴더 이름에만 들어�
 ### 1-6. 풀이는 `solution/` 에만 둡니다
 
 문제 폴더에는 문제 설명 `README.md` 와 실행에 필요한 파일만 둡니다.
-라이트업, 익스플로잇, 캡처는 `solution/<난이도>/<문제>/` 에 `solution.md`, `exploit.py`, `images/` 로 둡니다.
+라이트업과 캡처는 `solution/<난이도>/<문제>/` 에 `solution.md`, `images/` 로 둡니다. 익스플로잇은 `solution.md` 마지막 절에 Python 코드로 넣습니다.
 참가자에게는 문제 폴더로 만든 zip 만 나눠 주므로 `solution/` 은 zip 에 들어가지 않습니다.
 
 ### 1-7. 포트와 쿠키 이름은 문제마다 다르게 합니다
